@@ -1,0 +1,253 @@
+---
+/**
+ * Services Page - Studio Kria
+ * Modular card-based layout for core, specialized, and formats
+ */
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import { t, getTranslation } from '../../i18n';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'is' } },
+  ];
+}
+
+const locale = Astro.params.lang;
+const translations = getTranslation(locale);
+const basePath = import.meta.env.BASE_URL || '/';
+const assetUrl = (path: string) => `${basePath.replace(/\/$/, '')}${path.startsWith('/') ? path : '/' + path}`;
+const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
+const pathname = '/services/'; // Current path without base path
+
+---
+
+<Layout
+  title={t(locale, 'services.title')}
+  description={translations.services.description}
+  image="/assets/images/og-services.jpg"
+  locale={locale}
+  translations={translations}
+  pathname={pathname}
+>
+  {/* Hero */}
+  <Hero
+    title={t(locale, 'services.title')}
+    backgroundImage={assetUrl("/assets/images/services-hero.jpg")}
+    ctaPrimary={{ text: t(locale, 'services.discussProject'), href: localUrl('/contact/') }}
+    class="hero-centered"
+  />
+
+  {/* Core Services - Full Width */}
+  <section class="section" aria-labelledby="core-title">
+    <div class="container">
+      <header class="section-header animate-on-scroll">
+        <h2 id="core-title" class="section-title">{t(locale, 'services.coreServices')}</h2>
+      </header>
+      <div class="services-grid stagger-children animate-on-scroll">
+        {translations.services.coreList.map((service, index) => (
+          <div class="service-item animate-on-scroll" style={`--stagger: ${index * 80}ms`}>
+            <h3 class="service-title glitch-text" data-text={service.title}>{service.title}</h3>
+            <p class="service-desc">{service.desc}</p>
+            <a href={localUrl('/contact/')} class="service-link">
+              {t(locale, 'services.discussProject')}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Specialized Services */}
+  <section class="section section-compact" aria-labelledby="specialized-title">
+    <div class="container">
+      <header class="section-header animate-on-scroll">
+        <h2 id="specialized-title" class="section-title">{t(locale, 'services.specialized')}</h2>
+      </header>
+      <div class="specialized-grid stagger-children animate-on-scroll">
+        {translations.services.specializedList.map((service, index) => (
+          <div class="specialized-item animate-on-scroll" style={`--stagger: ${index * 80}ms`}>
+            <h3 class="specialized-title">{service.title}</h3>
+            <p class="specialized-desc">{service.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Formats */}
+  <section class="section" aria-labelledby="formats-title">
+    <div class="container">
+      <header class="section-header animate-on-scroll">
+        <h2 id="formats-title" class="section-title">{t(locale, 'services.formats')}</h2>
+      </header>
+      <div class="formats-grid stagger-children animate-on-scroll">
+        {translations.services.formatsList.map((format, index) => (
+          <div class="format-item animate-on-scroll" style={`--stagger: ${index * 80}ms`}>
+            <span>{format}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* CTA */}
+  <div class="container" style="text-align: center; margin-top: var(--space-4xl);">
+    <h2 class="section-title animate-on-scroll">{t(locale, 'services.howWeWork')}</h2>
+    <a href={localUrl('/contact/')} class="btn btn-primary btn-lg glow-element-intense">{t(locale, 'services.discussProject')}</a>
+  </div>
+</Layout>
+
+<style>
+  /* Services Grid - Brutal, raw */
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+    margin-top: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .services-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .service-item {
+    padding: var(--space-xl);
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all var(--transition-slower);
+  }
+
+  .service-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--glow-medium);
+  }
+
+  .service-title {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-md);
+    text-shadow: var(--glow-soft);
+  }
+
+  .service-desc {
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--fg-muted);
+    margin-bottom: var(--space-lg);
+  }
+
+  .service-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    transition: gap var(--transition-fast);
+  }
+
+  .service-link:hover {
+    gap: var(--space-md);
+  }
+
+  /* Specialized Grid */
+  .specialized-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    margin-top: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .specialized-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .specialized-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .specialized-item {
+    padding: var(--space-xl);
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all var(--transition-slower);
+  }
+
+  .specialized-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--glow-medium);
+  }
+
+  .specialized-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-md);
+    color: var(--accent);
+  }
+
+  .specialized-desc {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+
+  /* Formats Grid */
+  .formats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-top: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .formats-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .formats-grid {
+      grid-template-columns: repeat(8, 1fr);
+    }
+  }
+
+  .format-item {
+    padding: var(--space-lg) var(--space-md);
+    text-align: center;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--fg);
+    transition: all var(--transition-base);
+  }
+
+  .format-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>

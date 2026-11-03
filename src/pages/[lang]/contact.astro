@@ -1,0 +1,409 @@
+---
+/**
+ * Contact Page - Full-width layout with form + info
+ */
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import { t, getTranslation } from '../../i18n';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'is' } },
+  ];
+}
+
+const locale = Astro.params.lang;
+const translations = getTranslation(locale);
+const basePath = import.meta.env.BASE_URL || '/';
+const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
+const pathname = '/contact/'; // Current path without base path
+
+---
+
+<Layout
+  title={t(locale, 'contact.title')}
+  description={translations.contact.description}
+  image="/assets/images/og-contact.jpg"
+  locale={locale}
+  translations={translations}
+  pathname={pathname}
+>
+  {/* Hero - minimal, just title */}
+  <section class="contact-hero" aria-labelledby="contact-title">
+    <div class="container">
+      <header class="contact-hero-header animate-on-scroll">
+        <h1 id="contact-title" class="contact-title glitch-text" data-text={t(locale, 'contact.title')}>
+          {t(locale, 'contact.title')}
+        </h1>
+      </header>
+    </div>
+  </section>
+
+  {/* Main Content - Form + Info Side by Side */}
+  <section class="contact-main section" aria-labelledby="form-title">
+    <div class="container">
+      <div class="contact-grid">
+        {/* Contact Form */}
+        <div class="contact-form-wrapper animate-on-scroll">
+          <h2 id="form-title" class="section-title">{t(locale, 'contact.form.title')}</h2>
+          <form id="contactForm" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <div class="form-row">
+              <div class="form-field">
+                <label for="name">{t(locale, 'contact.form.name')}</label>
+                <input type="text" id="name" name="name" required autocomplete="name" />
+              </div>
+              <div class="form-field">
+                <label for="email">{t(locale, 'contact.form.email')}</label>
+                <input type="email" id="email" name="email" required autocomplete="email" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="subject">{t(locale, 'contact.form.subject')}</label>
+              <select id="subject" name="subject" required>
+                <option value="">{t(locale, 'common.select') || 'Select...'}</option>
+                <option value="general">{t(locale, 'contact.form.subjects.general') || 'General Inquiry'}</option>
+                <option value="production">{t(locale, 'contact.form.subjects.production') || 'Film Production'}</option>
+                <option value="commercial">{t(locale, 'contact.form.subjects.commercial') || 'Commercial & Branded'}</option>
+                <option value="music">{t(locale, 'contact.form.subjects.music') || 'Music Videos'}</option>
+                <option value="rentals">{t(locale, 'contact.form.subjects.rentals') || 'Equipment Rentals'}</option>
+                <option value="careers">{t(locale, 'contact.form.subjects.careers') || 'Careers'}</option>
+                <option value="press">{t(locale, 'contact.form.subjects.press') || 'Press'}</option>
+                <option value="other">{t(locale, 'contact.form.subjects.other') || 'Other'}</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="message">{t(locale, 'contact.form.message')}</label>
+              <textarea id="message" name="message" rows="6" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-xl glow-element-intense form-submit">
+              <span class="submit-text">{t(locale, 'contact.form.submit')}</span>
+              <span class="submit-loading" style="display: none;">{t(locale, 'contact.form.sending')}</span>
+            </button>
+          </form>
+          <div id="formSuccess" class="form-success" style="display: none;" role="alert">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <p>{t(locale, 'contact.form.success')}</p>
+          </div>
+          <div id="formError" class="form-error" style="display: none;" role="alert">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <p>{t(locale, 'contact.form.error')}</p>
+          </div>
+        </div>
+
+        {/* Contact Info - Brutal */}
+        <aside class="contact-info animate-on-scroll">
+          <div class="info-block">
+            <h3 class="info-title">{t(locale, 'contact.info.title')}</h3>
+            <address class="info-address">
+              <div class="info-item">
+                <span class="info-label">{t(locale, 'contact.info.address')}</span>
+                <span>{translations.contact.info.address}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{t(locale, 'contact.info.email')}</span>
+                <a href="mailto:info@studiokria.is">{translations.contact.info.email}</a>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{t(locale, 'contact.info.phone')}</span>
+                <a href="tel:+3548606690">{translations.contact.info.phone}</a>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{t(locale, 'contact.info.hours')}</span>
+                <span>{translations.contact.info.hours}</span>
+              </div>
+            </address>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-title">{t(locale, 'contact.rentalsInquiry')}</h3>
+            <a href={localUrl('/rentals/')} class="btn btn-primary btn-block glow-element">{t(locale, 'rentals.enquire')}</a>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-title">{t(locale, 'contact.careers')}</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+              <a href={localUrl('/contact/#careers')} class="btn btn-primary btn-block glow-element">{t(locale, 'contact.viewOpenings')}</a>
+              <a href={localUrl('/contact/')} class="btn btn-ghost btn-block">{t(locale, 'contact.unsolicitedApplication')}</a>
+            </div>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-title">{t(locale, 'common.location') || 'Find Us'}</h3>
+            <div class="map-placeholder" style="aspect-ratio: 16/9; background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-fg-subtle);">
+              <span>Map — Grandagarður 16, 101 Reykjavik</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Contact Hero */
+  .contact-hero {
+    position: relative;
+    min-height: 60vh;
+    min-height: 60dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4xl) var(--space-xl);
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+  }
+
+  .contact-hero-header { max-width: var(--container-lg); }
+
+  .contact-title {
+    font-size: var(--display-xl);
+    line-height: 0.95;
+    margin-bottom: var(--space-lg);
+    letter-spacing: -0.03em;
+    text-shadow: var(--glow-intense);
+  }
+
+  .contact-subtitle {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xl);
+    opacity: 0.7;
+  }
+
+  .contact-desc {
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: var(--color-fg-muted);
+    max-width: 55ch;
+    margin: 0 auto;
+  }
+
+  /* Contact Main */
+  .contact-main {
+    background: transparent;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3xl);
+  }
+
+  @media (min-width: 1024px) {
+    .contact-grid {
+      grid-template-columns: 1fr 420px;
+      align-items: start;
+    }
+    .contact-info { position: sticky; top: var(--space-3xl); }
+  }
+
+  /* Form */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 600px) {
+    .form-row { grid-template-columns: 1fr 1fr; }
+  }
+
+  .form-field { display: flex; flex-direction: column; gap: var(--space-xs); }
+
+  .form-field label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    width: 100%;
+    padding: var(--space-md);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--color-fg);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: var(--glow-soft);
+  }
+
+  .form-field input::placeholder,
+  .form-field textarea::placeholder {
+    color: var(--color-fg-subtle);
+  }
+
+  .form-submit {
+    margin-top: var(--space-md);
+    width: 100%;
+  }
+
+  .form-note {
+    font-size: var(--text-sm);
+    color: var(--color-fg-subtle);
+    text-align: center;
+  }
+
+  .form-success,
+  .form-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+  }
+
+  .form-success {
+    background: rgba(39, 174, 96, 0.1);
+    border: 1px solid rgba(39, 174, 96, 0.3);
+    color: #27ae60;
+  }
+
+  .form-error {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+  }
+
+  /* Info Blocks - Brutal */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+  }
+
+  .info-block {
+    padding: var(--space-xl);
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all var(--transition-slower);
+  }
+
+  .info-block:hover {
+    border-color: var(--accent);
+    box-shadow: var(--glow-medium);
+  }
+
+  .info-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-lg);
+    color: var(--accent);
+  }
+
+  .info-address {
+    font-style: normal;
+    line-height: 2;
+    color: var(--fg-muted);
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+  }
+
+  .info-label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .info-item a {
+    color: var(--fg);
+    transition: color var(--transition-fast);
+  }
+
+  .info-item a:hover {
+    color: var(--accent);
+  }
+
+  .btn-block { width: 100%; }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .form-field input,
+    .form-field select,
+    .form-field textarea { transition: none; }
+  }
+</style>
+
+<script>
+  // Form handling
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('contactForm');
+    const successMsg = document.getElementById('formSuccess');
+    const errorMsg = document.getElementById('formError');
+    const submitBtn = form?.querySelector('.form-submit');
+    const submitText = submitBtn?.querySelector('.submit-text');
+    const submitLoading = submitBtn?.querySelector('.submit-loading');
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          if (submitText) submitText.style.display = 'none';
+          if (submitLoading) submitLoading.style.display = 'inline';
+        }
+        if (successMsg) successMsg.style.display = 'none';
+        if (errorMsg) errorMsg.style.display = 'none';
+
+        try {
+          const formData = new FormData(form);
+          const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+          });
+
+          if (response.ok) {
+            form.reset();
+            if (successMsg) successMsg.style.display = 'flex';
+          } else {
+            if (errorMsg) errorMsg.style.display = 'flex';
+          }
+        } catch {
+          if (errorMsg) errorMsg.style.display = 'flex';
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            if (submitText) submitText.style.display = 'inline';
+            if (submitLoading) submitLoading.style.display = 'none';
+          }
+        }
+      });
+    }
+  });
+</script>

@@ -1,0 +1,406 @@
+{
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "services": "Services",
+    "about": "About",
+    "team": "Team",
+    "contact": "Contact",
+    "rentals": "Rentals"
+  },
+  "hero": {
+    "title": "STUDIO KRÍA",
+    "description": "We craft stories that linger — from Icelandic landscapes to global screens. Features, documentaries, commercials, and music videos produced with integrity and vision.",
+    "ctaPrimary": "View Projects",
+    "ctaSecondary": "Get in Touch"
+  },
+  "footer": {
+    "brand": "STUDIO KRÍA",
+    "tagline": "Independent film production. Stories that linger.",
+    "companyInfo": "kt. 0101010101<br>VSK 23489456",
+    "work": "Work",
+    "projects": "Projects",
+    "services": "Services",
+    "rentals": "Equipment Rentals",
+    "company": "Company",
+    "about": "About",
+    "team": "Team",
+    "contact": "Contact",
+    "contactUs": "Contact",
+    "email": "Email",
+    "phone": "Phone",
+    "social": "Follow Us",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "copyright": "© {year} STUDIO KRÍA. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "home": {
+    "featuredProjects": "Featured Projects",
+    "viewProject": "View Project",
+    "showcasing": "Showcasing",
+    "projects": "Projects",
+    "exploreMore": "Explore More",
+    "allProjects": "All Projects",
+    "projectsTitle": "Selected Works",
+    "projectsDesc": "From music videos to feature films — our portfolio spans genres and borders.",
+    "viewAll": "View All",
+    "ourServices": "Our Services",
+    "servicesTitle": "Production Services",
+    "servicesDesc": "Full-spectrum production from development to delivery. Commercials, music videos, features, documentaries.",
+    "learnMore": "Learn More",
+    "equipmentRentals": "Equipment Rentals",
+    "rentalsTitle": "Cinema Gear",
+    "rentalsDesc": "ARRI, Sony, RED packages. Lenses, lighting, grip. Facilities including LED volume and Dolby Atmos stage.",
+    "browseGear": "Browse Gear",
+    "aboutUs": "About Us",
+    "aboutTitle": "The Studio",
+    "aboutDesc": "Independent film production from Reykjavik. Director-driven. Sustainable. Globally connected.",
+    "readMore": "Read More"
+  },
+  "projects": {
+    "title": "Selected Projects",
+    "label": "Our Work",
+    "count": "{count} Projects",
+    "years": "{min}–{max}",
+    "viewProject": "View Project",
+    "viewStills": "View Stills",
+    "previousProject": "Previous Project",
+    "nextProject": "Next Project",
+    "allProjects": "All Projects",
+    "allProjectsTitle": "All Projects",
+    "backToProjects": "Back to Projects",
+    "viewPortfolio": "View Portfolio",
+    "watchFilm": "Watch Film",
+    "aboutProject": "About This Project",
+    "credits": "Credits",
+    "productionCompany": "Production Company",
+    "year": "Year",
+    "format": "Format",
+    "runtime": "Runtime",
+    "festivals": "Festivals",
+    "wantToWork": "Want to Work Together?",
+    "openToCollab": "We're always open to new collaborations, commissions, and conversations.",
+    "startProject": "Start a Project"
+  },
+  "projectTypes": {
+    "short": "Short Film",
+    "feature": "Feature Film",
+    "documentary": "Documentary",
+    "commercial": "Commercial",
+    "music-video": "Music Video",
+    "series": "Series"
+  },
+  "projectStatus": {
+    "completed": "Completed",
+    "in-production": "In Production",
+    "pre-production": "Pre-Production",
+    "development": "Development"
+  },
+  "about": {
+    "title": "About STUDIO KRÍA",
+    "subtitle": "Independent Film Production",
+    "description": "Studio Kría formed in 2023 at Borgarholtsskóla film program. The team has collaborated on diverse short films spanning concept development, scripting, production, shooting, and post-production. Their work has screened at festivals and earned awards. They aim to build a trusted production company handling projects from initial concept to final delivery — short films, commercials, music videos, promotional content — emphasizing that \"good atmosphere on set translates directly to better collaboration.\" They've cultivated a strong Icelandic industry network for crewing projects as needed.",
+    "mission": "Our Mission",
+    "missionText": "To produce films that challenge, inspire, and endure. We champion director-driven storytelling, sustainable production practices, and equitable industry standards.",
+    "values": "Our Values",
+    "valuesList": [
+      {
+        "title": "Bold Storytelling",
+        "desc": "We back distinctive voices and unconventional narratives that push boundaries."
+      },
+      {
+        "title": "Integrity First",
+        "desc": "Transparent practices, fair deals, and respect for every collaborator."
+      },
+      {
+        "title": "Sustainable Production",
+        "desc": "Green-certified workflows minimizing environmental impact on every shoot."
+      },
+      {
+        "title": "Creative Freedom",
+        "desc": "We protect the director's vision from development through final delivery."
+      },
+      {
+        "title": "Nordic Excellence",
+        "desc": "Rooted in Icelandic storytelling traditions with global ambition."
+      },
+      {
+        "title": "Long-term Partnerships",
+        "desc": "We build lasting relationships with talent, financiers, and distributors."
+      }
+    ],
+    "process": "Our Process",
+    "processSteps": [
+      {
+        "title": "Development",
+        "desc": "Script refinement, packaging, financing, and talent attachment."
+      },
+      {
+        "title": "Pre-Production",
+        "desc": "Casting, location scouting, crewing, scheduling, and budgeting."
+      },
+      {
+        "title": "Production",
+        "desc": "Principal photography with full creative and logistical support."
+      },
+      {
+        "title": "Post-Production",
+        "desc": "Editing, sound design, color grading, VFX, and delivery."
+      },
+      {
+        "title": "Festival Strategy",
+        "desc": "Submission planning, premiere strategy, and campaign management."
+      },
+      {
+        "title": "Distribution",
+        "desc": "Sales negotiation, marketing coordination, and release planning."
+      }
+    ],
+    "readyToMake": "Ready to Make Something?",
+    "ctaText": "We're always looking for bold stories and talented collaborators.",
+    "viewWork": "View Our Work",
+    "startConversation": "Start a Conversation",
+    "founders": [
+      {
+        "name": "Börkur Elí Guðmundsson",
+        "role": "Director & Screenwriter",
+        "bio": "Accustomed to light and grip",
+        "image": "/assets/images/founder1.jpg"
+      },
+      {
+        "name": "Dagur Sólon Andrason",
+        "role": "Sound Recordist / Mixer",
+        "bio": "Accustomed to sound recording and processing",
+        "image": "/assets/images/founder2.jpg"
+      },
+      {
+        "name": "Sindri Þrastarson",
+        "role": "Director & Screenwriter",
+        "bio": "Accustomed to light and post-production",
+        "image": "/assets/images/founder3.jpg"
+      },
+      {
+        "name": "Unnar Darri Magnússon",
+        "role": "Cinematographer",
+        "bio": "Accustomed to cameras and post-production",
+        "image": "/assets/images/founder4.jpg"
+      }
+    ]
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "What We Offer",
+    "description": "Full-spectrum production services tailored to each project's unique needs. From development to delivery, we handle every stage with precision and care.",
+    "coreServices": "Core Services",
+    "coreList": [
+      {
+        "title": "Film Production",
+        "desc": "Full-service production from development through post. Short films, features, documentaries, and series.",
+        "image": "/assets/images/service-production.jpg"
+      },
+      {
+        "title": "Commercial & Branded",
+        "desc": "High-end commercials, brand films, and social content for global brands and agencies.",
+        "image": "/assets/images/service-commercial.jpg"
+      },
+      {
+        "title": "Music Videos",
+        "desc": "Creative music videos blending narrative, performance, and experimental visuals.",
+        "image": "/assets/images/service-music.jpg"
+      },
+      {
+        "title": "Post-Production Supervision",
+        "desc": "Editing, color grading, sound design, VFX coordination, and final delivery management.",
+        "image": "/assets/images/service-post.jpg"
+      },
+      {
+        "title": "Festival & Distribution Strategy",
+        "desc": "Premiere planning, festival submissions, sales agent negotiation, and release campaigns.",
+        "image": "/assets/images/service-festival.jpg"
+      },
+      {
+        "title": "Development & Packaging",
+        "desc": "Script development, talent packaging, finance plans, and co-production structuring.",
+        "image": "/assets/images/service-development.jpg"
+      }
+    ],
+    "specialized": "Specialized Services",
+    "specializedList": [
+      {
+        "title": "Executive Production",
+        "desc": "High-level oversight for international co-productions and studio partnerships."
+      },
+      {
+        "title": "Line Production",
+        "desc": "Physical production management, budgeting, scheduling, and crew hiring."
+      },
+      {
+        "title": "Production Services",
+        "desc": "Local facilitation for international shoots in Iceland — permits, locations, crew, equipment."
+      },
+      {
+        "title": "Green Production Consulting",
+        "desc": "Carbon calculation, sustainability planning, and certification for eco-conscious shoots."
+      }
+    ],
+    "formats": "Formats We Work In",
+    "formatsList": [
+      "Feature Films",
+      "Short Films",
+      "Documentaries",
+      "TV Series",
+      "Commercials",
+      "Music Videos",
+      "Branded Content",
+      "XR / Immersive"
+    ],
+    "howWeWork": "How We Work Together",
+    "howWeWorkText": "Every project is different. We tailor our involvement — from full-service production to à la carte services.",
+    "discussProject": "Discuss Your Project",
+    "learnProcess": "Learn Our Process"
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "The People Behind the Work",
+    "description": "A tight-knit collective of producers, directors, and craftspeople. We're small by design — every project gets senior attention.",
+    "coreTeam": "Core Team",
+    "creativeLeads": "Department Heads",
+    "creativeLeadsDesc": "Senior creatives who bring every project to life.",
+    "collaborators": "Frequent Collaborators",
+    "collaboratorsDesc": "Directors, writers, and craftspeople we return to project after project."
+  },
+  "rentals": {
+    "title": "Equipment Rentals",
+    "subtitle": "Professional Cinema Gear",
+    "description": "Industry-standard camera, lighting, and grip packages available for external productions. Maintained to the highest standards by our in-house technicians.",
+    "cameras": "Cameras",
+    "lenses": "Lenses",
+    "lighting": "Lighting",
+    "grip": "Grip & Rigging",
+    "power": "Power & Distribution",
+    "facilities": "Facilities",
+    "terms": "Terms & Conditions",
+    "enquire": "Enquire",
+    "bookStage": "Book Stage",
+    "bookSuite": "Book Suite",
+    "readyToBook": "Ready to Book?",
+    "bookText": "Send us your equipment list and dates — we'll send a detailed quote within 2 hours during business hours.",
+    "requestQuote": "Request Quote",
+    "downloadRateCard": "Download Full Rate Card",
+    "cameraPackages": [
+      {
+        "name": "ALEXA 35 Package",
+        "desc": "ARRI ALEXA 35 body (4.6K S35), ARRI Signature Prime set (7 lenses), ARRI Hi-Res Viewfinder + VF mount, 2× Codex Compact Drive 2TB, Codex Dock + USB-C reader, V-mount plate, 4× V-mount 150Wh, Onboard monitor (SmallHD 7\" 4K), Matte box + filter tray (4×5.65), Follow focus (ARRI FF-5 wireless).",
+        "price": "€1,250 / day"
+      },
+      {
+        "name": "ALEXA Mini LF Package",
+        "desc": "ARRI ALEXA Mini LF body (4.5K LF), ARRI Ultra Prime set (7 lenses), MVF-2 HD Viewfinder, 2× Codex Compact Drive 2TB, Codex Dock + USB-C reader, V-mount plate, 4× V-mount 150Wh, Onboard monitor (SmallHD 7\" 4K), Matte box + filter tray (4×5.65), Follow focus (ARRI FF-5 wireless).",
+        "price": "€950 / day"
+      },
+      {
+        "name": "VENICE 2 / RANGER Package",
+        "desc": "Sony VENICE 2 (8.6K FF) or RANGER, ARRI Signature Prime or Zeiss Supreme set, DVF-EL200 Viewfinder, 2× AXS-R7 1TB / CFexpress Type B, AXS-R7 Reader, V-mount plate, 4× V-mount 150Wh, Onboard monitor (SmallHD 7\" 4K), Matte box + filter tray (4×5.65), Follow focus (ARRI FF-5 wireless).",
+        "price": "€1,100 / day"
+      }
+    ],
+    "otherCameras": {
+      "name": "Also Available",
+      "desc": "ALEXA Mini (€650/day), RED KOMODO 6K (€400/day), Sony FX9 (€350/day), Canon C70 (€250/day). Custom lens sets: Cooke S7/i, Leica Thalia, Atlas Orion Anamorphic, Hawk V-Lite. Contact for weekly/monthly rates.",
+      "price": ""
+    },
+    "lensList": [
+      { "name": "ARRI Signature Prime", "specs": "15, 18, 25, 35, 47, 75, 125mm T1.8", "price": "€350/day set" },
+      { "name": "Zeiss Supreme Prime", "specs": "15, 18, 21, 25, 29, 35, 50, 85, 100, 135mm T1.5", "price": "€300/day set" },
+      { "name": "Cooke S7/i", "specs": "18, 25, 32, 40, 50, 75, 100, 135mm T2.0", "price": "€320/day set" },
+      { "name": "Leica Thalia", "specs": "24, 28, 35, 50, 70, 100, 140mm T2.2", "price": "€380/day set" },
+      { "name": "Atlas Orion (1.8x)", "specs": "32, 40, 50, 75, 100mm T2.0", "price": "€400/day set" },
+      { "name": "Hawk V-Lite (1.3x)", "specs": "35, 45, 55, 75, 100mm T2.2", "price": "€350/day set" },
+      { "name": "ARRI Alura Zooms", "specs": "15.5-45 / 30-80 T2.8", "price": "€200/day each" },
+      { "name": "Fujinon Premista", "specs": "19-45 / 28-100 T2.9", "price": "€220/day each" },
+      { "name": "Kowa Prominar (2x)", "specs": "40, 50, 75, 100mm T2.3", "price": "€180/day each" },
+      { "name": "Canon K-35 / B&L", "specs": "Rehoused sets", "price": "€200/day set" },
+      { "name": "Laowa 24mm Probe", "specs": "2:1 macro, waterproof", "price": "€120/day" },
+      { "name": "Tilt-Shift Lenses", "specs": "TS-E 17, 24, 50, 90", "price": "€80/day each" },
+      { "name": "Century Adapters", "specs": "0.7x, 1.3x, 1.5x rear", "price": "€60/day" }
+    ],
+    "lightingCategories": [
+      { "name": "LED Fixtures", "slug": "lighting", "items": "ARRI SkyPanel S60-C (€180/day ×8), S30-C (€100/day ×12), Orbiter (€220/day ×4), Litepanels Gemini 2×1 (€120/day ×10), Aputure LS 600d Pro (€80/day ×6), LS 300x (€50/day ×8), Astera AX1 PixelTube 8-pack (€200/day), AX3 LightDrop 8-pack (€160/day), Creamsource Vortex 8 (€150/day ×4), Kino Flo Mimik 120 (€140/day ×4)." },
+      { "name": "HMI & Tungsten", "slug": "lighting", "items": "ARRI M18 (€200/day ×4), M40 (€350/day ×2), M90 (€500/day ×1), ARRIMAX 18/12 (€280/day ×2), Kino Flo 4ft 4-bank (€60/day ×12), Image 85 (€80/day ×4), Dedo Light DLH4 (€35/day ×8), Tungsten Packages 5K–20K (from €150/day)." },
+      { "name": "Grip & Rigging", "slug": "grip", "items": "Matthews Dolly + Track 16ft (€200/day), Fisher 11 Dolly (€250/day), Chapman Super PeeWee (€180/day), Technocrane 22ft/30ft (€800/1200/day), Scorpio 45ft (€1,500/day), EasyRig Vario 5/Minimax (€60/day), DJI Ronin 2/RS3 Pro (€120/80/day), MōVI Pro/Carbon (€150/100/day), Full truck package €350/day, Overhead Frames 6×6–20×20 (from €40/day)." },
+      { "name": "Power & Distribution", "slug": "power", "items": "Honda EU70is 7kW (€120/day ×3), EU30is 3kW (€60/day ×4), V-mount/Gold-mount Batteries 98Wh €15, 150Wh €20, 260Wh €30/day, Block Battery 48V/24V Systems (€150/day), Power Distribution 3-phase 63A (€200/day), Cable Ramp/Matting (€25/day per section)." }
+    ],
+    "facilityList": [
+      { "name": "LED Volume Stage", "slug": "virtual", "price": "€3,500 / day (dry hire)" },
+      { "name": "Dolby Vision Grading Theatre", "slug": "grading", "price": "€1,200 / day (dry hire)" },
+      { "name": "Offline Editing Suites (4×)", "slug": "edit", "price": "€350 / day per suite" },
+      { "name": "Dolby Atmos Sound Stage", "slug": "sound", "price": "€1,500 / day (dry hire)" }
+    ],
+    "termsList": [
+      { "title": "Standard Terms", "desc": "Minimum rental: 1 day (24hrs). Week rate: 4× day rate. Month rate: 12× day rate. Prep day: 50% day rate. Weekend: Single day rate (Fri–Mon). Insurance: Required (cert. of currency)." },
+      { "title": "Delivery & Transport", "desc": "Reykjavik metro: Free delivery/pickup. Keflavik Airport: €150 each way. Iceland nationwide: Quote on request. International: Carnet + freight arranged. Customs clearance: Included for Iceland. On-set tech support: Available." },
+      { "title": "Quality Assurance", "desc": "Pre-rental checkout (in-person or video). All gear serviced every 6 months. Lenses calibrated to ARRI/Zeiss specs. Sensors cleaned, firmware current. Spare bodies available for features. 24/7 emergency support line." }
+    ]
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Let's Talk",
+    "description": "Whether you have a project in mind, need production services in Iceland, or want to join our collective — we'd love to hear from you.",
+    "form": {
+      "title": "Send a Message",
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent! We'll get back to you soon.",
+      "error": "Something went wrong. Please try again.",
+      "note": "We typically respond within 24 hours during business days.",
+      "subjects": {
+        "general": "General Inquiry",
+        "production": "Film Production",
+        "commercial": "Commercial & Branded",
+        "music": "Music Videos",
+        "rentals": "Equipment Rentals",
+        "careers": "Careers",
+        "press": "Press",
+        "other": "Other"
+      }
+    },
+    "info": {
+      "title": "STUDIO KRÍA",
+      "address": "Grandagarður 16, 101 Reykjavik, Iceland",
+      "email": "info@studiokria.is",
+      "phone": "+354 860 6690",
+      "hours": "Mon–Fri 09:00–18:00 (GMT)"
+    },
+    "rentalsInquiry": "Equipment Rentals Inquiry",
+    "rentalsText": "For equipment rental enquiries, please use the form above and select 'Equipment Rentals' as the subject, or email us directly.",
+    "careers": "Careers",
+    "careersText": "We're always looking for exceptional talent. Check our openings or send an unsolicited application.",
+    "viewOpenings": "View Openings",
+    "unsolicitedApplication": "Unsolicited Application"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "close": "Close",
+    "open": "Open",
+    "scroll": "Scroll",
+    "play": "Play",
+    "pause": "Pause",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit Fullscreen"
+  }
+}

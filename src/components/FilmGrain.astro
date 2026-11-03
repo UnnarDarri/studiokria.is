@@ -1,0 +1,103 @@
+---
+/**
+ * FilmGrain - Canvas-based animated film grain overlay
+ * Draws noise via createImageData, follows mouse with radial glow
+ * Based on demo site implementation (scale=0.9, alphaMax=12, frameInterval=18)
+ */
+---
+
+<div class="film-grain" aria-hidden="true"></div>
+
+<script is:inline>
+  // Canvas-based grain drawing (from demo site)
+  const overlay = document.querySelector(".film-grain");
+  if (!overlay) {
+    console.warn("FilmGrain: .film-grain element not found");
+  } else {
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let currentX = targetX;
+    let currentY = targetY;
+
+    // Mouse tracking for glow
+    window.addEventListener("pointermove", (event) => {
+      targetX = event.clientX;
+      targetY = event.clientY + window.scrollY;
+    });
+
+    function moveGlow() {
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+
+      document.body.style.setProperty("--glow-x", `${currentX}px`);
+      document.body.style.setProperty("--glow-y", `${currentY}px`);
+
+      requestAnimationFrame(moveGlow);
+    }
+
+    moveGlow();
+
+    // Canvas grain drawing - hardcoded values matching demo site
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) {
+      console.warn("FilmGrain: Could not get 2d context");
+    } else {
+      canvas.setAttribute("aria-hidden", "true");
+      Object.assign(canvas.style, {
+        position: "absolute",
+        inset: "0",
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none"
+      });
+      overlay.appendChild(canvas);
+
+      const scale = 0.9;
+      const frameInterval = 18;
+      const alphaMax = 12;
+
+      let width = 0;
+      let height = 0;
+      let lastFrame = 0;
+
+      function resize() {
+        const rect = overlay.getBoundingClientRect();
+        width = Math.max(1, Math.ceil(rect.width * scale));
+        height = Math.max(1, Math.ceil(rect.height * scale));
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      // Initial resize
+      resize();
+      window.addEventListener("resize", resize);
+
+      function draw(time) {
+        requestAnimationFrame(draw);
+        if (time - lastFrame < frameInterval) return;
+        lastFrame = time;
+
+        const image = ctx.createImageData(width, height);
+        const pixels = image.data;
+
+        for (let i = 0; i < pixels.length; i += 4) {
+          const value = Math.random() < 0.5 ? 0 : 255;
+          const alpha = Math.random() * alphaMax;
+          pixels[i] = value;
+          pixels[i + 1] = value;
+          pixels[i + 2] = value;
+          pixels[i + 3] = alpha;
+        }
+
+        ctx.putImageData(image, 0, 0);
+      }
+
+      requestAnimationFrame(draw);
+    }
+  }
+</script>
+
+<style>
+  /* FilmGrain styles are in global.css */
+</style>

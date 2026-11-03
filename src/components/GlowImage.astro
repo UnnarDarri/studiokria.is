@@ -1,0 +1,85 @@
+---
+/**
+ * GlowImage - Image with optional glow effect and film grain texture
+ * Supports lazy loading, aspect ratio, and hover animations
+ */
+interface Props {
+  src: string;
+  alt: string;
+  intensity?: 'subtle' | 'medium' | 'strong' | 'none';
+  aspectRatio?: '16/9' | '4/3' | '3/4' | '1/1' | 'auto';
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  priority?: boolean;
+}
+
+const {
+  src,
+  alt,
+  intensity = 'subtle',
+  aspectRatio = '16/9',
+  class: className = '',
+  loading = 'lazy',
+  priority = false,
+} = Astro.props;
+
+const intensityClass = {
+  subtle: 'glow-element',
+  medium: 'glow-element-medium',
+  strong: 'glow-element-strong',
+  none: '',
+}[intensity];
+
+const aspectClass = aspectRatio !== 'auto' ? `aspect-${aspectRatio.replace('/', '-')}` : '';
+const loadingAttr = priority ? 'eager' : loading;
+const fetchPriority = priority ? 'high' : 'auto';
+---
+
+<div class="glow-image-wrapper {intensityClass} {aspectClass} {className}" aria-hidden="{alt === ''}">
+  <img
+    src={src}
+    alt={alt}
+    loading={loadingAttr}
+    fetchpriority={fetchPriority}
+    decoding="async"
+  />
+  {intensity !== 'none' && <div class="glow-overlay" aria-hidden="true"></div>}
+</div>
+
+<style>
+  .glow-image-wrapper {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .glow-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slower), filter var(--transition-slow);
+  }
+
+  .glow-image-wrapper:hover img {
+    transform: scale(1.02);
+    filter: brightness(1.05) contrast(1.05);
+  }
+
+  .glow-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 40%,
+      rgba(10, 10, 10, 0.4) 100%
+    );
+  }
+
+  /* Aspect ratios */
+  .aspect-16-9 { aspect-ratio: 16 / 9; }
+  .aspect-4-3 { aspect-ratio: 4 / 3; }
+  .aspect-3-4 { aspect-ratio: 3 / 4; }
+  .aspect-1-1 { aspect-ratio: 1 / 1; }
+</style>

@@ -1,0 +1,113 @@
+---
+/**
+ * ServiceCard - Service offering card with glow accent
+ */
+import GlowImage from './GlowImage.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  icon?: string; // SVG path or icon name
+  image?: string;
+  features?: string[];
+  class?: string;
+}
+
+const { title, description, icon, image, features = [], class: className = '' } = Astro.props;
+---
+
+<article class="service-card card {className}">
+  {image && (
+    <div class="service-image">
+      <GlowImage src={image} alt="" intensity="subtle" aspectRatio="16/9" />
+    </div>
+  )}
+
+  <div class="service-content">
+    {icon && (
+      <div class="service-icon glow-element-medium" aria-hidden="true">
+        {icon}
+      </div>
+    )}
+
+    <h3 class="service-title glow-text">{title}</h3>
+    <p class="service-description">{description}</p>
+
+    {features.length > 0 && (
+      <ul class="service-features">
+        {features.map(feature => (
+          <li class="service-feature">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            {feature}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</article>
+
+<style>
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--space-xl);
+  }
+
+  .service-image {
+    margin: calc(-1 * var(--space-xl)) calc(-1 * var(--space-xl)) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    overflow: hidden;
+  }
+
+  .service-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-md);
+    background: rgba(212, 165, 116, 0.1);
+    border: 1px solid rgba(212, 165, 116, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--color-accent);
+  }
+
+  .service-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .service-title {
+    margin-bottom: var(--space-sm);
+  }
+
+  .service-description {
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-lg);
+    font-size: var(--text-base);
+  }
+
+  .service-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .service-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--color-fg-muted);
+  }
+
+  .service-feature svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--color-accent);
+  }
+</style>

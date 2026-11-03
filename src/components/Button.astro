@@ -1,0 +1,57 @@
+---
+/**
+ * Button - Reusable button component with variants
+ */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  onClick?: string;
+}
+
+const {
+  href,
+  variant = 'secondary',
+  size = 'md',
+  class: className = '',
+  type = 'button',
+  disabled = false,
+  onClick,
+} = Astro.props;
+
+const isLink = !!href;
+const variantClass = `btn-${variant}`;
+const sizeClass = size !== 'md' ? `btn-${size}` : '';
+const classList = `btn ${variantClass} ${sizeClass} ${className}`.trim();
+
+const showDisabled = disabled && !isLink;
+const buttonType = isLink ? undefined : type;
+---
+
+{isLink ? (
+  <a
+    class={classList}
+    href={href}
+    onclick={onClick}
+    aria-disabled={disabled}
+  >
+    <slot />
+  </a>
+) : (
+  <button
+    class={classList}
+    type={buttonType}
+    disabled={showDisabled}
+    onclick={onClick}
+    aria-disabled={disabled}
+  >
+    <slot />
+  </button>
+)}
+
+<style>
+  /* Button styles from global.css */
+</style>

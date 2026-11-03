@@ -1,0 +1,406 @@
+{
+  "nav": {
+    "home": "Heim",
+    "projects": "Verkefni",
+    "services": "Þjónusta",
+    "about": "Um okkur",
+    "team": "Hópurinn",
+    "contact": "Hafðu samband",
+    "rentals": "Leiga búnað"
+  },
+  "hero": {
+    "title": "STUDIO KRÍA",
+    "description": "Við skapum sögur sem eftir lifa — frá íslenskum lindum á alþjóðlegar skjár. Stutt myndir, langmyndir, skýrslur, auglýsingar og tónleikamyndir framleiddar með heiðri og sjónarmið.",
+    "ctaPrimary": "Skoða verkefni",
+    "ctaSecondary": "Hafðu samband"
+  },
+  "footer": {
+    "brand": "STUDIO KRÍA",
+    "tagline": "Óháð myndaframleiðsla. Sögur sem eftir lifa.",
+    "companyInfo": "kt. 0101010101<br>VSK 23489456",
+    "work": "Vinnsla",
+    "projects": "Verkefni",
+    "services": "Þjónusta",
+    "rentals": "Búnaðarleiga",
+    "company": "Fyrirtæki",
+    "about": "Um okkur",
+    "team": "Hópurinn",
+    "contact": "Hafðu samband",
+    "contactUs": "Hafðu samband",
+    "email": "Netfang",
+    "phone": "Sími",
+    "social": "Fylgdu okkur",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "copyright": "© {year} STUDIO KRÍA. Öll réttindi áskilin.",
+    "privacy": "Persónuverndarstefna",
+    "terms": "Skilmálar notkunar"
+  },
+  "home": {
+    "featuredProjects": "Útvalin verkefni",
+    "viewProject": "Skoða verkefni",
+    "showcasing": "Sýnið",
+    "projects": "Verkefni",
+    "exploreMore": "Skoda meira",
+    "allProjects": "Öll verkefni",
+    "projectsTitle": "Útvalin verk",
+    "projectsDesc": "Frá tónleikamyndum yfir í langmyndir — safnið okkar strekkur yfir flokka og landamæri.",
+    "viewAll": "Skoða öll",
+    "ourServices": "Þjónusta okkar",
+    "servicesTitle": "Framleiðsluþjónusta",
+    "servicesDesc": "Heildar framleiðsla frá þróun til afhendingar. Auglýsingar, tónleikamyndir, langmyndir, skýrslur.",
+    "learnMore": "Læra meira",
+    "equipmentRentals": "Búnaðarleiga",
+    "rentalsTitle": "Kvikmyndabúnaður",
+    "rentalsDesc": "ARRI, Sony, RED pakkar. Linsur, ljós, grip. Salir með LED volume og Dolby Atmos.",
+    "browseGear": "Fletta í búnað",
+    "aboutUs": "Um okkur",
+    "aboutTitle": "Stúdióið",
+    "aboutDesc": "Óháð myndaframleiðsla frá Reykjavík. Höfundastjórnað. Sjálfbært. Alþjóðlega tengt.",
+    "readMore": "Lesa meira"
+  },
+  "projects": {
+    "title": "Útvalin verkefni",
+    "label": "Vinnsla okkar",
+    "count": "{count} verkefni",
+    "years": "{min}–{max}",
+    "viewProject": "Skoða verkefni",
+    "viewStills": "Skoða myndbækur",
+    "previousProject": "Fyrra verkefni",
+    "nextProject": "Næsta verkefni",
+    "allProjects": "Öll verkefni",
+    "allProjectsTitle": "Öll verkefni",
+    "backToProjects": "Aftur á verkefni",
+    "viewPortfolio": "Skoða safnið",
+    "watchFilm": "Skoða mynd",
+    "aboutProject": "Um þetta verkefni",
+    "credits": "Meðvinir",
+    "productionCompany": "Framleiðslufyrirtæki",
+    "year": "Ár",
+    "format": "Formát",
+    "runtime": "Lengd",
+    "festivals": "Hátíðir",
+    "wantToWork": "Viltu vinna saman?",
+    "openToCollab": "Við erum alltaf opin fyrir nýja samstarf, viðmiðun og samtöl.",
+    "startProject": "Byrja verkefni"
+  },
+  "projectTypes": {
+    "short": "Stutt mynd",
+    "feature": "Langmynd",
+    "documentary": "Skýrsla",
+    "commercial": "Auglýsing",
+    "music-video": "Tónleikamynd",
+    "series": "Röð"
+  },
+  "projectStatus": {
+    "completed": "Lokið",
+    "in-production": "Í framleiðslu",
+    "pre-production": "Undirbúningur",
+    "development": "Þróun"
+  },
+  "about": {
+    "title": "Um STUDIO KRÍA",
+    "subtitle": "Óháð myndaframleiðsla",
+    "description": "Studio Kría var stofnað árið 2023 í kvikmyndanámi Borgarholtsskólans. Hópurinn hefur samstarfað um ýmsar stuttmyndir sem strekkja yfir hugmyndathróun, handritagerð, framleiðslu, upptökur og eftirvinnslu. Verk þeirra hefur verið sýnt á hátíðum og unnið verðlaun. Þeir markmiða með að byggja upp traust framleiðslufyrirtæki sem tekur við verkefnum frá upphafshugmynd til lokaframleiddrar afhendingar — stuttmyndir, auglýsingar, tónleikamyndir, fræðimyndir — með áherslu á að \"góður andi á setti skili sér beint í betra samstarf.\" Þeir hafa ræktað sterkt íslenskt iðnarnett til að mannstýra verkefni eftir þörfum.",
+    "mission": "Mörk okkar",
+    "missionText": "Að framleiða kvikmyndir sem skorfast, gefa til kynna og lifa lengi. Við styrkjum höfundastjórnaða sögufræði, sjálfbærar framleiðsluhætti og jafnaðar iðnarmeðferð.",
+    "values": "Gildi okkar",
+    "valuesList": [
+      {
+        "title": "Drengjafræðileg sögufræði",
+        "desc": "Við styðjum einkennilega raddir og óvenjulegar sögur sem brjóta mörk."
+      },
+      {
+        "title": "Heiður fyrst",
+        "desc": "Ljósar aðferðir, réttar samningar og virðing fyrir hvern samstarfsmann."
+      },
+      {
+        "title": "Sjálfbær framleiðsla",
+        "desc": "Grænvottuð vinnuferli sem minnka umhverfisáhrif á hverjum upptökum."
+      },
+      {
+        "title": "Skapandi frið",
+        "desc": "Við verjum sjónarmið leikstjórans frá þróun til lokaframleiddrar myndar."
+      },
+      {
+        "title": "Norðursk frammistaða",
+        "desc": "Rætur í íslenskri sögufræði með alþjóðlegar þjóðir."
+      },
+      {
+        "title": "Langaðir samstarfsáttak",
+        "desc": "Við byggjum varanlega sambandi við listamenn, fjármagnþega og dreifingara."
+      }
+    ],
+    "process": "Ferli okkar",
+    "processSteps": [
+      {
+        "title": "Þróun",
+        "desc": "Handritabótun, pakkaðir, fjármögnun og listamannatengingar."
+      },
+      {
+        "title": "Undirbúningur",
+        "desc": "Leikmannaval, staðaleit, hópur, tímasetning og fjárhag."
+      },
+      {
+        "title": "Framleiðsla",
+        "desc": "Aðalupptökur með fullri skapandi og stjórnlegri stuðningi."
+      },
+      {
+        "title": "Eftirvinnsla",
+        "desc": "Klippa, hljóðhönnun, litagerð, sjónræn áhrif og afhending."
+      },
+      {
+        "title": "Hátíðarástæða",
+        "desc": "Innsendiaðferðir, frumsýningaráætlun og umsagnarstjórnun."
+      },
+      {
+        "title": "Dreifing",
+        "desc": "Sölusamninga, markaðssetning og útgáfuáætlun."
+      }
+    ],
+    "readyToMake": "Búin til að gera eitthvað?",
+    "ctaText": "Við erum alltaf að leita eftir drengjum sögum og framúrskarandi samstarfsmönnum.",
+    "viewWork": "Skoða vinnslu okkar",
+    "startConversation": "Byrja samtöl",
+    "founders": [
+      {
+        "name": "Börkur Elí Guðmundsson",
+        "role": "Leikstjóri & Handritahöfundur",
+        "bio": "Vanur ljósum og grippi",
+        "image": "/assets/images/founder1.jpg"
+      },
+      {
+        "name": "Dagur Sólon Andrason",
+        "role": "Hljóðupptökumaður / Blendari",
+        "bio": "Vanur hljóðupptöku og hljóðvinnslu",
+        "image": "/assets/images/founder2.jpg"
+      },
+      {
+        "name": "Sindri Þrastarson",
+        "role": "Leikstjóri & Handritahöfundur",
+        "bio": "Vanur ljósum og eftirvinnslu",
+        "image": "/assets/images/founder3.jpg"
+      },
+      {
+        "name": "Unnar Darri Magnússon",
+        "role": "Myndavarðstjóri",
+        "bio": "Vanur myndavélum og eftirvinnslu",
+        "image": "/assets/images/founder4.jpg"
+      }
+    ]
+  },
+  "services": {
+    "title": "Þjónusta",
+    "subtitle": "Hvað við boðum",
+    "description": "Fullnægjandi framleiðsluþjónusta sem skilgreind er eftir þörfum hvers verkefnis. Frá þróun til afhendingar höldum við um hvert skref með nákvæmni og umhyggju.",
+    "coreServices": "Kjarnaþjónusta",
+    "coreList": [
+      {
+        "title": "Myndaframleiðsla",
+        "desc": "Fullnægjandi framleiðsla frá þróun gegnum eftirvinnslu. Stutt myndir, langmyndir, skýrslur og röð.",
+        "image": "/assets/images/service-production.jpg"
+      },
+      {
+        "title": "Auglýsingar & Brönd",
+        "desc": "Hæfileg auglýsingar, bröndarmyndir og fjölmiðlarefni fyrir alþjóðleg brönd og viðskiptavini.",
+        "image": "/assets/images/service-commercial.jpg"
+      },
+      {
+        "title": "Tónleikamyndir",
+        "desc": "Skapandi tónleikamyndir sem blanda saman sögu, framkvæmd og rannsókavísum sjónum.",
+        "image": "/assets/images/service-music.jpg"
+      },
+      {
+        "title": "Eftirvinnsluyfirumsjón",
+        "desc": "Klippa, litagerð, hljóðhönnun, VFX samþætting og stjórn lokaframleiðslu.",
+        "image": "/assets/images/service-post.jpg"
+      },
+      {
+        "title": "Hátíðar- & Dreifingarástæða",
+        "desc": "Frumsýningaráætlun, hátíðarinnsendingar, samningagerð við söluaðila og útgáfukerfi.",
+        "image": "/assets/images/service-festival.jpg"
+      },
+      {
+        "title": "Þróun & Pakkning",
+        "desc": "Handritaþróun, listamannapakkning, fjárhagsáætlun og sameiginlegu framleiðslugrunn.",
+        "image": "/assets/images/service-development.jpg"
+      }
+    ],
+    "specialized": "Sérsniðin þjónusta",
+    "specializedList": [
+      {
+        "title": "Framkvæmdaframleiðsla",
+        "desc": "Hæðstu yfirumsjón fyrir alþjóðlegar sameiginlegu framleiðslur og stúdíó samstarf."
+      },
+      {
+        "title": "Línuframleiðsla",
+        "desc": "Líkamleg framleiðslustjórnun, fjárhag, tímasetning og hópur."
+      },
+      {
+        "title": "Framleiðsluþjónusta",
+        "desc": "Staðbundin stuðningur fyrir erlend upptökur á Íslandi — leyfi, staðir, hópur, búnaður."
+      },
+      {
+        "title": "Græn framleiðsluráðgjöf",
+        "desc": "Kólrökning, sjálfbærar áætlun og vottorð fyrir umhverfisvaka upptökur."
+      }
+    ],
+    "formats": "Formát sem við vinnum í",
+    "formatsList": [
+      "Langmyndir",
+      "Stutt myndir",
+      "Skýrslur",
+      "Sjónvarpsröð",
+      "Auglýsingar",
+      "Tónleikamyndir",
+      "Bröndarefni",
+      "XR / Dypandi upplifun"
+    ],
+    "howWeWork": "Hvernig við vinnum saman",
+    "howWeWorkText": "Hvert verkefni er annaðhvort. Við skilgreinum okkar þátttöku — frá fullnægjandi framleiðslu að einstökum þjónustu.",
+    "discussProject": "Ræddu verkefnið þitt",
+    "learnProcess": "Lærðu ferlið okkar"
+  },
+  "team": {
+    "title": "Hópurinn okkar",
+    "subtitle": "Fólkið aftast við vinnsluna",
+    "description": "Þétt samstarfshópur framleiðenda, leikstjóra og listamanna. Við erum litlir eftir uppsetningu — hvert verkefni fær yfirstjórnandi umsjón.",
+    "coreTeam": "Kjarna hópsins",
+    "creativeLeads": "Deildarstjórar",
+    "creativeLeadsDesc": "Framúrskarandi listamenn sem lifa allt verkefni.",
+    "collaborators": "Venjulegir samstarfsmenn",
+    "collaboratorsDesc": "Leikstjórar, ritara og listamenn sem við snúum aftur til verkefni eftir verkefni."
+  },
+  "rentals": {
+    "title": "Búnaðarleiga",
+    "subtitle": "Faglegt kvikmyndabúnaður",
+    "description": "Íþrótta staðlaðir vélbúnaðar-, ljós- og greipapakka tiltækir fyrir utanframleiðslur. Viðhaldnir að hámarki staðli af okkar eigin tæknimönnum.",
+    "cameras": "Myndavélar",
+    "lenses": "Linsur",
+    "lighting": "Ljós",
+    "grip": "Greipar & Uppsetning",
+    "power": "Orka & Dreifing",
+    "facilities": "Húsnæði",
+    "terms": "Skilmálar & Ákvæði",
+    "enquire": "Frátekja",
+    "bookStage": "Boka sal",
+    "bookSuite": "Boka stofu",
+    "readyToBook": "Búin til að bóka?",
+    "bookText": "Sendu okkur lista yfir búnað og dagsetningar — við sendum nákvæma tilboð innan 2 klst í vinnutíma.",
+    "requestQuote": "Beiða um tilboð",
+    "downloadRateCard": "Sækja fulla verðskrá",
+    "cameraPackages": [
+      {
+        "name": "ALEXA 35 Pakki",
+        "desc": "ARRI ALEXA 35 líkamur (4.6K S35), ARRI Signature Prime sett (7 linsur), ARRI Hi-Res Viewfinder + VF hlað, 2× Codex Compact Drive 2TB, Codex Dock + USB-C lesari, V-mount platta, 4× V-mount 150Wh, Borðskjár (SmallHD 7\" 4K), Gluggabox + sía borð (4×5.65), Fókussstjórnun (ARRI FF-5 trádlaust).",
+        "price": "€1,250 / dag"
+      },
+      {
+        "name": "ALEXA Mini LF Pakki",
+        "desc": "ARRI ALEXA Mini LF líkamur (4.5K LF), ARRI Ultra Prime sett (7 linsur), MVF-2 HD Viewfinder, 2× Codex Compact Drive 2TB, Codex Dock + USB-C lesari, V-mount platta, 4× V-mount 150Wh, Borðskjár (SmallHD 7\" 4K), Gluggabox + sía borð (4×5.65), Fókussstjórnun (ARRI FF-5 trádlaust).",
+        "price": "€950 / dag"
+      },
+      {
+        "name": "VENICE 2 / RANGER Pakki",
+        "desc": "Sony VENICE 2 (8.6K FF) eða RANGER, ARRI Signature Prime eða Zeiss Supreme sett, DVF-EL200 Viewfinder, 2× AXS-R7 1TB / CFexpress Type B, AXS-R7 Lesari, V-mount platta, 4× V-mount 150Wh, Borðskjár (SmallHD 7\" 4K), Gluggabox + sía borð (4×5.65), Fókussstjórnun (ARRI FF-5 trádlaust).",
+        "price": "€1,100 / dag"
+      }
+    ],
+    "otherCameras": {
+      "name": "Einnig tiltækt",
+      "desc": "ALEXA Mini (€650/dag), RED KOMODO 6K (€400/dag), Sony FX9 (€350/dag), Canon C70 (€250/dag). Sniðin linasett: Cooke S7/i, Leica Thalia, Atlas Orion Anamorphic, Hawk V-Lite. Hafðu samband um vikubíl/víkuverð.",
+      "price": ""
+    },
+    "lensList": [
+      { "name": "ARRI Signature Prime", "specs": "15, 18, 25, 35, 47, 75, 125mm T1.8", "price": "€350/dag sett" },
+      { "name": "Zeiss Supreme Prime", "specs": "15, 18, 21, 25, 29, 35, 50, 85, 100, 135mm T1.5", "price": "€300/dag sett" },
+      { "name": "Cooke S7/i", "specs": "18, 25, 32, 40, 50, 75, 100, 135mm T2.0", "price": "€320/dag sett" },
+      { "name": "Leica Thalia", "specs": "24, 28, 35, 50, 70, 100, 140mm T2.2", "price": "€380/dag sett" },
+      { "name": "Atlas Orion (1.8x)", "specs": "32, 40, 50, 75, 100mm T2.0", "price": "€400/dag sett" },
+      { "name": "Hawk V-Lite (1.3x)", "specs": "35, 45, 55, 75, 100mm T2.2", "price": "€350/dag sett" },
+      { "name": "ARRI Alura Zoom", "specs": "15.5-45 / 30-80 T2.8", "price": "€200/dag hver" },
+      { "name": "Fujinon Premista", "specs": "19-45 / 28-100 T2.9", "price": "€220/dag hver" },
+      { "name": "Kowa Prominar (2x)", "specs": "40, 50, 75, 100mm T2.3", "price": "€180/dag hver" },
+      { "name": "Canon K-35 / B&L", "specs": "Endurhúsað sett", "price": "€200/dag sett" },
+      { "name": "Laowa 24mm Probe", "specs": "2:1 nál, vatnþétt", "price": "€120/dag" },
+      { "name": "Hall-linsur", "specs": "TS-E 17, 24, 50, 90", "price": "€80/dag hver" },
+      { "name": "Century Aðlagar", "specs": "0.7x, 1.3x, 1.5x aftur", "price": "€60/dag" }
+    ],
+    "lightingCategories": [
+      { "name": "LED Ljós", "slug": "lighting", "items": "ARRI SkyPanel S60-C (€180/dag ×8), S30-C (€100/dag ×12), Orbiter (€220/dag ×4), Litepanels Gemini 2×1 (€120/dag ×10), Aputure LS 600d Pro (€80/dag ×6), LS 300x (€50/dag ×8), Astera AX1 PixelTube 8-pakka (€200/dag), AX3 LightDrop 8-pakka (€160/dag), Creamsource Vortex 8 (€150/dag ×4), Kino Flo Mimik 120 (€140/dag ×4)." },
+      { "name": "HMI & Glóraljós", "slug": "lighting", "items": "ARRI M18 (€200/dag ×4), M40 (€350/dag ×2), M90 (€500/dag ×1), ARRIMAX 18/12 (€280/dag ×2), Kino Flo 4ft 4-bank (€60/dag ×12), Image 85 (€80/dag ×4), Dedo Light DLH4 (€35/dag ×8), Glórapakka 5K–20K (frá €150/dag)." },
+      { "name": "Greipar & Uppsetning", "slug": "grip", "items": "Matthews Dolly + Slóð 16ft (€200/dag), Fisher 11 Dolly (€250/dag), Chapman Super PeeWee (€180/dag), Technocrane 22ft/30ft (€800/1200/dag), Scorpio 45ft (€1,500/dag), EasyRig Vario 5/Minimax (€60/dag), DJI Ronin 2/RS3 Pro (€120/80/dag), MōVI Pro/Carbon (€150/100/dag), Fullur pakki €350/dag, Ofanramma 6×6–20×20 (frá €40/dag)." },
+      { "name": "Orka & Dreifing", "slug": "power", "items": "Honda EU70is 7kW (€120/dag ×3), EU30is 3kW (€60/dag ×4), V-mount/Gull-mount Rafhlaðor 98Wh €15, 150Wh €20, 260Wh €30/dag, Blokk Rafhlaða 48V/24V Kerfi (€150/dag), Orku Dreifing 3-fasa 63A (€200/dag), Slóðrampur/Undirborð (€25/dag á hluta)." }
+    ],
+    "facilityList": [
+      { "name": "LED Rúm Salur", "slug": "virtual", "price": "€3,500 / dag (þurr leiga)" },
+      { "name": "Dolby Vision Litskipulag Salur", "slug": "grading", "price": "€1,200 / dag (þurr leiga)" },
+      { "name": "Rafræn Klippisstofur (4×)", "slug": "edit", "price": "€350 / dag á stofu" },
+      { "name": "Dolby Atmos Hljóðsalur", "slug": "sound", "price": "€1,500 / dag (þurr leiga)" }
+    ],
+    "termsList": [
+      { "title": "Venjuleg Skilmálar", "desc": "Minnsta leiga: 1 dagur (24klst). Vikuaðrir: 4× dagverð. Mánuðsaðrir: 12× dagverð. Undirbúningsdagur: 50% dagverð. Helgi: Ein dagverð (Fös–Mán). Trygging: Krafist (vottorð)." },
+      { "title": "Flutningur & Afhending", "desc": "Reykjavíkur svæði: Friðals afhending/afsókn. Keflavíkurflugvöllur: €150 hvannig. Alls Ísland: Tilboð á eftir spurningu. Erlendis: Carnet + flutningur skipulagt. Tollsundlægging: Falið fyrir Ísland. Á stað tækni stuðningur: Tiltækt." },
+      { "title": "Gæðaeftirlit", "desc": "Fyrirleigukönnun (á stað eða myndband). Allur búnaður þjónustaður á 6 mán. Linsur stilltar eftir ARRI/Zeiss staðla. Snorsor hreinsaðar, hugbúnaður nýjustur. Spera líkamur tiltækir fyrir langmyndir. 24/7 neyðarstöd." }
+    ]
+  },
+  "contact": {
+    "title": "Hafðu samband",
+    "subtitle": "Tölum saman",
+    "description": "Hvort sem þú ert með verkefni í huga, þarft framleiðsluþjónustu á Íslandi eða vilt fara í hópinn okkar — við gætum viljað heyra frá þér.",
+    "form": {
+      "title": "Sendu skilaboð",
+      "name": "Nafn",
+      "email": "Netfang",
+      "subject": "Efni",
+      "message": "Skilaboð",
+      "submit": "Senda skilaboð",
+      "sending": "Sendi...",
+      "success": "Skilaboð sent! Við endurkumst fljótt.",
+      "error": "Nókkuð gekk úrskeiðis. Vinsamlegast reyndu aftur.",
+      "note": "Við svörum yfirleitt innan 24 klst á vinnudögum.",
+      "subjects": {
+        "general": "Almennar spjallspurningar",
+        "production": "Myndaframleiðsla",
+        "commercial": "Auglýsingar & Brönd",
+        "music": "Tónleikamyndir",
+        "rentals": "Búnaðarleiga",
+        "careers": "Starfsstöður",
+        "press": "Fjölmiðlar",
+        "other": "Annað"
+      }
+    },
+    "info": {
+      "title": "STUDIO KRÍA",
+      "address": "Grandagarður 16, 101 Reykjavík, Ísland",
+      "email": "info@studiokria.is",
+      "phone": "+354 860 6690",
+      "hours": "Mán–Fös 09:00–18:00 (GMT)"
+    },
+    "rentalsInquiry": "Búnaðarleigubætur",
+    "rentalsText": "Fyrir leigubætur um búnað, vinsamlegast notið skjáinn hér að ofan og veljið 'Búnaðarleiga' sem efni, eða sendið okkur beint tölvupóst.",
+    "careers": "Starfsstöður",
+    "careersText": "Við erum alltaf að leita eftir framúrskarandi getu. Skoðið lausar stöður eða sendið óbeiðna umsókn.",
+    "viewOpenings": "Skoða lausar stöður",
+    "unsolicitedApplication": "Óbeiðin umsókn"
+  },
+  "common": {
+    "loading": "Hlað...",
+    "error": "Villa kom upp",
+    "back": "Til baka",
+    "next": "Næsta",
+    "previous": "Fyrra",
+    "readMore": "Lesa meira",
+    "viewAll": "Skoða allt",
+    "close": "Loka",
+    "open": "Opna",
+    "scroll": "Skrolla",
+    "play": "Spila",
+    "pause": "Pása",
+    "mute": "Dumma",
+    "unmute": "Takmæta",
+    "fullscreen": "Fullskjár",
+    "exitFullscreen": "Fara út úr fullskjá"
+  }
+}

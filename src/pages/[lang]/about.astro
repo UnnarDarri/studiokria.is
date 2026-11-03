@@ -1,0 +1,338 @@
+---
+/**
+ * About Page - Studio Kria
+ * Modular card-based layout with values and process
+ */
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import { t, getTranslation } from '../../i18n';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'is' } },
+  ];
+}
+
+const locale = Astro.params.lang;
+const translations = getTranslation(locale);
+const basePath = import.meta.env.BASE_URL || '/';
+const assetUrl = (path: string) => `${basePath.replace(/\/$/, '')}${path.startsWith('/') ? path : '/' + path}`;
+const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
+const pathname = '/about/'; // Current path without base path
+
+---
+
+<Layout
+  title={t(locale, 'about.title')}
+  description={translations.about.description}
+  image="/assets/images/og-about.jpg"
+  locale={locale}
+  translations={translations}
+  pathname={pathname}
+>
+  {/* Hero */}
+  <Hero
+    title={t(locale, 'about.title')}
+    backgroundImage={assetUrl("/assets/images/about-hero.jpg")}
+    ctaPrimary={{ text: t(locale, 'about.viewWork'), href: localUrl('/projects/') }}
+    class="hero-centered"
+  />
+
+  {/* Company Description */}
+  <section class="section" aria-labelledby="about-desc-title">
+    <div class="container">
+      <div class="about-description animate-on-scroll">
+        <p>{translations.about.description}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* Founders */}
+  {translations.about.founders && translations.about.founders.length > 0 && (
+    <section class="section" aria-labelledby="founders-title">
+      <div class="container">
+        <header class="section-header animate-on-scroll">
+          <h2 id="founders-title" class="section-title">{t(locale, 'team.coreTeam')}</h2>
+        </header>
+        <div class="founders-grid stagger-children animate-on-scroll">
+          {translations.about.founders.map((member, index) => (
+            <div class="founder-card animate-on-scroll" style={`--stagger: ${index * 100}ms`}>
+              <div class="founder-photo">
+                {member.image && (
+                  <img src={assetUrl(member.image)} alt={`${member.name} — ${member.role}`} loading={index < 2 ? 'eager' : 'lazy'} />
+                )}
+                {!member.image && (
+                  <div class="founder-placeholder" aria-hidden="true">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <circle cx="12" cy="8" r="4"/>
+                      <path d="M12 14v7M4 21c0-4 4-6 8-6s8 2 8 6"/>
+                    </svg>
+                  </div>
+                )}
+              </div>
+              <div class="founder-info">
+                <h3 class="founder-name">{member.name}</h3>
+                <p class="founder-role">{member.role}</p>
+                {member.bio && <p class="founder-bio">{member.bio}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* Values - Full Width */}
+  <section class="section" aria-labelledby="values-title">
+    <div class="container">
+      <header class="section-header animate-on-scroll">
+        <h2 id="values-title" class="section-title">{t(locale, 'about.values')}</h2>
+      </header>
+      <div class="values-grid stagger-children animate-on-scroll">
+        {translations.about.valuesList.map((value, index) => (
+          <div class="value-item animate-on-scroll" style={`--stagger: ${index * 80}ms`}>
+            <h3 class="value-title glitch-text" data-text={value.title}>{value.title}</h3>
+            <p class="value-desc">{value.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Process - Full Width */}
+  <section class="section" aria-labelledby="process-title">
+    <div class="container">
+      <header class="section-header animate-on-scroll">
+        <h2 id="process-title" class="section-title">{t(locale, 'about.process')}</h2>
+      </header>
+      <div class="process-grid stagger-children animate-on-scroll">
+        {translations.about.processSteps.map((step, index) => (
+          <div class="process-item animate-on-scroll" style={`--stagger: ${index * 80}ms`}>
+            <span class="process-number">{index + 1}</span>
+            <h3 class="process-title">{step.title}</h3>
+            <p class="process-desc">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* CTA */}
+  <div class="container" style="text-align: center; margin-top: var(--space-4xl);">
+    <h2 class="section-title animate-on-scroll">{t(locale, 'about.readyToMake')}</h2>
+    <a href={localUrl('/contact/')} class="btn btn-primary btn-lg glow-element-intense">{t(locale, 'about.startConversation')}</a>
+  </div>
+</Layout>
+
+<style>
+  /* About Description */
+  .about-description {
+    max-width: 80ch;
+    margin: 0 auto var(--space-3xl);
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: var(--fg-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .about-description {
+      font-size: var(--text-base);
+    }
+  }
+
+  /* Founders Grid - Brutal, raw */
+  .founders-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    margin-top: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .founders-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .founders-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .founder-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all var(--transition-slower);
+  }
+
+  @media (min-width: 600px) {
+    .founder-card {
+      grid-template-columns: 150px 1fr;
+      align-items: start;
+    }
+  }
+
+  .founder-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--glow-medium);
+  }
+
+  .founder-photo {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .founder-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slower);
+  }
+
+  .founder-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg-muted);
+    opacity: 0.5;
+  }
+
+  .founder-card:hover .founder-photo img {
+    transform: scale(1.05);
+  }
+
+  .founder-name {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-xs);
+  }
+
+  .founder-role {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-sm);
+  }
+
+  .founder-bio {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--fg-muted);
+    font-style: italic;
+  }
+
+  /* Values Grid - Brutal, raw */
+  .values-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+    margin-top: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .values-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .values-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .value-item {
+    padding: var(--space-xl);
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all var(--transition-slower);
+  }
+
+  .value-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--glow-medium);
+  }
+
+  .value-title {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-md);
+    text-shadow: var(--glow-soft);
+  }
+
+  .value-desc {
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--fg-muted);
+  }
+
+  /* Process Grid */
+  .process-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+    margin-top: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .process-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .process-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .process-item {
+    padding: var(--space-xl);
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all var(--transition-slower);
+  }
+
+  .process-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--glow-medium);
+  }
+
+  .process-number {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--display-sm);
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0.3;
+    margin-bottom: var(--space-md);
+  }
+
+  .process-title {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-md);
+  }
+
+  .process-desc {
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--fg-muted);
+  }
+</style>

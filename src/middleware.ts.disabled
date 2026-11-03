@@ -1,0 +1,58 @@
+import { defineMiddleware } from 'astro:middleware';
+import { getLocaleFromPath, supportedLocales, type Locale, defaultLocale } from './i18n';
+
+const BASE_PATH = '/studio-kria-website';
+
+export const onRequest = defineMiddleware(async (context, next) => {
+  const { url, locals, redirect } = context;
+  const pathname = url.pathname;
+
+  // Strip base path for locale detection
+  const strippedPathname = pathname.startsWith(BASE_PATH)
+    ? pathname.slice(BASE_PATH.length)
+    : pathname;
+
+  // Get locale from path (e.g., /en/about -> en)
+  const locale = getLocaleFromPath(strippedPathname);
+
+  // Store locale in locals for use in components
+  locals.locale = locale;
+
+  // Add locale to URL for easy access
+  locals.url = url;
+
+  // Get translation function
+  const { t } = await import('./i18n');
+  locals.t = (key: string, params?: Record<string, string | number>) => t(locale, key, params);
+
+  // Get all translations for the current locale
+  const { getTranslation } = await import('./i18n');
+  locals.translations = getTranslation(locale);
+
+  // Generate alternate language links for SEO (using stripped pathname)
+  const { alternateLanguages } = await import('./i18n');
+  locals.alternateLanguages = alternateLanguages(locale, strippedPathname);
+
+  // Current locale info
+  locals.currentLocale = locale;
+  locals.supportedLocales = supportedLocales;
+
+  // If no locale prefix, redirect to default locale (including root)
+  // Skip for assets, API routes, etc.
+  const segments = strippedPathname.split('/').filter(Boolean);
+  const firstSegment = segments[0];
+  const hasLocalePrefix = supportedLocales.includes(firstSegment as Locale);
+
+  if (!hasLocalePrefix) {
+    const isAsset = strippedPathname.includes('.') || strippedPathname.startsWith('/assets/');
+    const isApi = strippedPathname.startsWith('/api/');
+
+    if (!isAsset && !isApi) {
+      // Redirect with base path preserved (including root /)
+      const redirectPath = BASE_PATH + `/${defaultLocale}${strippedPathname}`;
+      return redirect(redirectPath, 302);
+    }
+  }
+
+  return next();
+});

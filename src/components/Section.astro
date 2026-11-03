@@ -1,0 +1,63 @@
+---
+/**
+ * Section - Standardized section wrapper with consistent spacing
+ */
+interface Props {
+  id?: string;
+  class?: string;
+  children: string | AstroTemplateResult;
+  header?: {
+    label?: string;
+    title: string;
+    description?: string;
+  };
+  variant?: 'default' | 'alternate' | 'dark';
+  fullWidth?: boolean;
+}
+
+const {
+  id,
+  class: className = '',
+  children,
+  header,
+  variant = 'default',
+  fullWidth = false,
+} = Astro.props;
+
+const variantClass = variant !== 'default' ? `section-${variant}` : '';
+const widthClass = fullWidth ? 'section-full' : '';
+---
+
+<section id={id} class="section {variantClass} {widthClass} {className}">
+  <div class="container">
+    {header && (
+      <header class="section-header">
+        {header.label && <p class="section-label">{header.label}</p>}
+        <h2 class="section-title glow-text">{header.title}</h2>
+        {header.description && <p class="section-description">{header.description}</p>}
+      </header>
+    )}
+    <div class="section-content">
+      {children}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-alternate {
+    background: transparent;
+  }
+
+  .section-dark {
+    background: transparent;
+  }
+
+  .section-full .container {
+    max-width: var(--container-full);
+    padding: 0;
+  }
+
+  .section-content {
+    width: 100%;
+  }
+</style>

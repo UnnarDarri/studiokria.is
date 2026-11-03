@@ -1,0 +1,889 @@
+---
+/**
+ * Base Layout - Main layout wrapper with SEO, fonts, global styles, i18n
+ */
+import FilmGrain from '../components/FilmGrain.astro';
+import '../styles/global.css';
+import { getTranslation, type Locale, supportedLocales, alternateLanguages as getAlternateLanguages } from '../i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  canonical?: string;
+  noIndex?: boolean;
+  locale: Locale;
+  translations: ReturnType<typeof getTranslation>;
+  pathname: string;
+}
+
+const {
+  title,
+  description = 'STUDIO KRÍA — Independent film production company based in Reykjavik. Creating compelling stories through film, documentary, and commercial work.',
+  image = '/assets/images/og-default.jpg',
+  type = 'website',
+  canonical,
+  noIndex = false,
+  locale,
+  translations,
+  pathname,
+} = Astro.props;
+
+const t = (key: string, params?: Record<string, string | number>) => {
+  const translation = translations;
+  const keys = key.split('.');
+  let value: unknown = translation;
+  for (const k of keys) {
+    if (value && typeof value === 'object' && k in value) {
+      value = (value as Record<string, unknown>)[k];
+    } else {
+      return key;
+    }
+  }
+  let result = String(value);
+  if (params) {
+    Object.entries(params).forEach(([paramKey, paramValue]) => {
+      result = result.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), String(paramValue));
+    });
+  }
+  return result;
+}
+
+const basePath = import.meta.env.BASE_URL || '/';
+const assetUrl = (path: string) => `${basePath.replace(/\/$/, '')}${path.startsWith('/') ? path : '/' + path}`;
+
+const alternateLanguages = getAlternateLanguages(locale, pathname);
+const currentLocale = locale;
+
+// Helper to create localised URLs with base path
+const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
+const localeUrl = (loc: string, path: string) => `${basePath.replace(/\/$/, '')}/${loc}${path.startsWith('/') ? path : '/' + path}`;
+
+// SEO variables
+const siteUrl = 'https://studiokria.github.io';
+const pageUrl = canonical || `${siteUrl}${pathname}`;
+const pageTitle = `${title} | STUDIO KRÍA`;
+
+// Generate canonical URLs for alternate languages (for SEO - absolute URLs)
+const alternateLinks = alternateLanguages.map(alt => ({
+  hrefLang: alt.lang,
+  href: `${siteUrl}${alt.url}`,
+}));
+
+---
+
+<!doctype html>
+<html lang={locale} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary Meta -->
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#050505" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${image}`} />
+    <meta property="og:site_name" content="STUDIO KRÍA" />
+    <meta property="og:locale" content={locale === 'is' ? 'is_IS' : 'en_US'} />
+
+    <!-- Alternate language URLs for SEO -->
+    {alternateLinks.map(alt => (
+      <link rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
+    ))}
+    <link rel="alternate" hrefLang="x-default" href={`${siteUrl}/en${pathname.replace(/^\/(en|is)/, '')}`} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={pageUrl} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}${image}`} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={pageUrl} />
+
+    <!-- Robots -->
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Special+Gothic+Condensed+One&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Gothic+Condensed+One&display=swap" media="print" onload="this.media='all'" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">{t('common.skipToContent')}</a>
+
+    <!-- Cursor Glow Halo -->
+    <div class="cursor-glow" aria-hidden="true"></div>
+
+    <!-- Film Grain Canvas -->
+    <FilmGrain />
+
+    <!-- Navigation Header -->
+    <header class="site-header" id="siteHeader">
+      <!-- Subtle gray overlay on header -->
+      <div class="header-overlay" aria-hidden="true"></div>
+      <div class="header-inner">
+        <!-- Bird Logo - Home Link -->
+        <a href={localUrl('/')} class="bird-logo" aria-label={t('nav.home')} title={t('nav.home')}>
+          <img src={assetUrl("/assets/images/bird-orange.svg")} alt="" width="48" height="48" aria-hidden="true" />
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label={t('common.open')} aria-expanded="false" aria-controls="navOverlay">
+          <span></span><span></span><span></span>
+        </button>
+        <!-- Language Selector -->
+        <div class="header-lang" aria-label={t('common.language')}>
+          {alternateLanguages.map(alt => (
+            <a href={localeUrl(alt.lang, pathname)} class={alt.lang === currentLocale ? 'active' : ''} aria-current={alt.lang === currentLocale ? 'page' : undefined}>
+              {alt.lang.toUpperCase()}
+            </a>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <!-- Fullscreen Nav Overlay -->
+    <nav class="nav-overlay" id="navOverlay" aria-hidden="true" role="navigation" aria-label={t('common.navigation')}>
+      <!-- Close button - top center (matching centered burger menu) -->
+      <button class="nav-close" id="navClose" aria-label={t('common.close')} aria-controls="navOverlay">
+        <span></span><span></span>
+      </button>
+      <div class="nav-inner">
+        <ul class="nav-links">
+          <li><a href={localUrl('/')}>{t('nav.home')}</a></li>
+          <li><a href={localUrl('/projects/')}>{t('nav.projects')}</a></li>
+          <li><a href={localUrl('/services/')}>{t('nav.services')}</a></li>
+          <li><a href={localUrl('/team/')}>{t('nav.team')}</a></li>
+          <li><a href={localUrl('/rentals/')}>{t('nav.rentals')}</a></li>
+          <li><a href={localUrl('/about/')}>{t('nav.about')}</a></li>
+          <li><a href={localUrl('/contact/')}>{t('nav.contact')}</a></li>
+        </ul>
+
+        <div class="nav-footer">
+          <div class="nav-social" aria-label={t('common.social')}>
+            <a href="https://www.instagram.com/studio.kria.isl" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="https://www.tiktok.com/@studio.kria" target="_blank" rel="noopener" aria-label="TikTok">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 8v7M19 8v7M11 8v7M7 8v7M3 8v7"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@StudioKr%C3%ADa" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.73 20.32 20.32 0 0 1 20.2 0 2 2 0 0 1 1.4 1.73c1.1 2 1.2 4.2 1.2 6.3 0 3.1-.3 5.5-1.3 7.5a2 2 0 0 1-1.5 1.7 24 24 0 0 1-20.2 0 2 2 0 0 1-1.5-1.7c-1.1-2-1.2-4.2-1.2-6.3z"/><path d="m10 15 5-3-5-3z"/></svg>
+            </a>
+            <a href="https://vimeo.com/studiokria" target="_blank" rel="noopener" aria-label="Vimeo">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm3.5-11.5c0 1.4-.9 2.5-2 2.5-1.1 0-2-.9-2-2.5 0-1.1.9-2 2-2 1.1 0 2 .9 2 2z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main" role="main">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer role="contentinfo" class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href={localUrl('/')} class="foot-brand-link" aria-label={t('footer.brand')}>STUDIO KRIA</a>
+          <p class="footer-tagline">{t('footer.tagline')}</p>
+        </div>
+
+        <div class="footer-section footer-nav">
+          <nav aria-label={t('footer.work')}>
+            <ul class="footer-links">
+              <li><a href={localUrl('/projects/')}>{t('footer.projects')}</a></li>
+              <li><a href={localUrl('/services/')}>{t('footer.services')}</a></li>
+              <li><a href={localUrl('/rentals/')}>{t('footer.rentals')}</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="footer-section footer-nav">
+          <nav aria-label={t('footer.company')}>
+            <ul class="footer-links">
+              <li><a href={localUrl('/about/')}>{t('footer.about')}</a></li>
+              <li><a href={localUrl('/team/')}>{t('footer.team')}</a></li>
+              <li><a href={localUrl('/contact/')}>{t('footer.contact')}</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="footer-section footer-contact">
+          <address class="footer-contact-info">
+            <a href="mailto:info@studiokria.is">info@studiokria.is</a>
+            <a href="tel:+3548606690">+354 860 6690</a>
+            <div>{translations.footer.companyInfo}</div>
+          </address>
+        </div>
+
+        <div class="footer-section footer-nav">
+          <nav aria-label={t('footer.social')}>
+            <ul class="footer-links">
+              <li><a href="https://www.instagram.com/studio.kria.isl" target="_blank" rel="noopener">{t('footer.instagram')}</a></li>
+              <li><a href="https://www.tiktok.com/@studio.kria" target="_blank" rel="noopener">{t('footer.tiktok')}</a></li>
+              <li><a href="https://www.youtube.com/@StudioKr%C3%ADa" target="_blank" rel="noopener">{t('footer.youtube')}</a></li>
+              <li><a href="https://vimeo.com/studiokria" target="_blank" rel="noopener">{t('footer.vimeo')}</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright">{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script is:inline>
+      // Navigation toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const navOverlay = document.getElementById('navOverlay');
+      const navClose = document.getElementById('navClose');
+      const siteHeader = document.getElementById('siteHeader');
+
+      if (menuToggle && navOverlay && navClose) {
+        const navLinks = navOverlay.querySelectorAll('a');
+
+        function openNav() {
+          navOverlay.classList.add('is-open');
+          menuToggle.classList.add('is-open');
+          menuToggle.setAttribute('aria-expanded', 'true');
+          navOverlay.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('nav-locked');
+        }
+
+        function closeNav() {
+          navOverlay.classList.remove('is-open');
+          menuToggle.classList.remove('is-open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+          navOverlay.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('nav-locked');
+        }
+
+        menuToggle.addEventListener('click', () => {
+          navOverlay.classList.contains('is-open') ? closeNav() : openNav();
+        });
+
+        navClose.addEventListener('click', closeNav);
+        navLinks.forEach(link => link.addEventListener('click', closeNav));
+
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape') closeNav();
+        });
+      }
+
+      // Header scroll effect
+      window.addEventListener('scroll', () => {
+        if (siteHeader) {
+          siteHeader.classList.toggle('scrolled', window.scrollY > 50);
+        }
+      });
+
+      // Cursor Glow Halo
+      const cursorGlow = document.querySelector('.cursor-glow');
+      let glowX = window.innerWidth / 2;
+      let glowY = window.innerHeight / 2;
+      let currentGlowX = glowX;
+      let currentGlowY = glowY;
+      let glowVisible = false;
+
+      if (cursorGlow) {
+        // Make glow visible on first mouse move
+        window.addEventListener('pointermove', (event) => {
+          if (!glowVisible) {
+            cursorGlow.classList.add('is-visible');
+            glowVisible = true;
+          }
+          glowX = event.clientX;
+          glowY = event.clientY + window.scrollY;
+        });
+
+        function animateGlow() {
+          currentGlowX += (glowX - currentGlowX) * 0.08;
+          currentGlowY += (glowY - currentGlowY) * 0.08;
+
+          document.body.style.setProperty('--glow-x', `${currentGlowX}px`);
+          document.body.style.setProperty('--glow-y', `${currentGlowY}px`);
+
+          requestAnimationFrame(animateGlow);
+        }
+        animateGlow();
+      }
+
+      // Reduced motion respect
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const filmGrain = document.querySelector('.film-grain canvas');
+
+      if (prefersReducedMotion.matches && filmGrain) {
+        filmGrain.style.display = 'none';
+      }
+
+      // Smooth scroll fallback for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            target.focus({ preventScroll: true });
+          }
+        });
+      });
+
+      // Intersection observer for scroll animations
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -10% 0px',
+        threshold: 0.1,
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  /* Layout-specific styles */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-smooth { scroll-behavior: auto; }
+  }
+
+  /* Header - z-index above content but below nav-overlay */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: calc(var(--z-nav) - 30);
+    padding: var(--space-lg) var(--space-xl);
+    background: transparent;
+    transition: background var(--transition-base), backdrop-filter var(--transition-base);
+  }
+
+  .header-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(5, 5, 5, 0.6);
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+  }
+
+  .site-header.scrolled .header-overlay {
+    background: rgba(5, 5, 5, 0.9);
+  }
+
+  .header-inner {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .site-header.scrolled {
+    background: transparent;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Bird Logo - Left Corner */
+  .bird-logo {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    color: var(--fg);
+    text-decoration: none;
+    transition: color var(--transition-fast), transform var(--transition-fast);
+    z-index: calc(var(--z-nav) + 1);
+  }
+
+  .bird-logo:hover {
+    color: var(--accent);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .bird-logo svg {
+    stroke: currentColor;
+  }
+
+  /* Menu Toggle - Centered */
+  .menu-toggle {
+    position: relative;
+    z-index: calc(var(--z-nav) + 1);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-sm);
+    margin: 0 auto;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 30px;
+    height: 2px;
+    background: var(--fg);
+    transition: transform var(--transition-base), opacity var(--transition-base);
+  }
+
+  .menu-toggle:hover span { background: var(--accent); }
+
+  .menu-toggle.is-open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
+  .menu-toggle.is-open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  /* Header Language Selector */
+  .header-lang {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: var(--space-sm);
+    z-index: calc(var(--z-nav) + 1);
+  }
+
+  .header-lang a {
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: all var(--transition-base);
+    color: var(--fg);
+  }
+
+  .header-lang a.active,
+  .header-lang a:hover {
+    opacity: 1;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Cursor Glow Halo */
+  .cursor-glow {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 600px 400px at var(--glow-x, 50%) var(--glow-y, 50%),
+        rgba(226, 82, 28, 0.12) 0%,
+        rgba(226, 82, 28, 0.06) 30%,
+        rgba(226, 82, 28, 0.02) 60%,
+        transparent 100%
+      );
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    isolation: isolate;
+  }
+
+  .cursor-glow.is-visible {
+    opacity: 1;
+  }
+
+  /* Nav Overlay - Demo site approach: solid bg + cursor glow + ::before with soft-light blend */
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-nav) + 10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: var(--space-5xl);
+    gap: var(--space-xl);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.4s var(--transition-spring), transform 0.4s var(--transition-spring), visibility 0s linear 0.4s;
+    /* Solid base + cursor glow - not see-through */
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(
+        ellipse 650px 350px at var(--glow-x, 50vw) var(--glow-y, 50vh),
+        rgba(237, 81, 14, 0.224) 0%,
+        rgba(237, 14, 14, 0.10) 40%,
+        rgba(237, 14, 14, 0.03) 70%,
+        transparent 100%
+      );
+    isolation: isolate;
+  }
+
+  /* Demo site exact: ::before with soft-light blend mode for color effect */
+  .nav-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(
+        ellipse at 50% 38%,
+        rgba(233, 77, 34, 0.916),
+        transparent 60%
+      ),
+      linear-gradient(
+        115deg,
+        rgba(52, 0, 173, 0.744),
+        transparent 45%,
+        rgba(213, 123, 6, 0.831)
+      ),
+      radial-gradient(
+        ellipse at center,
+        transparent 48%,
+        rgba(0, 0, 0, 0.148) 100%
+      );
+    mix-blend-mode: soft-light;
+  }
+
+  /* Ensure nav content sits above the ::before blend layer */
+  .nav-overlay > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Close button - top center (matching centered burger menu position) */
+  /* Burger visual center: header padding-top (1.5rem) + burger height/2 (~17px) = ~41px from top */
+  /* Close button height: 56px, so top = 41px - 28px = 13px */
+  .nav-close {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    z-index: calc(var(--z-nav) + 11);
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s var(--transition-spring), visibility 0.3s var(--transition-spring), transform 0.3s var(--transition-spring);
+  }
+
+  .nav-overlay.is-open .nav-close {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    transition-delay: 0.3s;
+  }
+
+  .nav-close span {
+    position: absolute;
+    width: 36px;
+    height: 3px;
+    background: var(--fg);
+    transition: background var(--transition-fast), transform var(--transition-base);
+  }
+
+  .nav-close span:nth-child(1) { transform: rotate(45deg); }
+  .nav-close span:nth-child(2) { transform: rotate(-45deg); }
+
+  .nav-close:hover span { background: var(--accent); }
+
+  .nav-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.4s var(--transition-spring), transform 0.4s var(--transition-spring);
+  }
+
+  .nav-inner {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding: var(--space-4xl) var(--space-xl) var(--space-5xl);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    flex: 1;
+    align-items: center;
+    text-align: center;
+  }
+
+  .nav-links a {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 1.2;
+    color: var(--fg);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: color var(--transition-fast);
+    text-shadow: var(--glow-soft);
+  }
+
+  .nav-links a:hover { color: var(--accent); text-shadow: var(--glow-medium); }
+
+  .nav-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xl);
+    padding-top: var(--space-2xl);
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-lang {
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .nav-lang a {
+    padding: var(--space-xs) var(--space-md);
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    transition: all var(--transition-base);
+  }
+
+  .nav-lang a.active,
+  .nav-lang a:hover {
+    opacity: 1;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .nav-social {
+    display: flex;
+    gap: var(--space-xl);
+  }
+
+  .nav-social a {
+    font-size: var(--text-lg);
+    opacity: 0.6;
+    transition: opacity var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .nav-social a:hover {
+    opacity: 1;
+    color: var(--accent);
+    transform: translateY(-4px);
+  }
+
+  body.nav-locked { overflow: hidden; }
+
+  /* Footer — DEMO SITE STYLE: flex wrap, gap, justify-content space-between */
+  .site-footer {
+    position: relative;
+    padding: var(--space-3xl) var(--space-xl) var(--space-xl);
+    border-top: 1px solid var(--border);
+    background: transparent;
+  }
+
+  .footer-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3xl);
+    align-items: flex-start;
+    justify-content: space-between;
+    max-width: var(--container-xl);
+    margin: 0 auto var(--space-3xl);
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    font-family: var(--font-display);
+    letter-spacing: 0.12em;
+    font-size: 0.95rem;
+    font-weight: 400;
+  }
+
+  .foot-brand-link {
+    font-family: var(--font-display);
+    font-size: var(--display-sm);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    text-decoration: none;
+    text-shadow: var(--glow-medium);
+  }
+
+  .foot-brand-link:hover { color: var(--accent); }
+
+  .footer-tagline {
+    font-size: var(--text-sm);
+    color: var(--fg-subtle);
+    max-width: 30ch;
+  }
+
+  .footer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .footer-nav .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .footer-nav a {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    transition: color var(--transition-fast);
+  }
+
+  .footer-nav a:hover { color: var(--accent); }
+
+  .footer-contact {
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 2.1;
+    color: var(--fg);
+    opacity: 0.9;
+    text-align: right;
+    min-width: 200px;
+  }
+
+  .footer-contact-info {
+    font-style: normal;
+  }
+
+  .footer-contact-info a {
+    color: inherit;
+    display: block;
+    text-decoration: none;
+  }
+
+  .footer-contact-info a:hover { text-decoration: underline; }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--border);
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    font-size: var(--text-sm);
+    color: var(--fg-subtle);
+  }
+
+  .footer-social {
+    display: flex;
+    gap: var(--space-lg);
+  }
+
+  .footer-social a {
+    opacity: 0.5;
+    transition: opacity var(--transition-fast), color var(--transition-fast);
+  }
+  .footer-social a:hover { opacity: 1; color: var(--accent); }
+
+  /* Mobile footer stacking */
+  @media (max-width: 768px) {
+    .footer-grid {
+      flex-direction: column;
+      gap: var(--space-2xl);
+      text-align: left;
+    }
+    .footer-brand {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+    .footer-nav {
+      text-align: left;
+      flex: none;
+    }
+    .footer-contact {
+      text-align: left;
+    }
+    .footer-bottom {
+      flex-direction: column;
+      gap: var(--space-md);
+      text-align: left;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .site-header { padding: var(--space-md) var(--space-lg); }
+    .nav-inner { padding: var(--space-2xl) var(--space-lg); }
+    .nav-header { margin-bottom: var(--space-2xl); }
+  }
+</style>

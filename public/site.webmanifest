@@ -1,0 +1,26 @@
+{
+  "name": "Studio Kria",
+  "short_name": "Studio Kria",
+  "description": "Independent film production company based in Reykjavik, Iceland",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/assets/images/favicon-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

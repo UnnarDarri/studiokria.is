@@ -1,0 +1,67 @@
+---
+/**
+ * Team - Team members grid
+ */
+import TeamCard from './TeamCard.astro';
+
+interface Props {
+  members: TeamMember[];
+  class?: string;
+}
+
+interface TeamMember {
+  name: string;
+  role: string;
+  bio: string;
+  image?: string;
+  email?: string;
+  social?: {
+    linkedin?: string;
+    instagram?: string;
+    twitter?: string;
+  };
+}
+
+const { members, class: className = '' } = Astro.props;
+---
+
+<section id="team" class="team {className}" aria-labelledby="team-title">
+  <div class="container">
+    <header class="section-header animate-on-scroll">
+      <p class="section-label">Team</p>
+      <h2 id="team-title" class="section-title glow-text">The People Behind Kria</h2>
+      <p class="section-description">A collective of filmmakers, producers, and creatives united by storytelling.</p>
+    </header>
+
+    <div class="team-grid grid grid-3 stagger-children animate-on-scroll" role="list">
+      {members.map((member, index) => (
+        <TeamCard
+          name={member.name}
+          role={member.role}
+          bio={member.bio}
+          image={member.image}
+          email={member.email}
+          social={member.social}
+          class="animate-on-scroll"
+          style={`--stagger-delay: ${index * 100}ms`}
+        />
+      ))}
+    </div>
+
+    <div class="team-cta animate-on-scroll" style="text-align: center; margin-top: var(--space-2xl);">
+      <a href="/studio-kria-website/team/" class="btn btn-primary glow-element-medium">MEET THE FULL TEAM</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .team-grid {
+    margin-top: var(--space-xl);
+  }
+
+  @media (max-width: 900px) {
+    .team-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

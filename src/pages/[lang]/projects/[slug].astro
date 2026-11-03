@@ -1,0 +1,827 @@
+---
+/**
+ * Project Detail Page - Portrait hero with stills lightbox
+ * Desktop: 4:5 hero with overlay content on image
+ * Mobile: 4:5 crop image stacked, content below
+ */
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import { t, getTranslation } from '../../../i18n';
+import Lightbox from '../../../components/Lightbox.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  const paths = [];
+  for (const project of projects) {
+    for (const lang of ['en', 'is']) {
+      paths.push({
+        params: { lang, slug: project.id },
+        props: { project, locale: lang },
+      });
+    }
+  }
+  return paths;
+}
+
+const { project, locale } = Astro.props;
+const { data, body } = project;
+const slug = project.id;
+
+const translations = getTranslation(locale);
+const basePath = import.meta.env.BASE_URL || '/';
+const assetUrl = (path: string) => `${basePath.replace(/\/$/, '')}${path.startsWith('/') ? path : '/' + path}`;
+const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
+const pathname = `/projects/${slug}/`;
+
+const typeLabels = translations.projectTypes;
+const statusLabels = translations.projectStatus;
+const statusColors: Record<string, string> = {
+  'completed': 'var(--color-accent)',
+  'in-production': '#e67e22',
+  'pre-production': '#3498db',
+  'development': '#9b59b6',
+};
+
+// Fetch all projects for navigation
+const allProjects = await getCollection('projects');
+const sortedProjects = [...allProjects].sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return b.data.featured ? 1 : -1;
+  if (a.data.order !== b.data.order) return a.data.order - b.data.order;
+  return b.data.year - a.data.year;
+});
+
+const currentIndex = sortedProjects.findIndex(p => p.id === slug);
+const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[currentIndex + 1] : null;
+
+const pageTitle = `${data.title} — STUDIO KRÍA`;
+const pageDescription = data.description;
+const pageImage = data.heroImage || data.thumbnail;
+
+// Prepare gallery images for lightbox (first 4 images from gallery, or hero + gallery)
+const stillsImages = data.gallery && data.gallery.length > 0
+  ? data.gallery.slice(0, 4).map(img => assetUrl(img))
+  : data.heroImage
+    ? [assetUrl(data.heroImage)]
+    : [];
+
+const hasStills = stillsImages.length > 0;
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  image={pageImage}
+  type="article"
+  locale={locale}
+  translations={translations}
+  pathname={pathname}
+>
+  {/* Portrait Hero - Desktop: 4:5 with overlay, Mobile: 4:5 crop stacked */}
+  <header class="project-hero" aria-labelledby="project-title">
+    <div class="project-hero-image" aria-hidden="true">
+      {data.heroImage && (
+        <img
+          src={assetUrl(data.heroImage)}
+          alt=""
+          loading="eager"
+          fetchpriority="high"
+          sizes="(max-width: 768px) 100vw, (min-width: 1200px) 50vw, 100vw"
+        />
+      )}
+    </div>
+
+    <div class="project-hero-overlay">
+      <div class="project-hero-content container animate-on-scroll">
+        <div class="project-hero-meta">
+          <span class="project-type" style={`--accent: ${statusColors[data.status] || 'var(--color-accent)'};`}>
+            {typeLabels[data.type] || data.type}
+          </span>
+          <span class="project-year">{data.year}</span>
+          {data.duration && <span class="project-duration">{data.duration}</span>}
+          <span class="project-status" style={`--status-color: ${statusColors[data.status] || 'var(--color-accent)'};`}>
+            {statusLabels[data.status] || data.status}
+          </span>
+        </div>
+
+        <h1 id="project-title" class="project-title glitch-text" data-text={data.title}>
+          {data.title}
+        </h1>
+
+        {data.role && data.role.length > 0 && (
+          <p class="project-role">{data.role.join(' / ')}</p>
+        )}
+
+        <p class="project-description lead">{data.description}</p>
+
+        {data.festival && data.festival.length > 0 && (
+          <div class="project-festivals">
+            {data.festival.map(fest => (
+              <span class="festival-badge">{fest}</span>
+            ))}
+          </div>
+        )}
+
+        {hasStills && (
+          <button class="btn btn-primary btn-lg glow-element stills-btn"
+                  onclick="window.openLightbox(0)"
+                  aria-label={t(locale, 'projects.viewStills')}>
+            {t(locale, 'projects.viewStills')}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </button>
+        )}
+      </div>
+    </div>
+
+    </header>
+
+  {/* Lightbox for stills */}
+  {hasStills && (
+    <Lightbox images={stillsImages} alt={`${data.title} stills`} />
+  )}
+
+  {/* Details Section */}
+  <section class="project-details section section-compact" aria-labelledby="details-title">
+    <div class="container">
+      <div class="details-grid">
+        <div class="details-content animate-on-scroll">
+          <h2 id="details-title" class="section-title">{t(locale, 'projects.aboutProject')}</h2>
+          <div class="details-body" set:html={body} />
+        </div>
+
+        <aside class="details-sidebar animate-on-scroll">
+          {/* Credits - Pills style with clear label/value */}
+          <div class="credits-wrapper">
+            <h3 class="details-card-title">{t(locale, 'projects.credits')}</h3>
+            <div class="credits-list" role="list">
+              {data.role.map((role, index) => (
+                <div class="credit-item" style={`--stagger: ${index * 60}ms`} role="listitem">
+                  <dt>{role}</dt>
+                  <dd>STUDIO KRÍA</dd>
+                </div>
+              ))}
+              <div class="credit-divider" style={`--stagger: ${data.role.length * 60}ms`} />
+              <div class="credit-item" style={`--stagger: ${(data.role.length + 1) * 60}ms`} role="listitem">
+                <dt>{t(locale, 'projects.productionCompany')}</dt>
+                <dd>STUDIO KRÍA</dd>
+              </div>
+              <div class="credit-item" style={`--stagger: ${(data.role.length + 2) * 60}ms`} role="listitem">
+                <dt>{t(locale, 'projects.year')}</dt>
+                <dd>{data.year}</dd>
+              </div>
+              <div class="credit-item" style={`--stagger: ${(data.role.length + 3) * 60}ms`} role="listitem">
+                <dt>{t(locale, 'projects.format')}</dt>
+                <dd>{typeLabels[data.type] || data.type}</dd>
+              </div>
+              {data.duration && (
+                <div class="credit-item" style={`--stagger: ${(data.role.length + 4) * 60}ms`} role="listitem">
+                  <dt>{t(locale, 'projects.runtime')}</dt>
+                  <dd>{data.duration}</dd>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {data.videoUrl && (
+            <a href={data.videoUrl} class="btn btn-primary btn-lg glow-element stills-btn" target="_blank" rel="noopener">
+              {t(locale, 'projects.watchFilm')}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+                <path d="M21 12l-6 6M21 12l-6-6"/>
+              </svg>
+            </a>
+          )}
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  {/* Navigation to other projects - Next Project + Back to Projects */}
+  <nav class="project-nav section section-compact" aria-label={t(locale, 'common.navigation') || 'Project navigation'}>
+    <div class="container">
+      <div class="nav-grid">
+        {/* Next Project */}
+        {nextProject && (
+          <a href={localUrl(`/projects/${nextProject.id}/`)} class="nav-card next-card card glow-element animate-on-scroll">
+            <div class="nav-card-content">
+              <span class="nav-card-label">{t(locale, 'projects.nextProject')}</span>
+              <h3 class="nav-card-title">{nextProject.data.title}</h3>
+              <span class="nav-card-year">{nextProject.data.year}</span>
+            </div>
+            <div class="nav-card-image">
+              <img src={assetUrl(nextProject.data.thumbnail)} alt="" loading="lazy" />
+            </div>
+            <svg class="nav-card-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        )}
+
+        {/* Back to Projects Index */}
+        <a href={localUrl('/projects/')} class="nav-card back-card card glow-element animate-on-scroll">
+          <div class="nav-card-content">
+            <span class="nav-card-label">{t(locale, 'projects.backToProjects')}</span>
+            <h3 class="nav-card-title">{t(locale, 'projects.allProjectsTitle')}</h3>
+            <span class="nav-card-year">{t(locale, 'projects.count', { count: allProjects.length })}</span>
+          </div>
+          <svg class="nav-card-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+</Layout>
+
+<style>
+  /* ==========================================================================
+     PROJECT HERO - Desktop: FULL WIDTH (no container), NO crop
+     Mobile: 4:5 crop stacked layout
+     ========================================================================== */
+
+  /* Base: full-width container */
+  .project-hero {
+    position: relative;
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+  }
+
+  /* Desktop: Full width, NO crop - full image visible */
+  @media (min-width: 769px) {
+    .project-hero {
+      aspect-ratio: auto;
+      height: auto;
+    }
+
+    .project-hero-image {
+      position: relative;
+      width: 100%;
+      aspect-ratio: auto;
+      height: auto;
+    }
+
+    .project-hero-image img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .project-hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        180deg,
+        rgba(5, 5, 5, 0.15) 0%,
+        rgba(5, 5, 5, 0.25) 30%,
+        rgba(5, 5, 5, 0.5) 60%,
+        rgba(5, 5, 5, 0.9) 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: var(--space-3xl) var(--space-xl);
+    }
+
+    .project-hero-content {
+      width: 100%;
+      max-width: var(--container-lg);
+      margin: 0 auto;
+      color: var(--fg);
+    }
+  }
+
+  /* Mobile: Stacked layout - 4:5 crop image then content below */
+  @media (max-width: 768px) {
+    .project-hero {
+      aspect-ratio: auto;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-left: 0;
+    }
+
+    .project-hero-image {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      height: auto;
+    }
+
+    .project-hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    .project-hero-overlay {
+      position: relative;
+      background: none;
+      padding: var(--space-2xl) var(--space-lg);
+      flex: 0 0 auto;
+    }
+
+    .project-hero-content {
+      width: 100%;
+      max-width: var(--container-lg);
+      margin: 0 auto;
+      color: var(--fg);
+    }
+  }
+
+  .project-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  @media (max-width: 768px) {
+    .project-hero-meta {
+      gap: var(--space-sm);
+      font-size: var(--text-xs);
+      margin-bottom: var(--space-lg);
+    }
+  }
+
+  .project-type,
+  .project-year,
+  .project-duration,
+  .project-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-md);
+    border: 1px solid currentColor;
+    border-radius: var(--radius-full);
+    background: rgba(5, 5, 5, 0.4);
+    backdrop-filter: blur(8px);
+  }
+
+  @media (max-width: 768px) {
+    .project-type,
+    .project-year,
+    .project-duration,
+    .project-status {
+      padding: var(--space-xs) var(--space-sm);
+      background: rgba(5, 5, 5, 0.6);
+      backdrop-filter: none;
+    }
+  }
+
+  .project-type {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .project-year {
+    color: var(--color-fg-muted);
+    border-color: var(--color-fg-muted);
+  }
+
+  .project-duration {
+    color: var(--color-fg-muted);
+    border-color: var(--color-fg-muted);
+  }
+
+  .project-status {
+    color: var(--status-color);
+    border-color: var(--status-color);
+  }
+
+  .project-title {
+    font-size: var(--display-xl);
+    line-height: 0.9;
+    margin-bottom: var(--space-lg);
+    letter-spacing: -0.02em;
+    text-shadow: var(--glow-intense);
+    max-width: 90%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  @media (max-width: 768px) {
+    .project-title {
+      font-size: var(--display-md);
+      margin-bottom: var(--space-md);
+      max-width: none;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      hyphens: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .project-title {
+      font-size: var(--display-sm);
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      hyphens: auto;
+    }
+  }
+
+  .project-role {
+    font-size: var(--text-lg);
+    font-weight: 400;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xl);
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-sans);
+    opacity: 0.95;
+  }
+
+  @media (max-width: 768px) {
+    .project-role {
+      font-size: var(--text-base);
+      margin-bottom: var(--space-lg);
+    }
+  }
+
+  .project-description {
+    font-size: var(--text-base);
+    line-height: 1.7;
+    color: var(--color-fg-muted);
+    max-width: 65ch;
+    margin-bottom: var(--space-2xl);
+  }
+
+  @media (max-width: 768px) {
+    .project-description {
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-xl);
+    }
+  }
+
+  .project-festivals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .festival-badge {
+    padding: var(--space-sm) var(--space-lg);
+    background: rgba(232, 197, 138, 0.15);
+    border: 1px solid rgba(232, 197, 138, 0.3);
+    border-radius: var(--radius-full);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    backdrop-filter: blur(4px);
+  }
+
+  .stills-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+  }
+
+  @media (max-width: 768px) {
+    .stills-btn {
+      width: 100%;
+      justify-content: center;
+      padding: var(--space-md) var(--space-xl);
+    }
+  }
+
+  .project-hero-play {
+    position: absolute;
+    bottom: var(--space-2xl);
+    right: var(--space-2xl);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    border-radius: 50%;
+    color: var(--color-bg);
+    transition: all var(--transition-spring);
+    z-index: 10;
+    box-shadow: var(--glow-strong);
+  }
+
+  .project-hero-play:hover {
+    transform: scale(1.1);
+    box-shadow: var(--glow-intense);
+    background: var(--color-accent-bright);
+  }
+
+  @media (max-width: 768px) {
+    .project-hero-play {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-sm);
+      justify-content: center;
+      padding: var(--space-md) var(--space-xl);
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
+      box-shadow: none;
+      background: transparent;
+      border: 2px solid var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .project-hero-play:hover {
+      background: var(--color-accent);
+      color: var(--color-bg);
+      border-color: var(--color-accent);
+    }
+
+    .project-hero-play svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  /* Details */
+  .project-details {
+    padding: var(--space-4xl) 0;
+    background: transparent;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3xl);
+  }
+
+  @media (min-width: 1024px) {
+    .details-grid {
+      grid-template-columns: 1fr 380px;
+      align-items: start;
+    }
+    .details-sidebar { position: sticky; top: var(--space-3xl); }
+  }
+
+  .details-body {
+    font-size: var(--text-base);
+    line-height: 1.85;
+    color: var(--color-fg-muted);
+  }
+
+  .details-body h2,
+  .details-body h3 {
+    font-family: var(--font-display);
+    color: var(--color-fg);
+    margin: var(--space-2xl) 0 var(--space-lg);
+  }
+
+  .details-body h2 { font-size: var(--text-2xl); }
+  .details-body h3 { font-size: var(--text-xl); }
+
+  .details-body p { margin-bottom: var(--space-lg); }
+  .details-body ul, .details-body ol { margin: var(--space-lg) 0; padding-left: var(--space-xl); }
+  .details-body li { margin-bottom: var(--space-sm); }
+
+  .details-card-title {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+  }
+
+  .credits-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm) var(--space-xl);
+  }
+
+  @media (max-width: 600px) {
+    .credits-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .credit-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    padding: var(--space-xs) 0;
+    border-bottom: 1px solid var(--color-border);
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: credit-reveal 0.6s var(--transition-spring) forwards;
+    animation-delay: var(--stagger, 0ms);
+  }
+
+  .credit-item:last-child {
+    border-bottom: none;
+  }
+
+  .credit-item.credit-divider {
+    grid-column: span 2;
+    padding-top: var(--space-sm);
+    margin-top: 0;
+    border-top: 1px solid var(--accent);
+    border-bottom: none;
+  }
+
+  @media (max-width: 600px) {
+    .credit-item.credit-divider {
+      grid-column: span 1;
+    }
+  }
+
+  .credit-item dt {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-fg-subtle);
+    flex-shrink: 0;
+    min-width: 55px;
+  }
+
+  .credit-item dd {
+    font-family: var(--font-sans);
+    font-size: 0.55rem;
+    font-weight: 400;
+    color: var(--fg);
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  .credit-item dt::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--color-border), transparent);
+    margin-left: var(--space-xs);
+    opacity: 0.2;
+  }
+
+  .credit-item:last-child dt::after {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .credit-item {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Watch Film button in sidebar */
+  .details-sidebar .btn-block {
+    margin-top: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.55rem;
+  }
+
+  /* Project Navigation */
+  .nav-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .nav-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .nav-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-xl);
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-slower);
+    overflow: hidden;
+  }
+
+  .nav-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+    box-shadow: var(--glow-medium);
+  }
+
+  .next-card { flex-direction: row-reverse; }
+
+  .nav-card-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 768px) {
+    .next-card .nav-card-image {
+      width: 200px;
+    }
+  }
+
+  .nav-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slower);
+  }
+
+  .nav-card:hover .nav-card-image img {
+    transform: scale(1.05);
+  }
+
+  .nav-card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-lg);
+    flex: 1;
+  }
+
+  .next-card .nav-card-content { text-align: right; }
+
+  .nav-card-label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-sm);
+  }
+
+  .nav-card-title {
+    font-size: var(--text-xl);
+    line-height: 1.2;
+    margin-bottom: var(--space-xs);
+    transition: color var(--transition-base);
+  }
+
+  .nav-card:hover .nav-card-title {
+    color: var(--color-accent);
+  }
+
+  .nav-card-year {
+    font-size: var(--text-sm);
+    color: var(--color-fg-subtle);
+  }
+
+  .nav-card-arrow {
+    position: absolute;
+    color: var(--color-accent);
+    transition: transform var(--transition-base);
+  }
+
+  .next-card .nav-card-arrow {
+    right: var(--space-xl);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .next-card:hover .nav-card-arrow { transform: translateY(-50%) translateX(8px); }
+
+  .back-card .nav-card-arrow {
+    left: var(--space-xl);
+    bottom: var(--space-xl);
+  }
+
+  .back-card:hover .nav-card-arrow { transform: translateX(-8px); }
+
+  @media (max-width: 768px) {
+    .next-card { flex-direction: column; }
+    .next-card .nav-card-image { width: 100%; aspect-ratio: 16/9; }
+    .next-card .nav-card-content { text-align: center; padding: var(--space-lg) 0 0; }
+    .next-card .nav-card-arrow {
+      position: static;
+      margin: var(--space-md) auto 0;
+      transform: none;
+    }
+    .next-card:hover .nav-card-arrow { transform: translateY(4px); }
+  }
+
+  /* Lightbox open state - prevent body scroll */
+  body.lightbox-open {
+    overflow: hidden;
+  }
+</style>

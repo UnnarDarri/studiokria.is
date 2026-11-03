@@ -1,0 +1,55 @@
+---
+/**
+ * Services - Service offerings grid
+ */
+import ServiceCard from './ServiceCard.astro';
+
+interface Props {
+  services: Service[];
+  class?: string;
+}
+
+interface Service {
+  title: string;
+  description: string;
+  icon?: string;
+  image?: string;
+  features?: string[];
+}
+
+const { services, class: className = '' } = Astro.props;
+---
+
+<section id="services" class="services {className}" aria-labelledby="services-title">
+  <div class="container">
+    <header class="section-header animate-on-scroll">
+      <p class="section-label">Services</p>
+      <h2 id="services-title" class="section-title glow-text">What We Do</h2>
+      <p class="section-description">End-to-end production services from development through delivery.</p>
+    </header>
+
+    <div class="services-grid grid grid-3 stagger-children animate-on-scroll" role="list">
+      {services.map((service, index) => (
+        <ServiceCard
+          title={service.title}
+          description={service.description}
+          icon={service.icon}
+          image={service.image}
+          features={service.features}
+          class="animate-on-scroll"
+          style={`--stagger-delay: ${index * 100}ms`}
+        />
+      ))}
+    </div>
+
+    <div class="services-cta animate-on-scroll" style="text-align: center; margin-top: var(--space-2xl);">
+      <a href="/studio-kria-website/services/" class="btn btn-primary glow-element-medium">VIEW ALL SERVICES</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-grid {
+    margin-top: var(--space-xl);
+  }
+</style>

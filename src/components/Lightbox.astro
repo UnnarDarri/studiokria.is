@@ -1,0 +1,318 @@
+---
+/**
+ * Lightbox Component - For viewing stills/gallery images
+ */
+interface Props {
+  images: string[];
+  initialIndex?: number;
+  alt?: string;
+}
+
+const { images, initialIndex = 0, alt = 'Gallery image' } = Astro.props;
+---
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image gallery" style="display: none;">
+  <button class="lightbox-close" aria-label="Close lightbox">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <button class="lightbox-nav lightbox-prev" aria-label="Previous image">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </button>
+
+  <button class="lightbox-nav lightbox-next" aria-label="Next image">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  </button>
+
+  <div class="lightbox-content">
+    {images.map((image, index) => (
+      <div class={`lightbox-slide ${index === initialIndex ? 'active' : ''}`} data-index={index}>
+        <img src={image} alt={`${alt} ${index + 1}`} loading="lazy" />
+      </div>
+    ))}
+  </div>
+
+  <div class="lightbox-counter">
+    <span class="lightbox-current">{initialIndex + 1}</span> / <span class="lightbox-total">{images.length}</span>
+  </div>
+</div>
+
+<style>
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .lightbox.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .lightbox-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .lightbox-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .lightbox-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .lightbox-slide img {
+    max-width: 90vw;
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
+  }
+
+  .lightbox-close {
+    position: fixed;
+    top: var(--space-xl);
+    right: var(--space-xl);
+    z-index: 10;
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: var(--fg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-base);
+    backdrop-filter: blur(8px);
+  }
+
+  .lightbox-close:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+    transform: scale(1.1);
+  }
+
+  .lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: var(--fg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-base);
+    backdrop-filter: blur(8px);
+    opacity: 0.7;
+  }
+
+  .lightbox-nav:hover {
+    opacity: 1;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  .lightbox-prev { left: var(--space-xl); }
+  .lightbox-next { right: var(--space-xl); }
+
+  @media (max-width: 768px) {
+    .lightbox-close { top: var(--space-md); right: var(--space-md); width: 44px; height: 44px; }
+    .lightbox-nav { width: 48px; height: 48px; }
+    .lightbox-prev { left: var(--space-md); }
+    .lightbox-next { right: var(--space-md); }
+    .lightbox-slide img { max-width: 95vw; max-height: 75vh; }
+  }
+
+  .lightbox-counter {
+    position: fixed;
+    bottom: var(--space-2xl);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--fg);
+    opacity: 0.6;
+  }
+
+  .lightbox-current { color: var(--accent); opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox, .lightbox-slide { transition: none; }
+  }
+</style>
+
+<script is:inline>
+  class Lightbox {
+    constructor() {
+      this.lightbox = document.getElementById('lightbox');
+      this.slides = this.lightbox?.querySelectorAll('.lightbox-slide');
+      this.prevBtn = this.lightbox?.querySelector('.lightbox-prev');
+      this.nextBtn = this.lightbox?.querySelector('.lightbox-next');
+      this.closeBtn = this.lightbox?.querySelector('.lightbox-close');
+      this.currentEl = this.lightbox?.querySelector('.lightbox-current');
+      this.totalEl = this.lightbox?.querySelector('.lightbox-total');
+      this.currentIndex = 0;
+      this.total = this.slides?.length || 0;
+      this.isAnimating = false;
+
+      if (!this.lightbox || this.total === 0) return;
+
+      this.init();
+    }
+
+    init() {
+      this.prevBtn?.addEventListener('click', () => this.prev());
+      this.nextBtn?.addEventListener('click', () => this.next());
+      this.closeBtn?.addEventListener('click', () => this.close());
+
+      this.lightbox?.addEventListener('click', (e) => {
+        if (e.target === this.lightbox) this.close();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!this.lightbox?.classList.contains('is-open')) return;
+        if (e.key === 'Escape') this.close();
+        if (e.key === 'ArrowLeft') this.prev();
+        if (e.key === 'ArrowRight') this.next();
+      });
+
+      // Touch swipe support
+      let touchStartX = 0;
+      this.lightbox?.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      this.lightbox?.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) this.next();
+          else this.prev();
+        }
+      }, { passive: true });
+
+      // Update counter
+      this.updateCounter();
+    }
+
+    open(index = 0) {
+      this.currentIndex = index;
+      this.showSlide(index);
+      this.lightbox?.classList.add('is-open');
+      document.body.classList.add('lightbox-open');
+      this.updateCounter();
+    }
+
+    close() {
+      this.lightbox?.classList.remove('is-open');
+      document.body.classList.remove('lightbox-open');
+    }
+
+    prev() {
+      if (this.isAnimating) return;
+      const newIndex = (this.currentIndex - 1 + this.total) % this.total;
+      this.showSlide(newIndex);
+    }
+
+    next() {
+      if (this.isAnimating) return;
+      const newIndex = (this.currentIndex + 1) % this.total;
+      this.showSlide(newIndex);
+    }
+
+    showSlide(index) {
+      if (this.isAnimating || index === this.currentIndex) return;
+
+      this.isAnimating = true;
+      const prevSlide = this.slides[this.currentIndex];
+      const nextSlide = this.slides[index];
+
+      prevSlide?.classList.remove('active');
+      nextSlide?.classList.add('active');
+
+      this.currentIndex = index;
+      this.updateCounter();
+
+      setTimeout(() => { this.isAnimating = false; }, 300);
+    }
+
+    updateCounter() {
+      if (this.currentEl) this.currentEl.textContent = this.currentIndex + 1;
+      if (this.totalEl) this.totalEl.textContent = this.total;
+    }
+  }
+
+  // Initialize lightbox immediately and expose globally
+  function initLightbox() {
+    if (!window.lightbox) {
+      window.lightbox = new Lightbox();
+    }
+  }
+
+  // Run initialization immediately if DOM is ready, otherwise on DOMContentLoaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLightbox, { once: true });
+  } else {
+    initLightbox();
+  }
+
+  // Also expose initLightbox globally for manual initialization
+  window.initLightbox = initLightbox;
+
+  // Global function to open lightbox from stills button
+  // Ensures lightbox is initialized before opening
+  window.openLightbox = function(index = 0) {
+    if (!window.lightbox) {
+      initLightbox();
+    }
+    // Small timeout to ensure DOM is fully ready
+    setTimeout(() => {
+      window.lightbox?.open(index);
+    }, 0);
+  };
+</script>

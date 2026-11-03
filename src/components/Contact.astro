@@ -1,0 +1,447 @@
+---
+/**
+ * Contact - Contact form and info section + Footer
+ */
+import Button from './Button.astro';
+
+interface Props {
+  email: string;
+  phone?: string;
+  address?: string;
+  social?: {
+    instagram?: string;
+    linkedin?: string;
+    twitter?: string;
+    vimeo?: string;
+  };
+  class?: string;
+}
+
+const {
+  email,
+  phone = '+354 555 0123',
+  address = 'Reykjavik, Iceland',
+  social = {},
+  class: className = '',
+} = Astro.props;
+---
+
+<section id="contact" class="contact {className}" aria-labelledby="contact-title">
+  <div class="container">
+    <header class="section-header animate-on-scroll">
+      <p class="section-label">Contact</p>
+      <h2 id="contact-title" class="section-title glow-text">Let's Work Together</h2>
+      <p class="section-description">Have a project in mind? We'd love to hear about it.</p>
+    </header>
+
+    <div class="contact-grid grid grid-2 animate-on-scroll">
+      {/* Contact Form */}
+      <div class="contact-form-wrapper card glow-element-medium">
+        <form class="contact-form" action="https://formspree.io/f/your-form-id" method="POST" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Name <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="name" name="name" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email <span class="required" aria-hidden="true">*</span></label>
+              <input type="email" id="email" name="email" required autocomplete="email" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject">
+              <option value="">Select a topic</option>
+              <option value="production">Production Inquiry</option>
+              <option value="collaboration">Collaboration</option>
+              <option value="rentals">Equipment Rentals</option>
+              <option value="press">Press & Media</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Message <span class="required" aria-hidden="true">*</span></label>
+            <textarea id="message" name="message" rows="6" required placeholder="Tell us about your project..."></textarea>
+          </div>
+          <Button type="submit" variant="primary" size="lg" class="form-submit">
+            Send Message
+          </Button>
+          <p class="form-note">We typically respond within 2 business days.</p>
+        </form>
+      </div>
+
+      {/* Contact Info */}
+      <div class="contact-info animate-on-scroll">
+        <div class="contact-card card glow-element">
+          <h3 class="contact-card-title glow-text">Get in Touch</h3>
+          <div class="contact-details">
+            <a href={`mailto:${email}`} class="contact-detail glow-element">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+              <div>
+                <span class="contact-detail-label">Email</span>
+                <span class="contact-detail-value">{email}</span>
+              </div>
+            </a>
+
+            <a href={`tel:${phone.replace(/\s/g, '')}`} class="contact-detail glow-element">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              <div>
+                <span class="contact-detail-label">Phone</span>
+                <span class="contact-detail-value">{phone}</span>
+              </div>
+            </a>
+
+            <address class="contact-detail glow-element">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <div>
+                <span class="contact-detail-label">Location</span>
+                <span class="contact-detail-value">{address}</span>
+              </div>
+            </address>
+          </div>
+        </div>
+
+        {/* Social Links */}
+        {(social.instagram || social.linkedin || social.twitter || social.vimeo) && (
+          <div class="contact-social card glow-element">
+            <h3 class="contact-card-title glow-text">Follow Us</h3>
+            <div class="social-links">
+              {social.instagram && (
+                <a href={social.instagram} class="social-link glow-element" aria-label="Instagram" target="_blank" rel="noopener">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                  </svg>
+                  <span>Instagram</span>
+                </a>
+              )}
+              {social.linkedin && (
+                <a href={social.linkedin} class="social-link glow-element" aria-label="LinkedIn" target="_blank" rel="noopener">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                  <span>LinkedIn</span>
+                </a>
+              )}
+              {social.twitter && (
+                <a href={social.twitter} class="social-link glow-element" aria-label="Twitter" target="_blank" rel="noopener">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  <span>Twitter</span>
+                </a>
+              )}
+              {social.vimeo && (
+                <a href={social.vimeo} class="social-link glow-element" aria-label="Vimeo" target="_blank" rel="noopener">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.572 6.111C23.419 3.254 20.891.5 17.067.092L3.72-.004C.798.382 0 3.097 0 6.12v11.683c0 3.175.783 5.688 3.746 5.938l13.174-.563c3.861-.435 6.405-3.311 6.652-6.076V6.111zm-6.712 11.537c0 3.112-2.523 5.634-5.636 5.634-3.114 0-5.637-2.522-5.637-5.634 0-3.113 2.523-5.635 5.637-5.635 3.113 0 5.636 2.522 5.636 5.635zm0-11.015c-2.987 0-5.414 2.427-5.414 5.414 0 2.986 2.427 5.414 5.414 5.414 2.987 0 5.414-2.428 5.414-5.414 0-2.987-2.427-5.414-5.414-5.414z"/>
+                  </svg>
+                  <span>Vimeo</span>
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid grid grid-3">
+      <div class="footer-brand">
+        <p class="footer-logo glow-text-strong">STUDIO KRÍA</p>
+        <p class="footer-tagline">Independent film production.<br>Stories that linger.</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <h4 class="footer-nav-title">Work</h4>
+        <ul class="footer-links">
+          <li><a href="/studio-kria-website/projects/">Portfolio</a></li>
+          <li><a href="/studio-kria-website/services/">Services</a></li>
+          <li><a href="/studio-kria-website/rentals/">Equipment Rentals</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <h4 class="footer-nav-title">Company</h4>
+        <ul class="footer-links">
+          <li><a href="/studio-kria-website/team/">Team</a></li>
+          <li><a href="/studio-kria-website/about/">About</a></li>
+          <li><a href="/studio-kria-website/contact/">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="copyright">© {new Date().getFullYear()} STUDIO KRÍA. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="/studio-kria-website/privacy">Privacy Policy</a>
+        <a href="/studio-kria-website/terms">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .contact-grid {
+    margin-top: var(--space-xl);
+    gap: var(--space-xl);
+  }
+
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 480px) {
+    .form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .form-group label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-fg);
+  }
+
+  .required {
+    color: var(--color-accent);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: var(--space-md);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    transition: all var(--transition-base);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: var(--glow-subtle);
+  }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: var(--color-fg-subtle);
+  }
+
+  .form-submit {
+    width: 100%;
+    margin-top: var(--space-md);
+  }
+
+  .form-note {
+    text-align: center;
+    font-size: var(--text-xs);
+    color: var(--color-fg-subtle);
+  }
+
+  .contact-card {
+    padding: var(--space-xl);
+  }
+
+  .contact-card-title {
+    margin-bottom: var(--space-lg);
+  }
+
+  .contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .contact-detail {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-fg-muted);
+    transition: all var(--transition-base);
+    text-decoration: none;
+  }
+
+  .contact-detail:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    box-shadow: var(--glow-subtle);
+  }
+
+  .contact-detail-label {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-fg-subtle);
+    margin-bottom: var(--space-xs);
+  }
+
+  .contact-detail-value {
+    font-size: var(--text-base);
+    color: var(--color-fg);
+  }
+
+  .contact-social {
+    padding: var(--space-xl);
+    margin-top: var(--space-lg);
+  }
+
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    transition: all var(--transition-base);
+    text-decoration: none;
+  }
+
+  .social-link:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    box-shadow: var(--glow-subtle);
+  }
+
+  /* Footer */
+  .footer-grid {
+    padding: var(--space-3xl) 0 var(--space-2xl);
+    gap: var(--space-2xl);
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+  }
+
+  .footer-logo {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .footer-tagline {
+    color: var(--color-fg-subtle);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+  }
+
+  .footer-nav-title {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-md);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .footer-links a {
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    transition: color var(--transition-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--color-accent);
+    text-shadow: var(--glow-subtle);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .footer-bottom {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .copyright {
+    font-size: var(--text-sm);
+    color: var(--color-fg-subtle);
+  }
+
+  .footer-legal {
+    display: flex;
+    gap: var(--space-lg);
+  }
+
+  .footer-legal a {
+    font-size: var(--text-sm);
+    color: var(--color-fg-subtle);
+  }
+
+  .footer-legal a:hover {
+    color: var(--color-accent);
+    text-shadow: var(--glow-subtle);
+  }
+</style>

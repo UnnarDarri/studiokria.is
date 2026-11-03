@@ -1,0 +1,292 @@
+---
+/**
+ * Hero - Full-screen cinematic hero with massive typography, glitch, grain
+ */
+import Button from './Button.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  description?: string;
+  backgroundImage?: string;
+  backgroundVideo?: string;
+  ctaPrimary?: { text: string; href: string };
+  ctaSecondary?: { text: string; href: string };
+  class?: string;
+  glitch?: boolean;
+  massive?: boolean;
+  centered?: boolean;
+  variant?: 'home' | 'work' | 'contact' | 'project';
+}
+
+const {
+  title,
+  subtitle,
+  description,
+  backgroundImage,
+  backgroundVideo,
+  ctaPrimary,
+  ctaSecondary,
+  class: className = '',
+  glitch = true,
+  massive = false,
+  centered = false,
+  variant = 'home',
+} = Astro.props;
+
+const heroClass = `hero ${className} ${centered ? 'hero-centered' : ''} hero--${variant}`.trim();
+---
+
+<section class={heroClass} aria-labelledby="hero-title">
+  {/* Background Media */}
+  <div class="hero-background" aria-hidden="true">
+    {backgroundVideo && (
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        poster={backgroundImage}
+        class="hero-video"
+      >
+        <source src={backgroundVideo} type="video/mp4" />
+      </video>
+    )}
+    {backgroundImage && !backgroundVideo && (
+      <img
+        src={backgroundImage}
+        alt=""
+        class="hero-bg-image"
+        loading="eager"
+        fetchpriority="high"
+      />
+    )}
+    <div class="hero-overlay"></div>
+  </div>
+
+  {/* Foreground Content */}
+  <div class="hero-content animate-on-scroll">
+    {subtitle && (
+      <p class="hero-label glitch-text" data-text={subtitle}>
+        {subtitle}
+      </p>
+    )}
+
+    <h1 id="hero-title" class:list={['hero-title', glitch && 'glitch-text', massive && 'hero-title--massive']} data-text={title}>
+      {title}
+    </h1>
+
+    {description && (
+      <p class="hero-description">{description}</p>
+    )}
+
+    {(ctaPrimary || ctaSecondary) && (
+      <div class="hero-ctas">
+        {ctaPrimary && (
+          <Button href={ctaPrimary.href} variant="primary" size="xl">
+            {ctaPrimary.text}
+          </Button>
+        )}
+        {ctaSecondary && (
+          <Button href={ctaSecondary.href} variant="ghost" size="xl">
+            {ctaSecondary.text}
+          </Button>
+        )}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4xl) var(--space-xl);
+    overflow: hidden;
+  }
+
+  .hero--work { min-height: 60vh; min-height: 60dvh; }
+  .hero--contact { min-height: 60vh; min-height: 60dvh; }
+  .hero--project { min-height: 90vh; min-height: 90dvh; }
+
+  .hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: var(--z-bg);
+  }
+
+  .hero-video,
+  .hero-bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: contrast(1.1) saturate(0.8);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+  }
+
+  .hero-content {
+    max-width: var(--container-lg);
+    text-align: left;
+    z-index: var(--z-content);
+    padding: var(--space-2xl) 0;
+  }
+
+  .hero-centered .hero-content {
+    text-align: center;
+    max-width: var(--container-md);
+    margin: 0 auto;
+  }
+
+  /* Home variant - full width title */
+  .hero--home .hero-content {
+    max-width: 100%;
+    padding-left: var(--space-xl);
+    padding-right: var(--space-xl);
+  }
+
+  .hero-label {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-xl);
+    opacity: 0.7;
+    position: relative;
+  }
+
+  .hero-label::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: var(--accent);
+    animation: line-expand 1.5s var(--transition-spring) forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  .hero-centered .hero-label::before {
+    left: 50%;
+    transform-origin: center;
+    transform: translateX(-50%) scaleX(0);
+    animation: line-expand-center 1.5s var(--transition-spring) forwards;
+  }
+
+  @keyframes line-expand {
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes line-expand-center {
+    to { transform: translateX(-50%) scaleX(1); }
+  }
+
+  .hero-title {
+    font-size: var(--display-xl);
+    line-height: 0.85;
+    margin-bottom: var(--space-2xl);
+    letter-spacing: var(--letter-spacing-display);
+    text-shadow:
+      -2px 0 2px rgba(255, 35, 64, 0.45),
+      2px 0 2px rgba(0, 221, 255, 0.40),
+      0 0 5px rgba(255, 255, 255, 0.45);
+  }
+
+  .hero-title--massive {
+    font-size: var(--display-xl);
+    line-height: 0.85;
+    letter-spacing: var(--letter-spacing-display);
+    max-width: none;
+    /* Allow wrapping on mobile, but keep on one line on desktop */
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    text-shadow:
+      -2px 0 2px rgba(255, 35, 64, 0.45),
+      2px 0 2px rgba(0, 221, 255, 0.40),
+      0 0 5px rgba(255, 255, 255, 0.45);
+  }
+
+  /* Home variant specific - full width, responsive */
+  .hero--home .hero-title--massive {
+    font-size: clamp(5rem, 12vw, 16rem);
+    line-height: 0.8;
+    padding: 0;
+  }
+
+  /* Mobile: ensure full width scaling */
+  @media (max-width: 768px) {
+    .hero--home .hero-title--massive {
+      font-size: clamp(4rem, 14vw, 8rem);
+      line-height: 0.85;
+      letter-spacing: var(--letter-spacing-display);
+    }
+  }
+
+  .hero-title.glitch-text:hover::before,
+  .hero-title.glitch-text:hover::after {
+    opacity: 0.9;
+  }
+
+  .hero-description {
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: var(--fg-muted);
+    max-width: 55ch;
+    margin: 0 0 var(--space-3xl);
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    align-items: center;
+    margin-bottom: var(--space-4xl);
+  }
+
+  .hero-centered .hero-ctas {
+    justify-content: center;
+  }
+
+  .hero-scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    color: var(--fg-subtle);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-label::before {
+      animation: none;
+    }
+    .hero-label::before { transform: scaleX(1); }
+    .hero-centered .hero-label::before { transform: translateX(-50%) scaleX(1); }
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .hero { padding: var(--space-3xl) var(--space-lg); }
+    .hero-title { font-size: var(--display-lg); }
+    .hero-title--massive { font-size: var(--display-md); white-space: normal; }
+    .hero-description { font-size: var(--text-base); }
+  }
+</style>

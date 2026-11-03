@@ -1,0 +1,29 @@
+---
+/**
+ * GlowText - Text with configurable glow effect
+ * Uses CSS text-shadow for performant glow
+ */
+interface Props {
+  children: string;
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div';
+  intensity?: 'subtle' | 'medium' | 'strong' | 'pulse';
+  class?: string;
+}
+
+const { children, tag: Tag = 'h1', intensity = 'subtle', class: className = '' } = Astro.props;
+
+const intensityClass = {
+  subtle: 'glow-text',
+  medium: 'glow-text-medium',
+  strong: 'glow-text-strong',
+  pulse: 'glow-text-medium glow-pulse',
+}[intensity];
+---
+
+<{Tag} class="{intensityClass} {className}" {...Astro.attrs}>
+  {children}
+</{Tag}>
+
+<style>
+  /* Scoped - glow classes from global.css */
+</style>
