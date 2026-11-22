@@ -4,12 +4,13 @@ import { getLocaleFromPath } from '../i18n';
 
 const locale = getLocaleFromPath(Astro.url.pathname);
 const defaultLocale = supportedLocales[0];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // If no locale in path, redirect to default locale
 if (!supportedLocales.includes(locale as typeof supportedLocales[number])) {
-  return Astro.redirect(`/${defaultLocale}/`);
+  return Astro.redirect(`${base}/${defaultLocale}/`);
 }
 
 // Otherwise redirect to the locale-specific page
-return Astro.redirect(`/${locale}/`);
+return Astro.redirect(`${base}/${locale}/`);
 ---
