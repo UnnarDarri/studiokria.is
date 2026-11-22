@@ -1,0 +1,29 @@
+---
+/**
+ * HeroGradient - Shared gradient background component
+ * Eliminates duplication across 7 pages
+ */
+---
+
+<div class="hero-gradient-bg" aria-hidden="true" />
+
+<style>
+  .hero-gradient-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 800px 600px at 20% 10%,
+        rgba(226, 82, 28, 0.08) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 600px 400px at 80% 90%,
+        rgba(0, 180, 216, 0.05) 0%,
+        transparent 70%
+      ),
+      var(--bg);
+  }
+</style>

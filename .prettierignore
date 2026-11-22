@@ -1,0 +1,17 @@
+dist/
+node_modules/
+.astro/
+*.lock
+*.log
+coverage/
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.woff
+*.woff2
+*.ttf
+*.eot

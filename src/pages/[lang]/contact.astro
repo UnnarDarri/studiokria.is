@@ -4,6 +4,7 @@
  */
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
+import HeroGradient from '../../components/HeroGradient.astro';
 import { t, getTranslation } from '../../i18n';
 
 export async function getStaticPaths() {
@@ -24,11 +25,13 @@ const pathname = '/contact/'; // Current path without base path
 <Layout
   title={t(locale, 'contact.title')}
   description={translations.contact.description}
-  image="/assets/images/og-contact.jpg"
+  image="/assets/images/og-contact.svg"
   locale={locale}
   translations={translations}
   pathname={pathname}
 >
+  <HeroGradient />
+
   {/* Hero - minimal, just title */}
   <section class="contact-hero" aria-labelledby="contact-title">
     <div class="container">
@@ -130,7 +133,7 @@ const pathname = '/contact/'; // Current path without base path
 
           <div class="info-block">
             <h3 class="info-title">{t(locale, 'common.location') || 'Find Us'}</h3>
-            <div class="map-placeholder" style="aspect-ratio: 16/9; background: transparent; border: 1px solid var(--color-border); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-fg-subtle);">
+            <div class="map-placeholder" style="aspect-ratio: 16/9; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--fg-subtle);">
               <span>Map — Grandagarður 16, 101 Reykjavik</span>
             </div>
           </div>
@@ -151,7 +154,7 @@ const pathname = '/contact/'; // Current path without base path
     justify-content: center;
     padding: var(--space-4xl) var(--space-xl);
     text-align: center;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
     background: transparent;
   }
 
@@ -171,7 +174,7 @@ const pathname = '/contact/'; // Current path without base path
     font-weight: 700;
     letter-spacing: 0.4em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--accent);
     margin-bottom: var(--space-xl);
     opacity: 0.7;
   }
@@ -179,7 +182,7 @@ const pathname = '/contact/'; // Current path without base path
   .contact-desc {
     font-size: var(--text-lg);
     line-height: 1.8;
-    color: var(--color-fg-muted);
+    color: var(--fg-muted);
     max-width: 55ch;
     margin: 0 auto;
   }
@@ -228,7 +231,7 @@ const pathname = '/contact/'; // Current path without base path
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-fg-subtle);
+    color: var(--fg-subtle);
   }
 
   .form-field input,
@@ -238,9 +241,9 @@ const pathname = '/contact/'; // Current path without base path
     padding: var(--space-md);
     font-family: var(--font-sans);
     font-size: var(--text-base);
-    color: var(--color-fg);
-    background: var(--color-bg-elevated);
-    border: 1px solid var(--color-border);
+    color: var(--fg);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     transition: all var(--transition-fast);
   }
@@ -249,13 +252,13 @@ const pathname = '/contact/'; // Current path without base path
   .form-field select:focus,
   .form-field textarea:focus {
     outline: none;
-    border-color: var(--color-accent);
+    border-color: var(--accent);
     box-shadow: var(--glow-soft);
   }
 
   .form-field input::placeholder,
   .form-field textarea::placeholder {
-    color: var(--color-fg-subtle);
+    color: var(--fg-subtle);
   }
 
   .form-submit {
@@ -265,7 +268,7 @@ const pathname = '/contact/'; // Current path without base path
 
   .form-note {
     font-size: var(--text-sm);
-    color: var(--color-fg-subtle);
+    color: var(--fg-subtle);
     text-align: center;
   }
 

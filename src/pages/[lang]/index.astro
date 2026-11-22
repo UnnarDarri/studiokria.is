@@ -4,6 +4,7 @@
  */
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
+import HeroGradient from '../../components/HeroGradient.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation } from '../../i18n';
 
@@ -53,14 +54,15 @@ const translationsJson = JSON.stringify(translations);
 <Layout
   title="Studio Kria — Independent Film Production"
   description={translations.hero.description}
-  image="/assets/images/og-home.jpg"
+  image="/assets/images/og-home.svg"
   locale={locale}
   translations={translations}
   pathname={pathname}
 >
+  <HeroGradient />
   <Hero
     title="STUDIO KRÍA"
-    ctaPrimary={{ text: translations.hero.ctaPrimary, href: localUrl('/projects/') }}
+    description={translations.hero.subtitle}
     glitch={true}
     massive={true}
     centered={true}
@@ -68,17 +70,12 @@ const translationsJson = JSON.stringify(translations);
   />
 
   {/* Gateway Section - WORKS SERVICES GEAR ABOUT */}
-  <section class="section gateway-section" aria-labelledby="gateway-title">
+  <section class="section gateway-section" aria-label={translations.home.gatewaySection || 'Main navigation'}>
     <div class="container">
-      <header class="section-header animate-on-scroll">
-        <h2 id="gateway-title" class="section-title glitch-text" data-text={translations.home.exploreMore}>
-          {translations.home.exploreMore}
-        </h2>
-      </header>
       <div class="gateway-grid stagger-children animate-on-scroll">
         <a href={localUrl('/projects/')} class="gateway-card">
           <div class="gateway-card-image">
-            <img src={assetUrl("/assets/images/gateway-projects.jpg")} alt="" loading="lazy" />
+            <img src={assetUrl("/assets/images/gateway-projects.svg")} alt="" loading="lazy" />
           </div>
           <div class="gateway-card-gradient"></div>
           <div class="gateway-card-overlay"></div>
@@ -91,7 +88,7 @@ const translationsJson = JSON.stringify(translations);
         </a>
         <a href={localUrl('/services/')} class="gateway-card">
           <div class="gateway-card-image">
-            <img src={assetUrl("/assets/images/gateway-services.jpg")} alt="" loading="lazy" />
+            <img src={assetUrl("/assets/images/gateway-services.svg")} alt="" loading="lazy" />
           </div>
           <div class="gateway-card-gradient"></div>
           <div class="gateway-card-overlay"></div>
@@ -104,7 +101,7 @@ const translationsJson = JSON.stringify(translations);
         </a>
         <a href={localUrl('/rentals/')} class="gateway-card">
           <div class="gateway-card-image">
-            <img src={assetUrl("/assets/images/gateway-rentals.jpg")} alt="" loading="lazy" />
+            <img src={assetUrl("/assets/images/gateway-rentals.svg")} alt="" loading="lazy" />
           </div>
           <div class="gateway-card-gradient"></div>
           <div class="gateway-card-overlay"></div>
@@ -117,7 +114,7 @@ const translationsJson = JSON.stringify(translations);
         </a>
         <a href={localUrl('/about/')} class="gateway-card">
           <div class="gateway-card-image">
-            <img src={assetUrl("/assets/images/gateway-about.jpg")} alt="" loading="lazy" />
+            <img src={assetUrl("/assets/images/gateway-about.svg")} alt="" loading="lazy" />
           </div>
           <div class="gateway-card-gradient"></div>
           <div class="gateway-card-overlay"></div>
@@ -161,12 +158,22 @@ const translationsJson = JSON.stringify(translations);
 
           <a href={localUrl(`/projects/${featuredProject.id}/`)} class="featured-showcase-link" aria-label={`${translations.projects.viewProject}: ${featuredProject.data.title} — ${translations.projectTypes[featuredProject.data.type] || featuredProject.data.type}`}>
             <div class="featured-showcase-image" aria-hidden="true">
+              <!-- Two images for smooth crossfade/slide transition -->
               <img
+                class="carousel-img is-active"
                 src={assetUrl(featuredProject.data.heroImage || featuredProject.data.thumbnail)}
                 alt=""
                 loading="eager"
                 fetchpriority="high"
                 sizes="100vw"
+              />
+              <img
+                class="carousel-img is-incoming"
+                src=""
+                alt=""
+                loading="lazy"
+                sizes="100vw"
+                aria-hidden="true"
               />
               <div class="featured-showcase-overlay">
                 <div class="featured-showcase-gradient"></div>
@@ -228,14 +235,12 @@ const translationsJson = JSON.stringify(translations);
     </section>
   )}
 
-  <section class="cta-section section section-compact" aria-labelledby="cta-title">
+  {/* CTA Section - "Want to Work Together" text as link */}
+  <section class="cta-section section section-compact" aria-labelledby="cta-link">
     <div class="container">
       <div class="cta-content animate-on-scroll">
-        <h2 id="cta-title" class="cta-title glitch-text" data-text={translations.projects.wantToWork}>
+        <a id="cta-link" href={localUrl('/contact/')} class="cta-link">
           {translations.projects.wantToWork}
-        </h2>
-        <a href={localUrl('/contact/')} class="btn btn-primary btn-xl glow-element-intense">
-          {translations.projects.startProject}
         </a>
       </div>
     </div>
@@ -245,14 +250,14 @@ const translationsJson = JSON.stringify(translations);
 <style>
   .featured-projects {
     background: transparent;
-    border-bottom: 1px solid var(--border);
-    padding: var(--space-4xl) 0;
+    /* No border - removed divider line */
+    padding: var(--space-xl) var(--space-2xl) 0;
   }
 
   .featured-projects .section-header {
-    padding-bottom: var(--space-2xl);
-    border-bottom: 1px solid var(--border);
-    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-lg);
+    /* No border */
+    margin-bottom: var(--space-lg);
   }
 
   .cta-section {
@@ -281,15 +286,16 @@ const translationsJson = JSON.stringify(translations);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-base);
+    transition: background-color var(--transition-base), border-color var(--transition-base), color var(--transition-base);
     backdrop-filter: blur(8px);
+    transform: translateY(-50%);
   }
 
   .carousel-next:hover {
     background: var(--accent);
     border-color: var(--accent);
     color: var(--bg);
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%); /* Lock transform to prevent any hover movement */
   }
 
   .carousel-next svg {
@@ -305,26 +311,6 @@ const translationsJson = JSON.stringify(translations);
       width: 48px;
       height: 48px;
     }
-  }
-
-  /* Home Page Gradient Background */
-  .home-gradient-bg {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background:
-      radial-gradient(
-        ellipse 800px 600px at 20% 10%,
-        rgba(226, 82, 28, 0.08) 0%,
-        transparent 70%
-      ),
-      radial-gradient(
-        ellipse 600px 400px at 80% 90%,
-        rgba(0, 180, 216, 0.05) 0%,
-        transparent 70%
-      ),
-      var(--bg);
   }
 
   .featured-showcase {
@@ -343,26 +329,46 @@ const translationsJson = JSON.stringify(translations);
   .featured-showcase-image {
     position: relative;
     width: 100%;
-    aspect-ratio: 21/9;
+    aspect-ratio: 16/9;
     overflow: hidden;
   }
 
   .featured-showcase-image img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease, opacity 0.4s ease;
-    filter: contrast(1.1) saturate(0.8);
-    will-change: transform, filter, opacity;
-  }
-
-  .featured-showcase-image img.is-changing {
+    /* Base state: hidden, slightly zoomed (Ken Burns start) */
     opacity: 0;
+    transform: scale(1.04);
+    transition:
+      opacity 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      transform 1200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      filter 600ms ease;
+    filter: contrast(1.1) saturate(0.8);
+    will-change: opacity, transform, filter;
   }
 
-  .featured-showcase-link:hover .featured-showcase-image img {
-    transform: scale(1.03);
+  /* Active image: fully visible, normal scale */
+  .featured-showcase-image img.is-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Hover zoom on active */
+  .featured-showcase-link:hover .featured-showcase-image img.is-active {
+    transform: scale(1.02);
     filter: contrast(1.15) saturate(1) brightness(1.05);
+  }
+
+  /* Content transitions - driven by container class */
+  .featured-showcase-content {
+    transition: opacity 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .featured-showcase.transitioning .featured-showcase-content {
+    opacity: 0;
   }
 
   .featured-showcase-overlay {
@@ -391,19 +397,12 @@ const translationsJson = JSON.stringify(translations);
   .featured-showcase-content {
     position: absolute;
     inset: 0;
-    z-index: var(--z-content);
+    z-index: calc(var(--z-content) + 5);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: var(--space-4xl) var(--space-2xl) var(--space-3xl);
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .featured-showcase-link:hover .featured-showcase-content {
-    opacity: 1;
-    transform: translateY(0);
+    /* Always visible - no hover reveal */
   }
 
   .featured-showcase-meta {
@@ -557,14 +556,13 @@ const translationsJson = JSON.stringify(translations);
 
   .gateway-section {
     background: transparent;
-    padding: var(--space-4xl) 0;
+    padding: 0 0 var(--space-4xl);
   }
 
   .gateway-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-xl);
-    margin-top: var(--space-2xl);
   }
 
   @media (min-width: 768px) {
@@ -650,14 +648,7 @@ const translationsJson = JSON.stringify(translations);
     flex-direction: column;
     justify-content: flex-end;
     padding: var(--space-2xl) var(--space-xl);
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .gateway-card:hover .gateway-card-content {
-    opacity: 1;
-    transform: translateY(0);
+    /* Always visible - no hover reveal */
   }
 
   .gateway-card-label {
@@ -761,23 +752,34 @@ const translationsJson = JSON.stringify(translations);
     gap: var(--space-md);
   }
 
+  /* CTA Section - "Want to Work Together" text as link */
   .cta-section {
     background: transparent;
     text-align: center;
     border-top: 1px solid var(--border);
+    padding: var(--space-4xl) 0 var(--space-5xl);
   }
 
-  .cta-title {
-    font-size: var(--display-lg);
-    line-height: 1;
-    margin-bottom: var(--space-lg);
-    text-shadow: var(--glow-intense);
+  .cta-link {
+    font-family: var(--font-display);
+    font-size: var(--display-xl);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: var(--letter-spacing-display);
+    text-transform: uppercase;
+    color: var(--fg);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .cta-link:hover {
+    color: var(--accent);
   }
 
   @media (max-width: 768px) {
-    .featured-projects { padding: var(--space-3xl) 0; }
+    .featured-projects { padding: var(--space-xl) var(--space-lg) 0; }
     .featured-showcase-image { aspect-ratio: 16/9; }
-    .featured-showcase-content { padding: var(--space-2xl) var(--space-lg) var(--space-xl); }
+    .featured-showcase-content { padding: var(--space-xl) var(--space-lg) var(--space-lg); }
     .featured-showcase-title { font-size: var(--display-sm); max-width: 100%; }
     .featured-showcase-desc { display: none; }
     .featured-showcase-meta { display: none; }
@@ -786,17 +788,19 @@ const translationsJson = JSON.stringify(translations);
     .featured-showcase-action { display: none; }
     .featured-showcase-rotation { flex-wrap: wrap; padding: var(--space-lg); }
 
-    .gateway-section { padding: var(--space-3xl) 0; }
+    .gateway-section { padding: 0 var(--space-lg) var(--space-3xl); }
     .gateway-grid { gap: var(--space-lg); }
     .gateway-card-content { padding: var(--space-lg); }
     .gateway-card-title { font-size: var(--display-sm); }
 
-    .cta-title { font-size: var(--display-md); }
+    .cta-section { padding: var(--space-3xl) 0 var(--space-4xl); }
+    .cta-link { font-size: var(--display-lg); }
+    .cta-link svg { width: 24px; height: 24px; }
   }
 </style>
 
 <script is:inline>
-  // Featured Project Rotation
+  // Featured Project Rotation - Smooth slide/crossfade transition
   (function() {
     const showcase = document.getElementById('featuredProject');
     if (!showcase) return;
@@ -810,7 +814,9 @@ const translationsJson = JSON.stringify(translations);
     if (projectsData.length <= 1) return;
 
     const link = showcase.querySelector('.featured-showcase-link');
-    const image = showcase.querySelector('.featured-showcase-image img');
+    const imageContainer = showcase.querySelector('.featured-showcase-image');
+    const activeImg = showcase.querySelector('.carousel-img.is-active');
+    const incomingImg = showcase.querySelector('.carousel-img.is-incoming');
     const typeEl = showcase.querySelector('.featured-showcase-type');
     const yearEl = showcase.querySelector('.featured-showcase-year');
     const durationEl = showcase.querySelector('.featured-showcase-duration');
@@ -825,64 +831,194 @@ const translationsJson = JSON.stringify(translations);
     let rotationInterval = null;
     let isPaused = false;
     let displayStartTime = 0;
+    let isAnimating = false;
     const ROTATION_INTERVAL = 6000;
+
+    // Track which image element is currently active (0 or 1)
+    let activeImageIndex = 0;
+    const carouselImages = [activeImg, incomingImg];
 
     function assetUrl(path) {
       return basePath.replace(/\/$/, '') + (path.startsWith('/') ? path : '/' + path);
     }
 
-    function updateShowcase(index) {
+    // Get content container for synchronized transitions
+    const contentContainer = showcase.querySelector('.featured-showcase-content');
+
+    function updateShowcase(index, direction = 'next') {
+      if (isAnimating) return;
       const project = projectsData[index];
       if (!project) return;
+
+      isAnimating = true;
 
       link.href = `${basePath.replace(/\/$/, '')}/${locale}/projects/${project.id}/`;
       link.setAttribute('aria-label', `${translations.projects?.viewProject || 'View Project'}: ${project.title} — ${translations.projectTypes?.[project.type] || project.type}`);
 
-      // Fade out, swap src, fade in - using CSS class for transition
-      image.classList.add('is-changing');
-      setTimeout(() => {
-        image.src = assetUrl(project.heroImage || project.thumbnail);
-        // Remove class after src change to trigger fade-in
-        requestAnimationFrame(() => {
-          image.classList.remove('is-changing');
-        });
-      }, 200);
+      // Determine which image element will be the next active one
+      const nextActiveIndex = 1 - activeImageIndex;
+      const nextActiveImg = carouselImages[nextActiveIndex];
+      const currentActiveImg = carouselImages[activeImageIndex];
 
-      typeEl.textContent = translations.projectTypes?.[project.type] || project.type;
-      yearEl.textContent = project.year;
-      durationEl.textContent = project.duration || '';
-      durationEl.style.display = project.duration ? 'inline' : 'none';
-      statusEl.textContent = translations.projectStatus?.[project.status] || project.status;
+      // Set up the next image src
+      const nextSrc = assetUrl(project.heroImage || project.thumbnail);
+      nextActiveImg.src = nextSrc;
+      nextActiveImg.alt = '';
 
-      titleEl.textContent = project.title;
-      titleEl.setAttribute('data-text', project.title);
+      // Ensure new image is loaded before transition
+      const startTransition = () => {
+        // Start content fade-out (CSS-driven)
+        if (contentContainer) {
+          contentContainer.classList.add('transitioning');
+        }
 
-      if (roleEl) {
-        roleEl.textContent = project.role?.join(' / ') || '';
-        roleEl.style.display = project.role?.length ? 'block' : 'none';
+        // Start image crossfade: swap is-active class on both images simultaneously
+        // Old: is-active → (none) = opacity 1 → 0
+        // New: (none) → is-active = opacity 0 → 1
+        currentActiveImg.classList.remove('is-active');
+        nextActiveImg.classList.add('is-active');
+
+        // Update text content at crossfade midpoint using transitionend
+        // We'll use a single transitionend listener on the outgoing image
+        let contentUpdated = false;
+
+        const onTransitionEnd = (e) => {
+          // Only care about opacity transition on the outgoing image
+          if (e.propertyName !== 'opacity' || e.target !== currentActiveImg) return;
+
+          currentActiveImg.removeEventListener('transitionend', onTransitionEnd);
+
+          // Update text content now (at exact crossfade midpoint)
+          if (!contentUpdated) {
+            typeEl.textContent = translations.projectTypes?.[project.type] || project.type;
+            yearEl.textContent = project.year;
+            durationEl.textContent = project.duration || '';
+            durationEl.style.display = project.duration ? 'inline' : 'none';
+            statusEl.textContent = translations.projectStatus?.[project.status] || project.status;
+
+            titleEl.textContent = project.title;
+            titleEl.setAttribute('data-text', project.title);
+
+            if (roleEl) {
+              roleEl.textContent = project.role?.join(' / ') || '';
+              roleEl.style.display = project.role?.length ? 'block' : 'none';
+            }
+
+            descEl.textContent = project.description;
+
+            if (festivalsEl && project.festival) {
+              festivalsEl.innerHTML = project.festival.slice(0, 4).map(fest =>
+                `<span class="festival-chip">${fest}</span>`
+              ).join('') + (project.festival.length > 4 ?
+                `<span class="festival-chip festival-chip--more">+${project.festival.length - 4}</span>` : '');
+            }
+
+            dots.forEach((dot, i) => {
+              dot.classList.toggle('active', i === index);
+            });
+
+            contentUpdated = true;
+          }
+
+          // Start content fade-in
+          if (contentContainer) {
+            contentContainer.classList.remove('transitioning');
+          }
+        };
+
+        currentActiveImg.addEventListener('transitionend', onTransitionEnd);
+
+        // Fallback: if transitionend doesn't fire (e.g., reduced motion), use timeout
+        const fallbackTimer = setTimeout(() => {
+          currentActiveImg.removeEventListener('transitionend', onTransitionEnd);
+          if (!contentUpdated) {
+            onTransitionEnd({ propertyName: 'opacity', target: currentActiveImg });
+          }
+        }, 1100); // Slightly longer than transition
+
+        // After transition fully completes, swap active index and cleanup
+        const onTransformEnd = (e) => {
+          if (e.propertyName !== 'transform' || e.target !== currentActiveImg) return;
+          currentActiveImg.removeEventListener('transitionend', onTransformEnd);
+          clearTimeout(fallbackTimer);
+
+          // Swap active index
+          activeImageIndex = nextActiveIndex;
+
+          // Cleanup: old image gets no classes (back to base hidden state)
+          carouselImages[1 - activeImageIndex].classList.remove('is-active');
+          imageContainer.classList.remove('is-reverse');
+
+          currentIndex = index;
+          displayStartTime = Date.now();
+          isAnimating = false;
+        };
+
+        currentActiveImg.addEventListener('transitionend', onTransformEnd);
+
+        // Master fallback: ensure cleanup even if transitionend events don't fire
+        // (e.g., reduced motion, browser quirks, element removed)
+        const masterFallback = setTimeout(() => {
+          currentActiveImg.removeEventListener('transitionend', onTransitionEnd);
+          currentActiveImg.removeEventListener('transitionend', onTransformEnd);
+          clearTimeout(fallbackTimer);
+          if (!contentUpdated) {
+            // Force content update
+            typeEl.textContent = translations.projectTypes?.[project.type] || project.type;
+            yearEl.textContent = project.year;
+            durationEl.textContent = project.duration || '';
+            durationEl.style.display = project.duration ? 'inline' : 'none';
+            statusEl.textContent = translations.projectStatus?.[project.status] || project.status;
+            titleEl.textContent = project.title;
+            titleEl.setAttribute('data-text', project.title);
+            if (roleEl) {
+              roleEl.textContent = project.role?.join(' / ') || '';
+              roleEl.style.display = project.role?.length ? 'block' : 'none';
+            }
+            descEl.textContent = project.description;
+            if (festivalsEl && project.festival) {
+              festivalsEl.innerHTML = project.festival.slice(0, 4).map(fest =>
+                `<span class="festival-chip">${fest}</span>`
+              ).join('') + (project.festival.length > 4 ?
+                `<span class="festival-chip festival-chip--more">+${project.festival.length - 4}</span>` : '');
+            }
+            dots.forEach((dot, i) => {
+              dot.classList.toggle('active', i === index);
+            });
+            if (contentContainer) contentContainer.classList.remove('transitioning');
+          }
+          // Force cleanup
+          activeImageIndex = nextActiveIndex;
+          carouselImages[1 - activeImageIndex].classList.remove('is-active');
+          imageContainer.classList.remove('is-reverse');
+          currentIndex = index;
+          displayStartTime = Date.now();
+          isAnimating = false;
+        }, 1500); // Longer than longest transition (1200ms)
+      };
+
+      // Preload image then start
+      if (nextActiveImg.complete && nextActiveImg.naturalWidth > 0) {
+        startTransition();
+      } else {
+        nextActiveImg.onload = startTransition;
+        nextActiveImg.onerror = () => {
+          // Even if image fails to load, proceed with transition
+          startTransition();
+        };
       }
-
-      descEl.textContent = project.description;
-
-      if (festivalsEl && project.festival) {
-        festivalsEl.innerHTML = project.festival.slice(0, 4).map(fest =>
-          `<span class="festival-chip">${fest}</span>`
-        ).join('') + (project.festival.length > 4 ?
-          `<span class="festival-chip festival-chip--more">+${project.festival.length - 4}</span>` : '');
-      }
-
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-      });
-
-      currentIndex = index;
-      displayStartTime = Date.now();
     }
 
     function nextProject() {
-      if (isPaused) return;
+      if (isPaused || isAnimating) return;
       const next = (currentIndex + 1) % projectsData.length;
-      updateShowcase(next);
+      updateShowcase(next, 'next');
+    }
+
+    function prevProject() {
+      if (isPaused || isAnimating) return;
+      const prev = (currentIndex - 1 + projectsData.length) % projectsData.length;
+      updateShowcase(prev, 'prev');
     }
 
     function startRotation() {
@@ -908,7 +1044,7 @@ const translationsJson = JSON.stringify(translations);
       } else {
         // Wait for remaining time
         setTimeout(() => {
-          if (!isPaused) {
+          if (!isPaused && !isAnimating) {
             nextProject();
             startRotation();
           }
@@ -916,15 +1052,68 @@ const translationsJson = JSON.stringify(translations);
       }
     }
 
-    // Start rotation immediately
-    updateShowcase(0); // Initialize displayStartTime
+    // Initialize both images
+    if (projectsData[0]) {
+      // Set up first image as active
+      activeImg.src = assetUrl(projectsData[0].heroImage || projectsData[0].thumbnail);
+      activeImg.alt = '';
+      activeImg.classList.add('is-active');
+
+      // Preload second image if there are more projects
+      if (projectsData.length > 1) {
+        const secondSrc = assetUrl(projectsData[1].heroImage || projectsData[1].thumbnail);
+        incomingImg.src = secondSrc;
+        incomingImg.alt = '';
+      }
+    }
+
+    // Initialize displayStartTime and text without animation
+    currentIndex = 0;
+    displayStartTime = Date.now();
+    isAnimating = false;
+
+    // Update text content for first project
+    const firstProject = projectsData[0];
+    if (firstProject) {
+      typeEl.textContent = translations.projectTypes?.[firstProject.type] || firstProject.type;
+      yearEl.textContent = firstProject.year;
+      durationEl.textContent = firstProject.duration || '';
+      durationEl.style.display = firstProject.duration ? 'inline' : 'none';
+      statusEl.textContent = translations.projectStatus?.[firstProject.status] || firstProject.status;
+      titleEl.textContent = firstProject.title;
+      titleEl.setAttribute('data-text', firstProject.title);
+      if (roleEl) {
+        roleEl.textContent = firstProject.role?.join(' / ') || '';
+        roleEl.style.display = firstProject.role?.length ? 'block' : 'none';
+      }
+      descEl.textContent = firstProject.description;
+      if (festivalsEl && firstProject.festival) {
+        festivalsEl.innerHTML = firstProject.festival.slice(0, 4).map(fest =>
+          `<span class="festival-chip">${fest}</span>`
+        ).join('') + (firstProject.festival.length > 4 ?
+          `<span class="festival-chip festival-chip--more">+${firstProject.festival.length - 4}</span>` : '');
+      }
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === 0);
+      });
+    }
+
     startRotation();
+
+    // Trigger first transition after a short delay so user sees it working
+    setTimeout(() => {
+      if (!isPaused && !isAnimating && projectsData.length > 1) {
+        nextProject();
+      }
+    }, 3000); // 3 seconds for first transition
 
     // Dot navigation
     dots.forEach((dot, i) => {
       dot.addEventListener('click', () => {
+        if (isAnimating) return;
         stopRotation();
-        updateShowcase(i);
+        const direction = i > currentIndex ? 'next' : 'prev';
+        updateShowcase(i, direction);
         startRotation();
       });
     });
@@ -942,21 +1131,11 @@ const translationsJson = JSON.stringify(translations);
       });
     }
 
-    // Pause on hover of the link (the interactive element)
-    link.addEventListener('mouseenter', () => {
-      isPaused = true;
-      stopRotation();
-    });
-    link.addEventListener('mouseleave', () => {
-      isPaused = false;
-      scheduleNext();
-    });
-
     // Keyboard navigation
     showcase.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft') {
         stopRotation();
-        updateShowcase((currentIndex - 1 + projectsData.length) % projectsData.length);
+        prevProject();
         startRotation();
       } else if (e.key === 'ArrowRight') {
         stopRotation();
@@ -975,6 +1154,7 @@ const translationsJson = JSON.stringify(translations);
     }, { passive: true });
 
     showcase.addEventListener('touchend', (e) => {
+      if (isAnimating) return;
       const touchEndX = e.changedTouches[0].clientX;
       const touchEndTime = Date.now();
       const deltaX = touchStartX - touchEndX;
@@ -990,7 +1170,7 @@ const translationsJson = JSON.stringify(translations);
           nextProject();
         } else {
           // Swipe right - previous project
-          updateShowcase((currentIndex - 1 + projectsData.length) % projectsData.length);
+          prevProject();
         }
         startRotation();
       }

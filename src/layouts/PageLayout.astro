@@ -1,0 +1,169 @@
+---
+/**
+ * PageLayout - Base wrapper to reduce page boilerplate
+ * Provides common layout structure with HeroGradient, sections, and containers
+ */
+import HeroGradient from '../components/HeroGradient.astro';
+import { t, getTranslation, type Locale } from '../i18n';
+
+interface Props {
+  /** Page title (used for <title> and hero h1) */
+  title: string;
+  /** Page description for meta tags */
+  description?: string;
+  /** Open Graph image */
+  image?: string;
+  /** Current locale */
+  locale: Locale;
+  /** Translations object */
+  translations: ReturnType<typeof getTranslation>;
+  /** Current pathname (e.g., '/services/') */
+  pathname: string;
+  /** Whether to show the hero section */
+  hero?: boolean;
+  /** Hero subtitle/label */
+  heroLabel?: string;
+  /** Hero CTA primary button */
+  heroCtaPrimary?: { text: string; href: string };
+  /** Hero CTA secondary button */
+  heroCtaSecondary?: { text: string; href: string };
+  /** Hero CSS class modifier */
+  heroClass?: string;
+  /** Additional head elements */
+  head?: any;
+  /** Slot for custom content before main sections */
+  beforeSections?: any;
+  /** Slot for custom content after main sections */
+  afterSections?: any;
+  /** Page-specific styles */
+  pageStyles?: any;
+  /** Page-specific scripts */
+  pageScripts?: any;
+}
+
+const {
+  title,
+  description = 'STUDIO KRÍA — Independent film production company based in Reykjavik.',
+  image = '/assets/images/og-default.svg',
+  locale,
+  translations,
+  pathname,
+  hero = true,
+  heroLabel,
+  heroCtaPrimary,
+  heroCtaSecondary,
+  heroClass = 'hero-centered',
+  head,
+  beforeSections,
+  afterSections,
+  pageStyles,
+  pageScripts,
+} = Astro.props;
+
+const basePath = import.meta.env.BASE_URL || '/';
+const assetUrl = (path: string) => `${basePath.replace(/\/$/, '')}${path.startsWith('/') ? path : '/' + path}`;
+const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
+---
+
+<Layout
+  title={title}
+  description={description}
+  image={image}
+  locale={locale}
+  translations={translations}
+  pathname={pathname}
+>
+  {hero && <HeroGradient />}
+
+  {hero && (
+    <header class={`page-hero ${heroClass}`} aria-labelledby="page-title">
+      <div class="container">
+        <div class="page-hero-content animate-on-scroll">
+          {heroLabel && (
+            <p class="page-hero-label glitch-text" data-text={heroLabel}>{heroLabel}</p>
+          )}
+          <h1 id="page-title" class="page-hero-title glitch-text" data-text={title}>{title}</h1>
+          <div class="page-hero-actions">
+            {heroCtaPrimary && (
+              <a href={localUrl(heroCtaPrimary.href)} class="btn btn-primary btn-lg glow-element-intense">
+                {heroCtaPrimary.text}
+              </a>
+            )}
+            {heroCtaSecondary && (
+              <a href={localUrl(heroCtaSecondary.href)} class="btn btn-ghost btn-lg">
+                {heroCtaSecondary.text}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  )}
+
+  {beforeSections}
+
+  <main id="main" class="page-main">
+    <slot />
+  </main>
+
+  {afterSections}
+
+  {pageStyles}
+  {pageScripts}
+</Layout>
+
+<style>
+  .page-hero {
+    position: relative;
+    z-index: 100;
+    min-height: 60vh;
+    min-height: 60dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4xl) var(--space-xl);
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .page-hero-content { max-width: var(--container-lg); }
+
+  .page-hero-label {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-xl);
+    opacity: 0.7;
+  }
+
+  .page-hero-title {
+    font-size: var(--display-xl);
+    line-height: 0.85;
+    letter-spacing: var(--letter-spacing-display);
+    margin-bottom: var(--space-2xl);
+    text-shadow: var(--glow-intense);
+    white-space: nowrap;
+  }
+
+  .page-hero-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-centered { text-align: center; }
+  .hero-left { text-align: left; }
+  .hero-left .page-hero-content { max-width: 100%; }
+  .hero-left .page-hero-actions { justify-content: flex-start; }
+
+  @media (max-width: 768px) {
+    .page-hero { min-height: 40vh; padding: var(--space-2xl) var(--space-lg); }
+    .page-hero-title { font-size: var(--display-md); }
+    .page-hero-label { display: none; }
+  }
+</style>

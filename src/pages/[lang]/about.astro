@@ -5,6 +5,7 @@
  */
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
+import HeroGradient from '../../components/HeroGradient.astro';
 import { t, getTranslation } from '../../i18n';
 
 export async function getStaticPaths() {
@@ -26,15 +27,16 @@ const pathname = '/about/'; // Current path without base path
 <Layout
   title={t(locale, 'about.title')}
   description={translations.about.description}
-  image="/assets/images/og-about.jpg"
+  image="/assets/images/og-about.svg"
   locale={locale}
   translations={translations}
   pathname={pathname}
 >
+  <HeroGradient />
+
   {/* Hero */}
   <Hero
     title={t(locale, 'about.title')}
-    backgroundImage={assetUrl("/assets/images/about-hero.jpg")}
     ctaPrimary={{ text: t(locale, 'about.viewWork'), href: localUrl('/projects/') }}
     class="hero-centered"
   />

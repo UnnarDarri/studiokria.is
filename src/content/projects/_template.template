@@ -1,0 +1,123 @@
+---
+# PROJECT TEMPLATE - Copy this file and rename to project-slug.md
+# Fill in all fields below. Remove this comment block when creating a new project.
+#
+# NOTE: This template uses .template extension to avoid being picked up by Astro content collections.
+# When creating a new project, save as project-slug.md (not .template)
+
+title: 'Project Title'           # Required - Display title (e.g., "COULROPHOBIA")
+year: 2026                        # Required - Year of completion/release
+type: 'short'                     # Required - One: short, commercial, music-video, documentary, print, feature
+role:                             # Required - Array of roles (used as fallback if credits not provided)
+  - 'Production'
+  - 'Direction'
+  - 'Cinematography'
+credits:                          # Required - Detailed credits with labels (replaces role)
+  - label: 'Production'
+    value: 'STUDIO KRÍA'
+  - label: 'Direction'
+    value: 'Berki Elí Guðmundsson'
+  - label: 'Cinematography'
+    value: 'STUDIO KRÍA'
+  - label: 'Production Company'
+    value: 'STUDIO KRÍA'
+  # Add more as needed:
+  # - label: 'Editing'
+  #   value: 'Name'
+  # - label: 'Sound Design'
+  #   value: 'Name'
+duration: '15 min'                # Required - Runtime (e.g., "15 min", "30 sec", "1h 30min")
+festival: []                      # Optional - Array of festival names (e.g., ['RIFF', 'Skrekkur'])
+description: 'Short description of the project for SEO and listings.'
+thumbnail: '/assets/images/projects/project-slug-hero.jpg'  # Required - Hero image (used in listings)
+heroImage: '/assets/images/projects/project-slug-hero.jpg'  # Required - Full-width hero image on project page
+gallery:                          # Required - 4 images for lightbox gallery
+  - '/assets/images/projects/project-slug-mynd1.jpg'
+  - '/assets/images/projects/project-slug-mynd2.jpg'
+  - '/assets/images/projects/project-slug-mynd3.jpg'
+  - '/assets/images/projects/project-slug-mynd4.jpg'
+videoUrl: 'https://www.youtube.com/watch?v=VIDEO_ID'  # Required - SPECIFIC YouTube video URL (not channel)
+status: 'completed'               # Optional - completed, in-production, post-production, upcoming
+featured: false                   # Optional - true to feature on homepage carousel
+order: 99                         # Optional - Sort order (lower = first). Homepage featured uses this.
+---
+
+# Project Title
+
+**Project Title** is a [type] about [brief description]. [Additional details: year, format, key crew, etc.]
+
+---
+
+## NOTES FOR ADDING NEW PROJECTS:
+
+1. **Naming**: Save as `src/content/projects/project-slug.md` (lowercase, hyphens)
+2. **Images**: Place 5 images in `public/assets/images/projects/`:
+   - `project-slug-hero.jpg` (hero/thumbnail, 16:9 or 21:9)
+   - `project-slug-mynd1.jpg` through `mynd4.jpg` (gallery images for lightbox)
+3. **YouTube URL**: Use the SPECIFIC video URL (https://www.youtube.com/watch?v=VIDEO_ID), not the channel URL
+4. **Type values**: short, commercial, music-video, documentary, print, feature
+5. **Credits**: Use the label/value format. Labels will display in accent color with " — " separator
+6. **Order**: Set featured: true and low order (1, 2, 3) for homepage carousel
+7. **Icelandic titles**: Use proper Icelandic characters (í, á, ó, ú, ý, þ, æ, ö, ð)
+
+## TYPE MAPPING (for display):
+- short → "Short Film" / "Stuttmynd"
+- commercial → "Commercial" / "Auglýsing"
+- music-video → "Music Video" / "Tónlistarmyndband"
+- documentary → "Documentary" / "Heimildarmynd"
+- print → "Print Film" / "Útskriftarmynd"
+- feature → "Feature Film" / "Langmynd"
+
+## CREDITS EXAMPLES:
+
+### Short Film (typical):
+credits:
+  - label: 'Production'
+    value: 'STUDIO KRÍA'
+  - label: 'Direction'
+    value: 'Berki Elí Guðmundsson'
+  - label: 'Cinematography'
+    value: 'STUDIO KRÍA'
+  - label: 'Production Company'
+    value: 'STUDIO KRÍA'
+  - label: 'Editing'
+    value: 'Editor Name'
+  - label: 'Sound Design'
+    value: 'Sound Designer'
+
+### Commercial:
+credits:
+  - label: 'Production'
+    value: 'STUDIO KRÍA'
+  - label: 'Direction'
+    value: 'Berki Elí Guðmundsson'
+  - label: 'Cinematography'
+    value: 'Cinematographer Name'
+  - label: 'Client'
+    value: 'Client Name'
+  - label: 'Agency'
+    value: 'Agency Name'
+
+### Music Video:
+credits:
+  - label: 'Production'
+    value: 'STUDIO KRÍA'
+  - label: 'Direction'
+    value: 'Director Name'
+  - label: 'Cinematography'
+    value: 'Cinematographer Name'
+  - label: 'Artist'
+    value: 'Artist Name'
+  - label: 'Label'
+    value: 'Label Name'
+
+---
+
+## QUICK START CHECKLIST:
+- [ ] Copy this file to `project-slug.md`
+- [ ] Fill in all frontmatter fields
+- [ ] Add 5 images to `public/assets/images/projects/`
+- [ ] Get specific YouTube video URL
+- [ ] Set featured: true + order if homepage feature desired
+- [ ] Run `npm run build` to verify
+- [ ] Test on dev server: `npm run dev`

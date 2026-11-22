@@ -1,0 +1,288 @@
+---
+/**
+ * Work Page - Full-width project stack (based on homepage)
+ * All projects full width, no crop, stacked directly beneath each other
+ * Title on image, image links to subpages
+ */
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import HeroGradient from '../../../components/HeroGradient.astro';
+import { t, getTranslation } from '../../../i18n';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'is' } },
+  ];
+}
+
+const locale = Astro.params.lang;
+const translations = getTranslation(locale);
+const basePath = import.meta.env.BASE_URL || '/';
+const assetUrl = (path: string) => `${basePath.replace(/\/$/, '')}${path.startsWith('/') ? path : '/' + path}`;
+const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
+const pathname = '/work/';
+
+const projects = await getCollection('projects');
+
+const sortedProjects = [...projects].sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return b.data.featured ? 1 : -1;
+  if (a.data.order !== b.data.order) return a.data.order - b.data.order;
+  return b.data.year - a.data.year;
+});
+
+const allProjects = sortedProjects.filter(p => p.data.heroImage || p.data.thumbnail);
+---
+
+<Layout
+  title="Studio Kria — Our Work"
+  description={translations.projects.description || 'Explore our complete portfolio of films, documentaries, commercials, and music videos. Full-width cinematic showcase.'}
+  image="/assets/images/og-work.svg"
+  locale={locale}
+  translations={translations}
+  pathname={pathname}
+>
+  <HeroGradient />
+
+  {/* Hero - Minimal, just the title */}
+  <header class="work-hero" aria-labelledby="work-title">
+    <div class="work-hero-content container animate-on-scroll">
+      <p class="work-hero-label glitch-text" data-text={t(locale, 'projects.label')}>
+        {t(locale, 'projects.label')}
+      </p>
+      <h1 id="work-title" class="work-hero-title glitch-text" data-text={t(locale, 'projects.title')}>
+        {t(locale, 'projects.title')}
+      </h1>
+    </div>
+  </header>
+
+  {/* Projects Stack - Full width, no crop, stacked vertically */}
+  <section class="work-stack" aria-labelledby="work-title">
+    {allProjects.map((project) => (
+      <article class="work-stack-item">
+        <a href={localUrl(`/projects/${project.id}/`)} class="work-stack-link" aria-label={`${t(locale, 'projects.viewProject')}: ${project.data.title} — ${t(locale, `projectTypes.${project.data.type}`) || project.data.type}`}>
+          {/* Full-bleed image - no crop, object-fit: contain */}
+          <div class="work-stack-image" aria-hidden="true">
+            <img
+              src={assetUrl(project.data.heroImage || project.data.thumbnail)}
+              alt=""
+              loading="lazy"
+              sizes="100vw"
+            />
+            <div class="work-stack-overlay">
+              <div class="work-stack-gradient"></div>
+            </div>
+          </div>
+
+          {/* Title overlay on image - bottom left */}
+          <div class="work-stack-content">
+            <h2 class="work-stack-title glitch-text" data-text={project.data.title}>
+              {project.data.title}
+            </h2>
+          </div>
+        </a>
+      </article>
+    ))}
+  </section>
+
+  {/* CTA to return home */}
+  <footer class="work-footer section section-compact">
+    <div class="container">
+      <div class="work-footer-content animate-on-scroll">
+        <h2 class="work-footer-title glitch-text" data-text={t(locale, 'projects.wantToWork')}>
+          {t(locale, 'projects.wantToWork')}
+        </h2>
+        <p class="work-footer-desc">{t(locale, 'projects.openToCollab')}</p>
+        <a href={localUrl('/contact/')} class="btn btn-primary btn-xl glow-element-intense">
+          {t(locale, 'projects.startProject')}
+        </a>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  /* Force page scrollability */
+  :global(html) {
+    overflow-y: auto;
+  }
+  :global(body) {
+    min-height: auto;
+  }
+
+  /* ==========================================================================
+     WORK HERO - MINIMAL, BOLD
+     ========================================================================== */
+  .work-hero {
+    position: relative;
+    z-index: 100;
+    min-height: 60vh;
+    min-height: 60dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4xl) var(--space-xl);
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+  }
+
+  .work-hero-content { max-width: var(--container-lg); }
+
+  .work-hero-label {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-xl);
+    opacity: 0.7;
+  }
+
+  .work-hero-title {
+    font-size: var(--display-xl);
+    line-height: 0.85;
+    letter-spacing: var(--letter-spacing-display);
+    margin-bottom: var(--space-2xl);
+    text-shadow: var(--glow-intense);
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  /* ==========================================================================
+     WORK STACK - Full width projects stacked vertically
+     ========================================================================== */
+  .work-stack {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .work-stack-item {
+    position: relative;
+    width: 100%;
+  }
+
+  .work-stack-link {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .work-stack-image {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .work-stack-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease;
+    filter: contrast(1.1) saturate(0.8);
+    will-change: transform, filter;
+  }
+
+  .work-stack-link:hover .work-stack-image img,
+  .work-stack-link:focus-within .work-stack-image img {
+    transform: scale(1.02);
+    filter: contrast(1.15) saturate(1) brightness(1.05);
+  }
+
+  .work-stack-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 30%,
+      rgba(5,5,5,0.4) 60%,
+      rgba(5,5,5,0.9) 100%
+    );
+    opacity: 0.7;
+    transition: opacity 0.6s ease;
+  }
+
+  .work-stack-link:hover .work-stack-gradient,
+  .work-stack-link:focus-within .work-stack-gradient {
+    opacity: 1;
+  }
+
+  .work-stack-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Title overlay on image - bottom left, full width */
+  .work-stack-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: var(--space-3xl) var(--space-2xl);
+    pointer-events: none;
+  }
+
+  .work-stack-title {
+    font-size: var(--display-md);
+    line-height: 1;
+    letter-spacing: var(--letter-spacing-card);
+    text-shadow: var(--glow-strong);
+    max-width: 80%;
+  }
+
+  @media (min-width: 1200px) {
+    .work-stack-title {
+      font-size: var(--display-lg);
+      letter-spacing: var(--letter-spacing-section);
+    }
+  }
+
+  /* ==========================================================================
+     WORK FOOTER
+     ========================================================================== */
+  .work-footer {
+    position: relative;
+    z-index: 100;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    background: transparent;
+    padding: var(--space-4xl) var(--space-xl);
+  }
+
+  .work-footer-title {
+    font-size: var(--display-lg);
+    line-height: 1;
+    margin-bottom: var(--space-lg);
+    text-shadow: var(--glow-intense);
+  }
+
+  .work-footer-desc {
+    font-size: var(--text-lg);
+    color: var(--fg-muted);
+    max-width: 50ch;
+    margin: 0 auto var(--space-2xl);
+  }
+
+  /* ==========================================================================
+     MOBILE - Stack projects vertically, title on image
+     ========================================================================== */
+  @media (max-width: 768px) {
+    .work-hero { min-height: 40vh; padding: var(--space-2xl) var(--space-lg); }
+    .work-hero-title { font-size: var(--display-md); }
+    .work-hero-label { display: none; }
+    .work-stack-content { padding: var(--space-lg) var(--space-md); }
+    .work-stack-title { font-size: var(--display-md); max-width: 100%; text-shadow: var(--glow-strong); }
+    .work-footer { padding: var(--space-2xl) var(--space-lg); }
+    .work-footer-title { font-size: var(--display-md); }
+  }
+</style>

@@ -1,0 +1,9 @@
+# Studio Kria robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://studiokria.github.io/studio-kria-website/sitemap-index.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 10

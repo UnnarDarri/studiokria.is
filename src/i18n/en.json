@@ -10,6 +10,7 @@
   },
   "hero": {
     "title": "STUDIO KRÍA",
+    "subtitle": "Independent film production company",
     "description": "We craft stories that linger — from Icelandic landscapes to global screens. Features, documentaries, commercials, and music videos produced with integrity and vision.",
     "ctaPrimary": "View Projects",
     "ctaSecondary": "Get in Touch"
@@ -38,7 +39,7 @@
     "terms": "Terms of Service"
   },
   "home": {
-    "featuredProjects": "Featured Projects",
+    "featuredProjects": "Our Projects",
     "viewProject": "View Project",
     "showcasing": "Showcasing",
     "projects": "Projects",
@@ -61,7 +62,7 @@
     "readMore": "Read More"
   },
   "projects": {
-    "title": "Selected Projects",
+    "title": "Our Projects",
     "label": "Our Work",
     "count": "{count} Projects",
     "years": "{min}–{max}",
@@ -91,7 +92,8 @@
     "documentary": "Documentary",
     "commercial": "Commercial",
     "music-video": "Music Video",
-    "series": "Series"
+    "series": "Series",
+    "print": "Print Film"
   },
   "projectStatus": {
     "completed": "Completed",
@@ -199,32 +201,32 @@
       {
         "title": "Film Production",
         "desc": "Full-service production from development through post. Short films, features, documentaries, and series.",
-        "image": "/assets/images/service-production.jpg"
+        "image": "/assets/images/service-production.svg"
       },
       {
         "title": "Commercial & Branded",
         "desc": "High-end commercials, brand films, and social content for global brands and agencies.",
-        "image": "/assets/images/service-commercial.jpg"
+        "image": "/assets/images/service-commercial.svg"
       },
       {
         "title": "Music Videos",
         "desc": "Creative music videos blending narrative, performance, and experimental visuals.",
-        "image": "/assets/images/service-music.jpg"
+        "image": "/assets/images/service-music.svg"
       },
       {
         "title": "Post-Production Supervision",
         "desc": "Editing, color grading, sound design, VFX coordination, and final delivery management.",
-        "image": "/assets/images/service-post.jpg"
+        "image": "/assets/images/service-post.svg"
       },
       {
         "title": "Festival & Distribution Strategy",
         "desc": "Premiere planning, festival submissions, sales agent negotiation, and release campaigns.",
-        "image": "/assets/images/service-festival.jpg"
+        "image": "/assets/images/service-festival.svg"
       },
       {
         "title": "Development & Packaging",
         "desc": "Script development, talent packaging, finance plans, and co-production structuring.",
-        "image": "/assets/images/service-development.jpg"
+        "image": "/assets/images/service-development.svg"
       }
     ],
     "specialized": "Specialized Services",

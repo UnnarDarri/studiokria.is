@@ -8,6 +8,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import { t, getTranslation } from '../../../i18n';
 import Lightbox from '../../../components/Lightbox.astro';
+import VideoLightbox from '../../../components/VideoLightbox.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -36,7 +37,7 @@ const pathname = `/projects/${slug}/`;
 const typeLabels = translations.projectTypes;
 const statusLabels = translations.projectStatus;
 const statusColors: Record<string, string> = {
-  'completed': 'var(--color-accent)',
+  'completed': 'var(--accent)',
   'in-production': '#e67e22',
   'pre-production': '#3498db',
   'development': '#9b59b6',
@@ -65,6 +66,22 @@ const stillsImages = data.gallery && data.gallery.length > 0
     : [];
 
 const hasStills = stillsImages.length > 0;
+
+// Helper: Extract YouTube video ID from various URL formats
+function getYouTubeVideoId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /youtube\.com\/shorts\/([^&\n?#]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+const youtubeVideoId = data.videoUrl ? getYouTubeVideoId(data.videoUrl) : null;
+const isYouTube = !!youtubeVideoId;
 ---
 
 <Layout
@@ -76,7 +93,7 @@ const hasStills = stillsImages.length > 0;
   translations={translations}
   pathname={pathname}
 >
-  {/* Portrait Hero - Desktop: 4:5 with overlay, Mobile: 4:5 crop stacked */}
+  {/* Portrait Hero - Desktop: 4:5 with overlay, Mobile: title on image, content below */}
   <header class="project-hero" aria-labelledby="project-title">
     <div class="project-hero-image" aria-hidden="true">
       {data.heroImage && (
@@ -91,56 +108,144 @@ const hasStills = stillsImages.length > 0;
     </div>
 
     <div class="project-hero-overlay">
+      {/* Desktop content container */}
       <div class="project-hero-content container animate-on-scroll">
-        <div class="project-hero-meta">
-          <span class="project-type" style={`--accent: ${statusColors[data.status] || 'var(--color-accent)'};`}>
-            {typeLabels[data.type] || data.type}
-          </span>
-          <span class="project-year">{data.year}</span>
-          {data.duration && <span class="project-duration">{data.duration}</span>}
-          <span class="project-status" style={`--status-color: ${statusColors[data.status] || 'var(--color-accent)'};`}>
-            {statusLabels[data.status] || data.status}
-          </span>
-        </div>
+        <div class="project-hero-overlay-content">
+          <div class="project-hero-meta">
+            <span class="tag tag--accent">{typeLabels[data.type] || data.type}</span>
+            <span class="tag tag--muted">{data.year}</span>
+            {data.duration && <span class="tag tag--muted">{data.duration}</span>}
+            <span class="tag tag--status" style={`--status-color: ${statusColors[data.status] || 'var(--accent)'};`}>
+              {statusLabels[data.status] || data.status}
+            </span>
+          </div>
 
-        <h1 id="project-title" class="project-title glitch-text" data-text={data.title}>
+          <h1 id="project-title" class="project-title glitch-text" data-text={data.title}>
+            {data.title}
+          </h1>
+
+          {data.role && data.role.length > 0 && (
+            <p class="project-role">{data.role.join(' / ')}</p>
+          )}
+
+          <p class="project-description lead">{data.description}</p>
+
+          {data.festival && data.festival.length > 0 && (
+            <div class="project-festivals">
+              {data.festival.map(fest => (
+                <span class="festival-badge">{fest}</span>
+              ))}
+            </div>
+          )}
+
+          {hasStills && (
+            <button class="btn btn-primary btn-lg glow-element stills-btn"
+                    onclick="window.openLightbox(0)"
+                    aria-label={t(locale, 'projects.viewStills')}>
+              {t(locale, 'projects.viewStills')}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </button>
+          )}
+
+          {data.videoUrl && (
+            <button class="btn btn-primary btn-lg glow-element watch-film-btn"
+                    onclick="window.openVideoLightbox()"
+                    aria-label={t(locale, 'projects.watchFilm')}>
+              {t(locale, 'projects.watchFilm')}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+                <path d="M21 12l-6 6M21 12l-6-6"/>
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile: only title on image - FULL WIDTH, outside container */}
+      <div class="project-hero-mobile-title">
+        <h1 id="project-title-mobile" class="project-title glitch-text" data-text={data.title}>
           {data.title}
         </h1>
-
-        {data.role && data.role.length > 0 && (
-          <p class="project-role">{data.role.join(' / ')}</p>
-        )}
-
-        <p class="project-description lead">{data.description}</p>
-
-        {data.festival && data.festival.length > 0 && (
-          <div class="project-festivals">
-            {data.festival.map(fest => (
-              <span class="festival-badge">{fest}</span>
-            ))}
-          </div>
-        )}
-
-        {hasStills && (
-          <button class="btn btn-primary btn-lg glow-element stills-btn"
-                  onclick="window.openLightbox(0)"
-                  aria-label={t(locale, 'projects.viewStills')}>
-            {t(locale, 'projects.viewStills')}
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-          </button>
-        )}
       </div>
     </div>
 
     </header>
 
+  {/* Mobile: Action buttons directly below hero image - NO background */}
+  <div class="project-hero-mobile-buttons animate-on-scroll">
+    <div class="container">
+      {hasStills && (
+        <button class="btn btn-primary btn-lg glow-element stills-btn"
+                onclick="window.openLightbox(0)"
+                aria-label={t(locale, 'projects.viewStills')}>
+          {t(locale, 'projects.viewStills')}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </button>
+      )}
+
+      {data.videoUrl && (
+        <button class="btn btn-primary btn-lg glow-element watch-film-btn"
+                onclick="window.openVideoLightbox()"
+                aria-label={t(locale, 'projects.watchFilm')}>
+          {t(locale, 'projects.watchFilm')}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+            <path d="M21 12l-6 6M21 12l-6-6"/>
+          </svg>
+        </button>
+      )}
+    </div>
+  </div>
+
+  {/* Mobile Hero Content - Below image on mobile only (meta, role, description, festivals only - NO buttons) */}
+  <div class="project-hero-mobile-content animate-on-scroll">
+    <div class="container">
+      <div class="project-hero-meta">
+        <span class="tag tag--accent">{typeLabels[data.type] || data.type}</span>
+        <span class="tag tag--muted">{data.year}</span>
+        {data.duration && <span class="tag tag--muted">{data.duration}</span>}
+        <span class="tag tag--status" style={`--status-color: ${statusColors[data.status] || 'var(--accent)'};`}>
+          {statusLabels[data.status] || data.status}
+        </span>
+      </div>
+
+      {data.role && data.role.length > 0 && (
+        <p class="project-role">{data.role.join(' / ')}</p>
+      )}
+
+      <p class="project-description lead">{data.description}</p>
+
+      {data.festival && data.festival.length > 0 && (
+        <div class="project-festivals">
+          {data.festival.map(fest => (
+            <span class="festival-badge">{fest}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+
   {/* Lightbox for stills */}
   {hasStills && (
     <Lightbox images={stillsImages} alt={`${data.title} stills`} />
+  )}
+
+  {data.videoUrl && (
+    <VideoLightbox
+      videoUrl={data.videoUrl}
+      title={data.title}
+      isYouTube={isYouTube}
+      youtubeVideoId={youtubeVideoId}
+      locale={locale}
+    />
   )}
 
   {/* Details Section */}
@@ -153,59 +258,36 @@ const hasStills = stillsImages.length > 0;
         </div>
 
         <aside class="details-sidebar animate-on-scroll">
-          {/* Credits - Pills style with clear label/value */}
+          {/* Credits - Redesigned as uniform tags */}
           <div class="credits-wrapper">
             <h3 class="details-card-title">{t(locale, 'projects.credits')}</h3>
-            <div class="credits-list" role="list">
-              {data.role.map((role, index) => (
-                <div class="credit-item" style={`--stagger: ${index * 60}ms`} role="listitem">
-                  <dt>{role}</dt>
-                  <dd>STUDIO KRÍA</dd>
+            <div class="credits-tags" role="list">
+              {(data.credits || data.role?.map(r => ({label: r, value: 'STUDIO KRÍA'})) || []).map((credit, index) => (
+                <div class="credit-tag" style={`--stagger: ${index * 60}ms`} role="listitem">
+                  <span class="credit-label">{credit.label}</span>
+                  <span class="credit-value">{credit.value}</span>
                 </div>
               ))}
-              <div class="credit-divider" style={`--stagger: ${data.role.length * 60}ms`} />
-              <div class="credit-item" style={`--stagger: ${(data.role.length + 1) * 60}ms`} role="listitem">
-                <dt>{t(locale, 'projects.productionCompany')}</dt>
-                <dd>STUDIO KRÍA</dd>
-              </div>
-              <div class="credit-item" style={`--stagger: ${(data.role.length + 2) * 60}ms`} role="listitem">
-                <dt>{t(locale, 'projects.year')}</dt>
-                <dd>{data.year}</dd>
-              </div>
-              <div class="credit-item" style={`--stagger: ${(data.role.length + 3) * 60}ms`} role="listitem">
-                <dt>{t(locale, 'projects.format')}</dt>
-                <dd>{typeLabels[data.type] || data.type}</dd>
-              </div>
               {data.duration && (
-                <div class="credit-item" style={`--stagger: ${(data.role.length + 4) * 60}ms`} role="listitem">
-                  <dt>{t(locale, 'projects.runtime')}</dt>
-                  <dd>{data.duration}</dd>
+                <div class="credit-tag" style={`--stagger: ${(data.credits?.length || data.role?.length || 0) * 60}ms`} role="listitem">
+                  <span class="credit-label">{t(locale, 'projects.runtime')}</span>
+                  <span class="credit-value">{data.duration}</span>
                 </div>
               )}
             </div>
           </div>
-
-          {data.videoUrl && (
-            <a href={data.videoUrl} class="btn btn-primary btn-lg glow-element stills-btn" target="_blank" rel="noopener">
-              {t(locale, 'projects.watchFilm')}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <polygon points="5 3 19 12 5 21 5 3"/>
-                <path d="M21 12l-6 6M21 12l-6-6"/>
-              </svg>
-            </a>
-          )}
         </aside>
       </div>
     </div>
   </section>
 
   {/* Navigation to other projects - Next Project + Back to Projects */}
-  <nav class="project-nav section section-compact" aria-label={t(locale, 'common.navigation') || 'Project navigation'}>
+  <nav class="project-nav section" aria-label={t(locale, 'common.navigation') || 'Project navigation'}>
     <div class="container">
       <div class="nav-grid">
-        {/* Next Project */}
+        {/* Next Project - Right side with image preview (Desktop) / Top (Mobile) */}
         {nextProject && (
-          <a href={localUrl(`/projects/${nextProject.id}/`)} class="nav-card next-card card glow-element animate-on-scroll">
+          <a href={localUrl(`/projects/${nextProject.id}/`)} class="nav-card next-card animate-on-scroll">
             <div class="nav-card-content">
               <span class="nav-card-label">{t(locale, 'projects.nextProject')}</span>
               <h3 class="nav-card-title">{nextProject.data.title}</h3>
@@ -220,14 +302,10 @@ const hasStills = stillsImages.length > 0;
           </a>
         )}
 
-        {/* Back to Projects Index */}
-        <a href={localUrl('/projects/')} class="nav-card back-card card glow-element animate-on-scroll">
-          <div class="nav-card-content">
-            <span class="nav-card-label">{t(locale, 'projects.backToProjects')}</span>
-            <h3 class="nav-card-title">{t(locale, 'projects.allProjectsTitle')}</h3>
-            <span class="nav-card-year">{t(locale, 'projects.count', { count: allProjects.length })}</span>
-          </div>
-          <svg class="nav-card-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        {/* Back to Projects Index - Left side (Desktop) / Bottom (Mobile) */}
+        <a href={localUrl('/projects/')} class="nav-link-all animate-on-scroll">
+          <span>{t(locale, 'projects.allProjectsTitle')}</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
         </a>
@@ -295,21 +373,24 @@ const hasStills = stillsImages.length > 0;
     }
   }
 
-  /* Mobile: Stacked layout - 4:5 crop image then content below */
+  /* Mobile: Title on image, content below */
   @media (max-width: 768px) {
     .project-hero {
-      aspect-ratio: auto;
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      margin-left: 0;
+      position: relative;
+      width: 100vw;
+      max-width: none;
+      margin-left: calc(50% - 50vw);
+      aspect-ratio: 4 / 5;
+      /* Fallback height in case aspect-ratio fails */
+      min-height: 50vh;
     }
 
     .project-hero-image {
-      position: relative;
+      position: absolute;
+      inset: 0;
       width: 100%;
-      aspect-ratio: 4 / 5;
-      height: auto;
+      height: 100%;
+      z-index: 0;
     }
 
     .project-hero-image img {
@@ -321,10 +402,20 @@ const hasStills = stillsImages.length > 0;
     }
 
     .project-hero-overlay {
-      position: relative;
-      background: none;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        180deg,
+        rgba(5, 5, 5, 0.1) 0%,
+        rgba(5, 5, 5, 0.2) 30%,
+        rgba(5, 5, 5, 0.5) 60%,
+        rgba(5, 5, 5, 0.95) 100%
+      );
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end; /* Push content to bottom */
       padding: var(--space-2xl) var(--space-lg);
-      flex: 0 0 auto;
     }
 
     .project-hero-content {
@@ -332,6 +423,105 @@ const hasStills = stillsImages.length > 0;
       max-width: var(--container-lg);
       margin: 0 auto;
       color: var(--fg);
+    }
+
+    /* Hide desktop overlay content on mobile */
+    .project-hero-overlay-content {
+      display: none;
+    }
+
+    /* Mobile title on image - at bottom, FULL VIEWPORT WIDTH */
+    .project-hero-mobile-title {
+      position: absolute;
+      bottom: var(--space-2xl);
+      left: 0;
+      right: 0;
+      width: auto;
+      max-width: none;
+      padding: 0; /* No horizontal padding - full viewport width */
+      text-align: left;
+      z-index: 2; /* Above overlay gradient */
+    }
+
+    .project-hero-mobile-title .project-title {
+      font-size: var(--display-md);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-shadow: var(--glow-intense);
+      /* Removed word-break constraints to allow full width */
+    }
+  }
+
+  /* Mobile buttons directly below hero - NO background */
+  .project-hero-mobile-buttons {
+    display: none;
+    padding: var(--space-lg) var(--space-lg) var(--space-xl);
+    background: transparent;
+  }
+
+  @media (max-width: 768px) {
+    .project-hero-mobile-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      align-items: stretch; /* Full width buttons */
+    }
+
+    .project-hero-mobile-buttons .stills-btn,
+    .project-hero-mobile-buttons .watch-film-btn {
+      width: 100%;
+      max-width: none; /* Full width */
+      justify-content: center;
+      padding: var(--space-md) var(--space-xl);
+    }
+  }
+
+  /* Hide mobile-only elements on desktop */
+  @media (min-width: 769px) {
+    .project-hero-mobile-title,
+    .project-hero-mobile-buttons {
+      display: none;
+    }
+  }
+
+  /* Mobile Hero Content - Below image */
+  .project-hero-mobile-content {
+    display: none;
+    padding: var(--space-2xl) var(--space-lg);
+    background: transparent;
+  }
+
+  @media (max-width: 768px) {
+    .project-hero-mobile-content {
+      display: block;
+    }
+
+    .project-hero-mobile-content .project-hero-meta {
+      gap: var(--space-md);
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-xl);
+      justify-content: flex-start;
+    }
+
+    .project-hero-mobile-content .project-role {
+      font-size: var(--text-base);
+      margin-bottom: var(--space-lg);
+    }
+
+    .project-hero-mobile-content .project-description {
+      font-size: var(--text-base);
+      margin-bottom: var(--space-xl);
+      max-width: none;
+      line-height: 1.7;
+    }
+
+    .project-hero-mobile-content .project-festivals {
+      margin-bottom: var(--space-xl);
+    }
+
+    .project-hero-mobile-content .festival-badge {
+      padding: var(--space-sm) var(--space-lg);
+      font-size: var(--text-xs);
     }
   }
 
@@ -355,51 +545,6 @@ const hasStills = stillsImages.length > 0;
     }
   }
 
-  .project-type,
-  .project-year,
-  .project-duration,
-  .project-status {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-xs) var(--space-md);
-    border: 1px solid currentColor;
-    border-radius: var(--radius-full);
-    background: rgba(5, 5, 5, 0.4);
-    backdrop-filter: blur(8px);
-  }
-
-  @media (max-width: 768px) {
-    .project-type,
-    .project-year,
-    .project-duration,
-    .project-status {
-      padding: var(--space-xs) var(--space-sm);
-      background: rgba(5, 5, 5, 0.6);
-      backdrop-filter: none;
-    }
-  }
-
-  .project-type {
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-
-  .project-year {
-    color: var(--color-fg-muted);
-    border-color: var(--color-fg-muted);
-  }
-
-  .project-duration {
-    color: var(--color-fg-muted);
-    border-color: var(--color-fg-muted);
-  }
-
-  .project-status {
-    color: var(--status-color);
-    border-color: var(--status-color);
-  }
-
   .project-title {
     font-size: var(--display-xl);
     line-height: 0.9;
@@ -407,9 +552,10 @@ const hasStills = stillsImages.length > 0;
     letter-spacing: -0.02em;
     text-shadow: var(--glow-intense);
     max-width: 90%;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    hyphens: auto;
+    /* Prevent word splitting - wrap at word boundaries only */
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
   }
 
   @media (max-width: 768px) {
@@ -417,25 +563,27 @@ const hasStills = stillsImages.length > 0;
       font-size: var(--display-md);
       margin-bottom: var(--space-md);
       max-width: none;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-      hyphens: auto;
+      /* Prevent word splitting */
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
     }
   }
 
   @media (max-width: 480px) {
     .project-title {
       font-size: var(--display-sm);
-      overflow-wrap: anywhere;
-      word-break: break-word;
-      hyphens: auto;
+      /* Prevent word splitting */
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
     }
   }
 
   .project-role {
     font-size: var(--text-lg);
     font-weight: 400;
-    color: var(--color-accent);
+    color: var(--accent);
     margin-bottom: var(--space-xl);
     text-transform: none;
     letter-spacing: 0;
@@ -453,7 +601,7 @@ const hasStills = stillsImages.length > 0;
   .project-description {
     font-size: var(--text-base);
     line-height: 1.7;
-    color: var(--color-fg-muted);
+    color: var(--fg-muted);
     max-width: 65ch;
     margin-bottom: var(--space-2xl);
   }
@@ -482,7 +630,7 @@ const hasStills = stillsImages.length > 0;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--color-accent);
+    color: var(--accent);
     backdrop-filter: blur(4px);
   }
 
@@ -510,9 +658,9 @@ const hasStills = stillsImages.length > 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-accent);
+    background: var(--accent);
     border-radius: 50%;
-    color: var(--color-bg);
+    color: var(--bg);
     transition: all var(--transition-spring);
     z-index: 10;
     box-shadow: var(--glow-strong);
@@ -521,7 +669,7 @@ const hasStills = stillsImages.length > 0;
   .project-hero-play:hover {
     transform: scale(1.1);
     box-shadow: var(--glow-intense);
-    background: var(--color-accent-bright);
+    background: var(--accent-bright);
   }
 
   @media (max-width: 768px) {
@@ -536,14 +684,14 @@ const hasStills = stillsImages.length > 0;
       margin-top: var(--space-lg);
       box-shadow: none;
       background: transparent;
-      border: 2px solid var(--color-accent);
-      color: var(--color-accent);
+      border: 2px solid var(--accent);
+      color: var(--accent);
     }
 
     .project-hero-play:hover {
-      background: var(--color-accent);
-      color: var(--color-bg);
-      border-color: var(--color-accent);
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
     }
 
     .project-hero-play svg {
@@ -575,13 +723,13 @@ const hasStills = stillsImages.length > 0;
   .details-body {
     font-size: var(--text-base);
     line-height: 1.85;
-    color: var(--color-fg-muted);
+    color: var(--fg-muted);
   }
 
   .details-body h2,
   .details-body h3 {
     font-family: var(--font-display);
-    color: var(--color-fg);
+    color: var(--fg);
     margin: var(--space-2xl) 0 var(--space-lg);
   }
 
@@ -593,108 +741,87 @@ const hasStills = stillsImages.length > 0;
   .details-body li { margin-bottom: var(--space-sm); }
 
   .details-card-title {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-xl);
-    padding-bottom: var(--space-md);
-    border-bottom: 1px solid var(--color-border);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
+    font-size: var(--text-sm);
     font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border);
   }
 
-  .credits-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm) var(--space-xl);
-  }
-
-  @media (max-width: 600px) {
-    .credits-list {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .credit-item {
-    position: relative;
+  /* Credits - Redesigned as uniform tags */
+  .credits-tags {
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .credit-tag {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--space-xs);
-    padding: var(--space-xs) 0;
-    border-bottom: 1px solid var(--color-border);
+    gap: var(--space-sm);
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: var(--space-md) var(--space-xl);
+    background: rgba(5, 5, 5, 0.6);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    backdrop-filter: blur(8px);
     opacity: 0;
     transform: translateX(-20px);
     animation: credit-reveal 0.6s var(--transition-spring) forwards;
     animation-delay: var(--stagger, 0ms);
+    transition: all var(--transition-fast);
   }
 
-  .credit-item:last-child {
-    border-bottom: none;
+  .credit-tag:hover {
+    border-color: var(--accent);
+    box-shadow: var(--glow-soft);
   }
 
-  .credit-item.credit-divider {
-    grid-column: span 2;
-    padding-top: var(--space-sm);
-    margin-top: 0;
-    border-top: 1px solid var(--accent);
-    border-bottom: none;
+  .credit-label {
+    color: var(--accent);
+    opacity: 0.8;
   }
 
-  @media (max-width: 600px) {
-    .credit-item.credit-divider {
-      grid-column: span 1;
-    }
-  }
-
-  .credit-item dt {
-    font-family: var(--font-display);
-    font-size: 0.55rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-fg-subtle);
-    flex-shrink: 0;
-    min-width: 55px;
-  }
-
-  .credit-item dd {
-    font-family: var(--font-sans);
-    font-size: 0.55rem;
-    font-weight: 400;
+  .credit-value {
     color: var(--fg);
-    text-align: right;
-    line-height: 1.2;
-  }
-
-  .credit-item dt::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--color-border), transparent);
-    margin-left: var(--space-xs);
-    opacity: 0.2;
-  }
-
-  .credit-item:last-child dt::after {
-    display: none;
+    font-weight: 400;
+    font-family: var(--font-sans);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .credit-item {
+    .credit-tag {
       animation: none;
       opacity: 1;
       transform: none;
     }
   }
 
-  /* Watch Film button in sidebar */
-  .details-sidebar .btn-block {
-    margin-top: var(--space-md);
-    padding: var(--space-xs) var(--space-sm);
-    font-size: 0.55rem;
+  @keyframes credit-reveal {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 
-  /* Project Navigation */
+  /* Watch Film button in sidebar */
+  .watch-film-btn {
+    width: 100%;
+    margin-top: var(--space-2xl);
+    padding: var(--space-md) var(--space-xl);
+  }
+
+  /* Project Navigation - Side by side cards */
   .nav-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -703,14 +830,19 @@ const hasStills = stillsImages.length > 0;
 
   @media (min-width: 768px) {
     .nav-grid {
+      display: grid !important;
       grid-template-columns: 1fr 1fr;
     }
+    /* Desktop: All Projects on LEFT, Next Project on RIGHT */
+    .nav-grid .nav-link-all { order: 1 !important; }
+    .nav-grid .next-card { order: 2 !important; }
   }
 
   .nav-card {
     position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 280px;
     padding: var(--space-xl);
     text-decoration: none;
     color: inherit;
@@ -719,7 +851,7 @@ const hasStills = stillsImages.length > 0;
   }
 
   .nav-card:hover {
-    border-color: var(--color-accent);
+    border-color: var(--accent);
     transform: translateY(-4px);
     box-shadow: var(--glow-medium);
   }
@@ -736,7 +868,7 @@ const hasStills = stillsImages.length > 0;
 
   @media (min-width: 768px) {
     .next-card .nav-card-image {
-      width: 200px;
+      width: 300px;
     }
   }
 
@@ -767,8 +899,15 @@ const hasStills = stillsImages.length > 0;
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--accent);
     margin-bottom: var(--space-sm);
+  }
+
+  @media (max-width: 768px) {
+    .nav-card-label {
+      font-size: var(--text-sm);
+      letter-spacing: 0.15em;
+    }
   }
 
   .nav-card-title {
@@ -779,17 +918,17 @@ const hasStills = stillsImages.length > 0;
   }
 
   .nav-card:hover .nav-card-title {
-    color: var(--color-accent);
+    color: var(--accent);
   }
 
   .nav-card-year {
     font-size: var(--text-sm);
-    color: var(--color-fg-subtle);
+    color: var(--fg-subtle);
   }
 
   .nav-card-arrow {
     position: absolute;
-    color: var(--color-accent);
+    color: var(--accent);
     transition: transform var(--transition-base);
   }
 
@@ -808,7 +947,7 @@ const hasStills = stillsImages.length > 0;
 
   .back-card:hover .nav-card-arrow { transform: translateX(-8px); }
 
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     .next-card { flex-direction: column; }
     .next-card .nav-card-image { width: 100%; aspect-ratio: 16/9; }
     .next-card .nav-card-content { text-align: center; padding: var(--space-lg) 0 0; }
@@ -818,6 +957,87 @@ const hasStills = stillsImages.length > 0;
       transform: none;
     }
     .next-card:hover .nav-card-arrow { transform: translateY(4px); }
+  }
+
+  /* Credit tags mobile - always 2 per line */
+  @media (max-width: 767px) {
+    .credits-tags {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+    }
+    .credit-tag {
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-md) var(--space-lg);
+      font-size: var(--text-sm);
+    }
+    .credit-tag .credit-label {
+      display: block;
+      margin-bottom: 2px;
+    }
+    .credit-tag .credit-value {
+      display: block;
+    }
+
+    /* Mobile nav order: next project first, all projects second */
+    .nav-grid {
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-grid .next-card { order: 1; }
+    .nav-grid .nav-link-all { order: 2; }
+  }
+
+  /* Nav link all - bigger text, no box */
+  .nav-link-all {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-md);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    background: transparent;
+    border: none;
+    padding: var(--space-md) 0;
+    text-decoration: none;
+    transition: all var(--transition-base);
+    border-bottom: 1px solid transparent;
+  }
+
+  .nav-link-all:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .nav-link-all svg {
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+  }
+
+  .nav-link-all:hover svg {
+    transform: translateX(-8px);
+  }
+
+  @media (min-width: 768px) {
+    .nav-link-all {
+      font-size: var(--text-xl);
+      padding: var(--space-lg) 0;
+    }
+  }
+
+  /* Hide mobile watch film button on desktop */
+  .watch-film-btn-mobile {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .watch-film-btn-mobile {
+      display: inline-flex;
+    }
   }
 
   /* Lightbox open state - prevent body scroll */

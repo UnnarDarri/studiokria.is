@@ -2,11 +2,11 @@ import { defineCollection, z } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+  loader: glob({ pattern: '**/*.md', base: './src/content/projects', ignore: ['**/_*.md'] }),
   schema: z.object({
     title: z.string(),
     year: z.number(),
-    type: z.enum(['short', 'feature', 'documentary', 'commercial', 'music-video', 'series']),
+    type: z.enum(['short', 'feature', 'documentary', 'commercial', 'music-video', 'series', 'print']),
     role: z.array(z.string()),
     duration: z.string().optional(),
     festival: z.array(z.string()).optional(),

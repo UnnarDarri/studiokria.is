@@ -3,7 +3,10 @@
  * Base Layout - Main layout wrapper with SEO, fonts, global styles, i18n
  */
 import FilmGrain from '../components/FilmGrain.astro';
+import Analytics from '../components/Analytics.astro';
 import '../styles/global.css';
+import fontWoff2 from '../assets/fonts/SpecialGothicCondensedOne-Regular.woff2';
+import fontTtf from '../assets/fonts/SpecialGothicCondensedOne-Regular.ttf';
 import { getTranslation, type Locale, supportedLocales, alternateLanguages as getAlternateLanguages } from '../i18n';
 
 interface Props {
@@ -21,7 +24,7 @@ interface Props {
 const {
   title,
   description = 'STUDIO KRÍA — Independent film production company based in Reykjavik. Creating compelling stories through film, documentary, and commercial work.',
-  image = '/assets/images/og-default.jpg',
+  image = '/assets/images/og-default.svg',
   type = 'website',
   canonical,
   noIndex = false,
@@ -110,14 +113,76 @@ const alternateLinks = alternateLanguages.map(alt => ({
     <!-- Canonical -->
     <link rel="canonical" href={pageUrl} />
 
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Organization',
+          '@id': `${siteUrl}#organization`,
+          name: 'STUDIO KRÍA',
+          alternateName: 'Studio Kria',
+          url: siteUrl,
+          logo: `${siteUrl}/assets/images/bird-orange.svg`,
+          sameAs: [
+            'https://www.instagram.com/studiokria/',
+            'https://www.linkedin.com/company/studio-kria/',
+            'https://vimeo.com/studiokria'
+          ],
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: 'Grandagarður 16',
+            addressLocality: 'Reykjavik',
+            postalCode: '101',
+            addressCountry: 'IS'
+          },
+          contactPoint: {
+            '@type': 'ContactPoint',
+            telephone: '+354-860-6690',
+            contactType: 'customer service',
+            availableLanguage: ['English', 'Icelandic'],
+            areaServed: 'IS'
+          }
+        },
+        {
+          '@type': 'WebSite',
+          '@id': `${siteUrl}#website`,
+          url: siteUrl,
+          name: 'STUDIO KRÍA',
+          description: 'Independent film production company based in Reykjavik. Creating compelling stories through film, documentary, and commercial work.',
+          publisher: { '@id': `${siteUrl}#organization` },
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: {
+              '@type': 'EntryPoint',
+              urlTemplate: `${siteUrl}/search?q={search_term_string}`
+            },
+            'query-input': 'required name=search_term_string'
+          }
+        }
+      ]
+    }, null, 2)} />
+    {pathname.startsWith('/projects/') && pathname !== '/projects/' && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        '@id': `${pageUrl}#project`,
+        name: title.replace(' | STUDIO KRÍA', ''),
+        description: description,
+        image: `${siteUrl}${image}`,
+        url: pageUrl,
+        creator: { '@id': `${siteUrl}#organization` },
+        publisher: { '@id': `${siteUrl}#organization` },
+        inLanguage: locale === 'is' ? 'is' : 'en'
+      }, null, 2)} />
+    )}
+
     <!-- Robots -->
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Special+Gothic+Condensed+One&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Gothic+Condensed+One&display=swap" media="print" onload="this.media='all'" />
+    <!-- Fonts: Self-hosted Special Gothic Condensed One (see global.css @font-face) -->
+    <link rel="preload" as="font" type="font/woff2" href={fontWoff2} crossorigin />
+    <link rel="preload" as="font" type="font/ttf" href={fontTtf} crossorigin />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg" />
@@ -143,6 +208,8 @@ const alternateLinks = alternateLanguages.map(alt => ({
         <!-- Bird Logo - Home Link -->
         <a href={localUrl('/')} class="bird-logo" aria-label={t('nav.home')} title={t('nav.home')}>
           <img src={assetUrl("/assets/images/bird-orange.svg")} alt="" width="48" height="48" aria-hidden="true" />
+          <!-- Studio Kría text - appears on scroll past hero -->
+          <span class="bird-logo-text" aria-hidden="true">STUDIO KRÍA</span>
         </a>
         <button class="menu-toggle" id="menuToggle" aria-label={t('common.open')} aria-expanded="false" aria-controls="navOverlay">
           <span></span><span></span><span></span>
@@ -181,13 +248,10 @@ const alternateLinks = alternateLanguages.map(alt => ({
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
             </a>
             <a href="https://www.tiktok.com/@studio.kria" target="_blank" rel="noopener" aria-label="TikTok">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 8v7M19 8v7M11 8v7M7 8v7M3 8v7"/></svg>
+              <svg width="24" height="24" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
             </a>
             <a href="https://www.youtube.com/@StudioKr%C3%ADa" target="_blank" rel="noopener" aria-label="YouTube">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.73 20.32 20.32 0 0 1 20.2 0 2 2 0 0 1 1.4 1.73c1.1 2 1.2 4.2 1.2 6.3 0 3.1-.3 5.5-1.3 7.5a2 2 0 0 1-1.5 1.7 24 24 0 0 1-20.2 0 2 2 0 0 1-1.5-1.7c-1.1-2-1.2-4.2-1.2-6.3z"/><path d="m10 15 5-3-5-3z"/></svg>
-            </a>
-            <a href="https://vimeo.com/studiokria" target="_blank" rel="noopener" aria-label="Vimeo">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm3.5-11.5c0 1.4-.9 2.5-2 2.5-1.1 0-2-.9-2-2.5 0-1.1.9-2 2-2 1.1 0 2 .9 2 2z"/></svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
           </div>
         </div>
@@ -241,7 +305,6 @@ const alternateLinks = alternateLanguages.map(alt => ({
               <li><a href="https://www.instagram.com/studio.kria.isl" target="_blank" rel="noopener">{t('footer.instagram')}</a></li>
               <li><a href="https://www.tiktok.com/@studio.kria" target="_blank" rel="noopener">{t('footer.tiktok')}</a></li>
               <li><a href="https://www.youtube.com/@StudioKr%C3%ADa" target="_blank" rel="noopener">{t('footer.youtube')}</a></li>
-              <li><a href="https://vimeo.com/studiokria" target="_blank" rel="noopener">{t('footer.vimeo')}</a></li>
             </ul>
           </nav>
         </div>
@@ -251,6 +314,9 @@ const alternateLinks = alternateLanguages.map(alt => ({
         <p class="copyright">{t('footer.copyright', { year: new Date().getFullYear() })}</p>
       </div>
     </footer>
+
+    <!-- Analytics -->
+    <Analytics />
 
     <!-- Scripts -->
     <script is:inline>
@@ -291,9 +357,19 @@ const alternateLinks = alternateLanguages.map(alt => ({
         });
       }
 
-      // Header scroll effect
+      // Header scroll effect - add 'scrolled' class when past hero section
       window.addEventListener('scroll', () => {
-        if (siteHeader) {
+        if (!siteHeader) return;
+
+        // Check if hero section exists
+        const hero = document.querySelector('.hero, [class*="hero"]');
+
+        if (hero) {
+          const heroRect = hero.getBoundingClientRect();
+          // Trigger when hero bottom reaches or passes viewport top (scrolled past hero)
+          siteHeader.classList.toggle('scrolled', heroRect.bottom <= 0);
+        } else {
+          // Fallback: trigger after 50px scroll
           siteHeader.classList.toggle('scrolled', window.scrollY > 50);
         }
       });
@@ -427,23 +503,51 @@ const alternateLinks = alternateLanguages.map(alt => ({
   /* Bird Logo - Left Corner */
   .bird-logo {
     position: absolute;
-    left: 0;
+    left: var(--space-lg); /* Pushed in from left edge */
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
+    gap: var(--space-sm);
     justify-content: center;
-    width: 48px;
     height: 48px;
     color: var(--fg);
     text-decoration: none;
     transition: color var(--transition-fast), transform var(--transition-fast);
     z-index: calc(var(--z-nav) + 1);
+    white-space: nowrap;
   }
 
   .bird-logo:hover {
     color: var(--accent);
     transform: translateY(-50%) scale(1.1);
+  }
+
+  .bird-logo img {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  /* Studio Kría text - appears on scroll */
+  .bird-logo-text {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .site-header.scrolled .bird-logo-text {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
   }
 
   .bird-logo svg {
@@ -510,30 +614,7 @@ const alternateLinks = alternateLanguages.map(alt => ({
     color: var(--accent);
   }
 
-  /* Cursor Glow Halo */
-  .cursor-glow {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(
-        ellipse 600px 400px at var(--glow-x, 50%) var(--glow-y, 50%),
-        rgba(226, 82, 28, 0.12) 0%,
-        rgba(226, 82, 28, 0.06) 30%,
-        rgba(226, 82, 28, 0.02) 60%,
-        transparent 100%
-      );
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
-    isolation: isolate;
-  }
-
-  .cursor-glow.is-visible {
-    opacity: 1;
-  }
-
-  /* Nav Overlay - Demo site approach: solid bg + cursor glow + ::before with soft-light blend */
+  /* Nav Overlay - Matches body background EXACTLY (linear gradient + cursor glow + film overlay + cursor glow element) */
   .nav-overlay {
     position: fixed;
     inset: 0;
@@ -548,26 +629,30 @@ const alternateLinks = alternateLanguages.map(alt => ({
     visibility: hidden;
     transform: translateY(-20px);
     transition: opacity 0.4s var(--transition-spring), transform 0.4s var(--transition-spring), visibility 0s linear 0.4s;
-    /* Solid base + cursor glow - not see-through */
-    background-color: var(--bg);
-    background-image:
+    /* Body background EXACT match: base gradient + cursor-following glow */
+    /* Must use !important on full background shorthand to override body > * { background: transparent !important } */
+    background:
       radial-gradient(
-        ellipse 650px 350px at var(--glow-x, 50vw) var(--glow-y, 50vh),
+        ellipse 650px 350px at var(--glow-x) var(--glow-y),
         rgba(237, 81, 14, 0.224) 0%,
         rgba(237, 14, 14, 0.10) 40%,
         rgba(237, 14, 14, 0.03) 70%,
         transparent 100%
-      );
-    isolation: isolate;
+      ),
+      linear-gradient(
+        180deg,
+        #0a090b 0%,
+        #050505 100%
+      ) !important;
   }
 
-  /* Demo site exact: ::before with soft-light blend mode for color effect */
+  /* Colored film overlay - EXACT match to body::before */
   .nav-overlay::before {
     content: "";
     position: absolute;
     inset: 0;
-    pointer-events: none;
     z-index: 0;
+    pointer-events: none;
     background:
       radial-gradient(
         ellipse at 50% 38%,
@@ -586,40 +671,69 @@ const alternateLinks = alternateLanguages.map(alt => ({
         rgba(0, 0, 0, 0.148) 100%
       );
     mix-blend-mode: soft-light;
+    opacity: 1;
   }
 
-  /* Ensure nav content sits above the ::before blend layer */
+  /* Cursor glow element - EXACT match to .cursor-glow (on top of film overlay) */
+  .nav-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 600px 400px at var(--glow-x, 50%) var(--glow-y, 50%),
+        rgba(226, 82, 28, 0.12) 0%,
+        rgba(226, 82, 28, 0.06) 30%,
+        rgba(226, 82, 28, 0.02) 60%,
+        transparent 100%
+      );
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    isolation: isolate;
+  }
+
+  .nav-overlay.is-open::after {
+    opacity: 1; /* Match .cursor-glow.is-visible */
+  }
+
+  /* Ensure nav content sits above all background layers */
+  .nav-overlay > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Ensure nav content sits above background layers */
   .nav-overlay > * {
     position: relative;
     z-index: 1;
   }
 
-  /* Close button - top center (matching centered burger menu position) */
-  /* Burger visual center: header padding-top (1.5rem) + burger height/2 (~17px) = ~41px from top */
-  /* Close button height: 56px, so top = 41px - 28px = 13px */
+  /* Close button - top center (using margin auto for robust centering) */
   .nav-close {
     position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-10px);
+    top: var(--space-md) !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 auto !important;
+    width: 56px !important;
     z-index: calc(var(--z-nav) + 11);
     background: none;
     border: none;
     cursor: pointer;
-    width: 56px;
     height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s var(--transition-spring), visibility 0.3s var(--transition-spring), transform 0.3s var(--transition-spring);
+    transition: opacity 0.3s var(--transition-spring), visibility 0.3s var(--transition-spring);
   }
 
   .nav-overlay.is-open .nav-close {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50%) translateY(0);
     transition-delay: 0.3s;
   }
 
@@ -650,7 +764,7 @@ const alternateLinks = alternateLanguages.map(alt => ({
     padding: var(--space-4xl) var(--space-xl) var(--space-5xl);
     display: flex;
     flex-direction: column;
-    height: 100%;
+    /* height: 100%; removed to let content flow naturally on desktop */
   }
 
   .nav-links {
@@ -660,7 +774,7 @@ const alternateLinks = alternateLanguages.map(alt => ({
     display: flex;
     flex-direction: column;
     gap: var(--space-xl);
-    flex: 1;
+    /* flex: 1; removed to prevent pushing footer to bottom on desktop */
     align-items: center;
     text-align: center;
   }
@@ -686,8 +800,13 @@ const alternateLinks = alternateLanguages.map(alt => ({
     flex-direction: column;
     align-items: center;
     gap: var(--space-xl);
-    padding-top: var(--space-2xl);
-    border-top: 1px solid var(--border);
+    padding-top: var(--space-3xl);
+  }
+
+  @media (min-width: 769px) {
+    .nav-footer {
+      padding-top: var(--space-2xl);
+    }
   }
 
   .nav-lang {
@@ -718,6 +837,10 @@ const alternateLinks = alternateLanguages.map(alt => ({
   .nav-social {
     display: flex;
     gap: var(--space-xl);
+    width: 100%;
+    justify-content: center;
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-lg);
   }
 
   .nav-social a {

@@ -5,6 +5,7 @@
  */
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
+import HeroGradient from '../../components/HeroGradient.astro';
 import { t, getTranslation } from '../../i18n';
 
 export async function getStaticPaths() {
@@ -29,15 +30,16 @@ const otherCameras = translations.rentals.otherCameras;
 <Layout
   title={t(locale, 'rentals.title')}
   description={translations.rentals.description}
-  image="/assets/images/og-rentals.jpg"
+  image="/assets/images/og-rentals.svg"
   locale={locale}
   translations={translations}
   pathname={pathname}
 >
+  <HeroGradient />
+
   {/* Hero */}
   <Hero
     title={t(locale, 'rentals.title')}
-    backgroundImage={assetUrl("/assets/images/rentals-hero.jpg")}
     ctaPrimary={{ text: t(locale, 'rentals.requestQuote'), href: localUrl('/contact/#rentals') }}
     ctaSecondary={{ text: t(locale, 'rentals.downloadRateCard'), href: '/assets/docs/kria-rate-card.pdf' }}
     class="hero-centered"

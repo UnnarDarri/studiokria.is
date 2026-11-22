@@ -109,6 +109,15 @@ const heroClass = `hero ${className} ${centered ? 'hero-centered' : ''} hero--${
     overflow: hidden;
   }
 
+  /* Home variant - content starts from top with header offset */
+  .hero--home {
+    min-height: 50vh;
+    min-height: 50dvh;
+    align-items: flex-start;
+    padding-top: calc(var(--space-4xl) + 180px);
+    padding-bottom: var(--space-4xl);
+  }
+
   .hero--work { min-height: 60vh; min-height: 60dvh; }
   .hero--contact { min-height: 60vh; min-height: 60dvh; }
   .hero--project { min-height: 90vh; min-height: 90dvh; }
@@ -221,17 +230,22 @@ const heroClass = `hero ${className} ${centered ? 'hero-centered' : ''} hero--${
 
   /* Home variant specific - full width, responsive */
   .hero--home .hero-title--massive {
-    font-size: clamp(5rem, 12vw, 16rem);
-    line-height: 0.8;
+    font-size: clamp(6rem, 15vw, 20rem);
+    line-height: 0.75;
     padding: 0;
   }
 
   /* Mobile: ensure full width scaling */
   @media (max-width: 768px) {
     .hero--home .hero-title--massive {
-      font-size: clamp(4rem, 14vw, 8rem);
-      line-height: 0.85;
+      font-size: clamp(6rem, 22vw, 12rem);
+      line-height: 1;
       letter-spacing: var(--letter-spacing-display);
+    }
+
+    .hero--home {
+      padding-top: calc(var(--space-3xl) + 120px);
+      padding-bottom: var(--space-3xl);
     }
   }
 
@@ -246,6 +260,16 @@ const heroClass = `hero ${className} ${centered ? 'hero-centered' : ''} hero--${
     color: var(--fg-muted);
     max-width: 55ch;
     margin: 0 0 var(--space-3xl);
+  }
+
+  .hero--home .hero-description {
+    font-size: var(--text-xl);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--fg-muted);
+    max-width: 60ch;
+    margin: var(--space-lg) auto var(--space-3xl);
   }
 
   .hero-ctas {
@@ -288,5 +312,9 @@ const heroClass = `hero ${className} ${centered ? 'hero-centered' : ''} hero--${
     .hero-title { font-size: var(--display-lg); }
     .hero-title--massive { font-size: var(--display-md); white-space: normal; }
     .hero-description { font-size: var(--text-base); }
+    .hero--home .hero-description {
+      font-size: var(--text-base);
+      margin: 0 0 var(--space-2xl);
+    }
   }
 </style>

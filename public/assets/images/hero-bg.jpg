@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-  <rect fill="#0a0a0a" width="1920" height="1080"/>
-  <text x="960" y="540" font-family="Georgia, serif" font-size="48" fill="#333" text-anchor="middle" dominant-baseline="middle">Hero Background Placeholder</text>
-  <text x="960" y="600" font-family="Inter, sans-serif" font-size="18" fill="#222" text-anchor="middle" dominant-baseline="middle">Replace with: /assets/images/hero-bg.jpg (1920x1080)</text>
-</svg>

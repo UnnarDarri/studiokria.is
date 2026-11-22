@@ -9,12 +9,34 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "eslint . --ext .astro,.js,.ts,.mjs --max-warnings 0",
+    "lint:fix": "eslint . --ext .astro,.js,.ts,.mjs --fix",
+    "format": "prettier --write \"**/*.{astro,js,ts,mjs,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{astro,js,ts,mjs,json,css,md}\"",
+    "test": "playwright test",
+    "test:update": "playwright test --update-snapshots",
+    "prepare": "husky install"
   },
   "dependencies": {
-    "astro": "^7.4.4"
+    "@astrojs/sitemap": "^3.7.5",
+    "astro": "^7.4.4",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
-    "mdn-data": "^2.37.2"
+    "@playwright/test": "^1.65.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-astro": "^1.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.5.2",
+    "mdn-data": "^2.37.2",
+    "prettier": "^3.2.5",
+    "prettier-plugin-astro": "^0.13.0"
+  },
+  "lint-staged": {
+    "*.{astro,js,ts,mjs,json,css,md}": [
+      "prettier --write",
+      "eslint --fix --max-warnings 0"
+    ]
   }
 }

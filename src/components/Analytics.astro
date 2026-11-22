@@ -1,0 +1,38 @@
+---
+/**
+ * Analytics Component - Privacy-friendly analytics (Plausible/Umami)
+ * Configure by setting environment variables:
+ * - PUBLIC_ANALYTICS_DOMAIN: Your analytics domain (e.g., plausible.io, your-umami-domain.com)
+ * - PUBLIC_ANALYTICS_API_HOST: Custom API host (optional, for self-hosted)
+ * - PUBLIC_ANALYTICS_SCRIPT_NAME: Custom script name (optional)
+ *
+ * For Plausible: Set PUBLIC_ANALYTICS_DOMAIN to your Plausible domain
+ * For Umami: Set PUBLIC_ANALYTICS_DOMAIN to your Umami domain and PUBLIC_ANALYTICS_SCRIPT_NAME to 'script.js'
+ */
+const domain = import.meta.env.PUBLIC_ANALYTICS_DOMAIN;
+const apiHost = import.meta.env.PUBLIC_ANALYTICS_API_HOST;
+const scriptName = import.meta.env.PUBLIC_ANALYTICS_SCRIPT_NAME || 'script.js';
+
+const plausibleSrc = apiHost ? `${apiHost}/js/${scriptName}` : `https://plausible.io/js/${scriptName}`;
+const umamiSrc = apiHost ? `${apiHost}/${scriptName}` : `https://cdn.umami.is/${scriptName}`;
+---
+
+{domain ? (
+  <>
+    <!-- Plausible Analytics -->
+    <script
+      defer
+      data-domain={domain}
+      src={plausibleSrc}
+    ></script>
+
+    {/* Alternative: Umami Analytics */}
+    {/*
+    <script
+      defer
+      data-website-id={domain}
+      src={umamiSrc}
+    ></script>
+    */}
+  </>
+) : null}

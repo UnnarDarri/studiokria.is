@@ -10,6 +10,7 @@
   },
   "hero": {
     "title": "STUDIO KRÍA",
+    "subtitle": "Óháð myndaframleiðslufélag",
     "description": "Við skapum sögur sem eftir lifa — frá íslenskum lindum á alþjóðlegar skjár. Stutt myndir, langmyndir, skýrslur, auglýsingar og tónleikamyndir framleiddar með heiðri og sjónarmið.",
     "ctaPrimary": "Skoða verkefni",
     "ctaSecondary": "Hafðu samband"
@@ -38,7 +39,7 @@
     "terms": "Skilmálar notkunar"
   },
   "home": {
-    "featuredProjects": "Útvalin verkefni",
+    "featuredProjects": "Verkefni okkar",
     "viewProject": "Skoða verkefni",
     "showcasing": "Sýnið",
     "projects": "Verkefni",
@@ -61,7 +62,7 @@
     "readMore": "Lesa meira"
   },
   "projects": {
-    "title": "Útvalin verkefni",
+    "title": "Verkefni okkar",
     "label": "Vinnsla okkar",
     "count": "{count} verkefni",
     "years": "{min}–{max}",
@@ -91,7 +92,8 @@
     "documentary": "Skýrsla",
     "commercial": "Auglýsing",
     "music-video": "Tónleikamynd",
-    "series": "Röð"
+    "series": "Röð",
+    "print": "Útskriftarmynd"
   },
   "projectStatus": {
     "completed": "Lokið",
@@ -199,32 +201,32 @@
       {
         "title": "Myndaframleiðsla",
         "desc": "Fullnægjandi framleiðsla frá þróun gegnum eftirvinnslu. Stutt myndir, langmyndir, skýrslur og röð.",
-        "image": "/assets/images/service-production.jpg"
+        "image": "/assets/images/service-production.svg"
       },
       {
         "title": "Auglýsingar & Brönd",
         "desc": "Hæfileg auglýsingar, bröndarmyndir og fjölmiðlarefni fyrir alþjóðleg brönd og viðskiptavini.",
-        "image": "/assets/images/service-commercial.jpg"
+        "image": "/assets/images/service-commercial.svg"
       },
       {
         "title": "Tónleikamyndir",
         "desc": "Skapandi tónleikamyndir sem blanda saman sögu, framkvæmd og rannsókavísum sjónum.",
-        "image": "/assets/images/service-music.jpg"
+        "image": "/assets/images/service-music.svg"
       },
       {
         "title": "Eftirvinnsluyfirumsjón",
         "desc": "Klippa, litagerð, hljóðhönnun, VFX samþætting og stjórn lokaframleiðslu.",
-        "image": "/assets/images/service-post.jpg"
+        "image": "/assets/images/service-post.svg"
       },
       {
         "title": "Hátíðar- & Dreifingarástæða",
         "desc": "Frumsýningaráætlun, hátíðarinnsendingar, samningagerð við söluaðila og útgáfukerfi.",
-        "image": "/assets/images/service-festival.jpg"
+        "image": "/assets/images/service-festival.svg"
       },
       {
         "title": "Þróun & Pakkning",
         "desc": "Handritaþróun, listamannapakkning, fjárhagsáætlun og sameiginlegu framleiðslugrunn.",
-        "image": "/assets/images/service-development.jpg"
+        "image": "/assets/images/service-development.svg"
       }
     ],
     "specialized": "Sérsniðin þjónusta",

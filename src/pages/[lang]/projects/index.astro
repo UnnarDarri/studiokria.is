@@ -1,10 +1,11 @@
 ---
 /**
- * Projects Index - Full-width cinematic grid (sensor.tv inspired, grittier)
- * All projects displayed with massive full-bleed images
+ * Projects Index - Fixed viewport scroll animation (sensor.tv style)
+ * One project at a time, next slides up to replace current
  */
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import HeroGradient from '../../../components/HeroGradient.astro';
 import { t, getTranslation } from '../../../i18n';
 
 export async function getStaticPaths() {
@@ -17,39 +18,33 @@ export async function getStaticPaths() {
 const locale = Astro.params.lang;
 const translations = getTranslation(locale);
 const basePath = import.meta.env.BASE_URL || '/';
-// Helper to add base path to asset URLs (for images from content)
 const assetUrl = (path: string) => `${basePath.replace(/\/$/, '')}${path.startsWith('/') ? path : '/' + path}`;
 const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
-const pathname = '/projects/'; // Current path without base path
+const pathname = '/projects/';
 
 const projects = await getCollection('projects');
 
-// Sort: featured first, then by order, then year desc
 const sortedProjects = [...projects].sort((a, b) => {
   if (a.data.featured !== b.data.featured) return b.data.featured ? 1 : -1;
   if (a.data.order !== b.data.order) return a.data.order - b.data.order;
   return b.data.year - a.data.year;
 });
 
-const typeLabels = translations.projectTypes;
-const statusLabels = translations.projectStatus;
-const statusColors: Record<string, string> = {
-  'completed': 'var(--color-accent)',
-  'in-production': '#e67e22',
-  'pre-production': '#3498db',
-  'development': '#9b59b6',
-};
-
+const projectCount = sortedProjects.length;
+// Scroll track multiplier - reduced for lighter scroll feel
+const scrollMultiplier = 1.5; // Each project gets 150vh of scroll track
 ---
 
 <Layout
   title={t(locale, 'projects.title')}
   description={translations.projects.description || 'Explore our complete portfolio of films, documentaries, commercials, and music videos. Full-width cinematic showcase.'}
-  image="/assets/images/og-work.jpg"
+  image="/assets/images/og-work.svg"
   locale={locale}
   translations={translations}
   pathname={pathname}
 >
+  <HeroGradient />
+
   {/* Hero - Minimal, just the title */}
   <header class="work-hero" aria-labelledby="work-title">
     <div class="work-hero-content container animate-on-scroll">
@@ -62,63 +57,49 @@ const statusColors: Record<string, string> = {
     </div>
   </header>
 
-  {/* Full-Width Project Grid */}
-  <main class="work-grid" role="list" aria-label={t(locale, 'projects.title')}>
+  {/* Scroll Track - provides scroll length (scrollMultiplier * 100vh per project) */}
+  <div class="work-scroll-track" aria-hidden="true"></div>
+
+  {/* Fixed Viewport - shows one project at a time */}
+  <div class="work-viewport" role="list" aria-label={t(locale, 'projects.title')}>
     {sortedProjects.map((project, index) => (
-      <article class={`work-item full-width-image ${project.data.featured ? 'featured' : ''} animate-on-scroll`} style={`--stagger: ${index * 80}ms`} role="listitem">
-        <a href={localUrl(`/projects/${project.id}/`)} class="work-item-link" aria-label={`${t(locale, 'projects.viewProject')}: ${project.data.title} — ${typeLabels[project.data.type] || project.data.type}`}>
+      <article
+        class={`work-item ${project.data.featured ? 'featured' : ''}`}
+        style={`--index: ${index};`}
+        role="listitem"
+        data-index={index}
+      >
+        <a href={localUrl(`/projects/${project.id}/`)} class="work-item-link" aria-label={`${t(locale, 'projects.viewProject')}: ${project.data.title} — ${t(locale, `projectTypes.${project.data.type}`) || project.data.type}`}>
           {/* Full-bleed image */}
           <div class="work-item-image" aria-hidden="true">
             <img
               src={assetUrl(project.data.thumbnail)}
               alt=""
-              loading={index < 3 ? 'eager' : 'lazy'}
-              fetchpriority={index < 3 ? 'high' : 'auto'}
-              sizes="(max-width: 768px) 100vw, (max-width: 1199px) 50vw, 100vw"
+              loading={index < 2 ? 'eager' : 'lazy'}
+              fetchpriority={index < 2 ? 'high' : 'auto'}
+              sizes="100vw"
             />
             <div class="work-item-overlay">
               <div class="work-item-gradient"></div>
             </div>
           </div>
 
-          {/* Content overlay on hover/focus */}
+          {/* Content overlay - bottom left, always visible on desktop */}
           <div class="work-item-content">
-            <div class="work-item-meta">
-              <span class="work-item-type" style={`--accent: ${statusColors[project.data.status] || 'var(--color-accent)'};`}>
-                {typeLabels[project.data.type] || project.data.type}
-              </span>
-              <span class="work-item-year">{project.data.year}</span>
-              {project.data.duration && <span class="work-item-duration">{project.data.duration}</span>}
-              <span class="work-item-status" style={`--status-color: ${statusColors[project.data.status] || 'var(--color-accent)'};`}>
-                {statusLabels[project.data.status] || project.data.status}
-              </span>
-            </div>
-
             <h2 class="work-item-title glitch-text" data-text={project.data.title}>
               {project.data.title}
             </h2>
-
-            {project.data.role && project.data.role.length > 0 && (
-              <p class="work-item-role">{project.data.role.join(' / ')}</p>
-            )}
-
-            <p class="work-item-desc">{project.data.description}</p>
-
-            {project.data.festival && project.data.festival.length > 0 && (
-              <div class="work-item-festivals">
-                {project.data.festival.slice(0, 4).map(fest => (
-                  <span class="festival-chip">{fest}</span>
-                ))}
-                {project.data.festival.length > 4 && (
-                  <span class="festival-chip more">+{project.data.festival.length - 4}</span>
-                )}
-              </div>
-            )}
+            <a href={localUrl(`/projects/${project.id}/`)} class="work-item-cta">
+              {t(locale, 'projects.viewProject')}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
           </div>
         </a>
       </article>
     ))}
-  </main>
+  </div>
 
   {/* CTA to return home */}
   <footer class="work-footer section section-compact">
@@ -136,12 +117,140 @@ const statusColors: Record<string, string> = {
   </footer>
 </Layout>
 
+<script is:inline>
+  // Fixed viewport scroll animation — optimized for performance
+  function initScrollAnimation() {
+    const viewport = document.querySelector('.work-viewport');
+    const items = viewport?.querySelectorAll('.work-item');
+    const track = document.querySelector('.work-scroll-track');
+    if (!items || items.length < 2 || !track) {
+      console.warn('Scroll animation: required elements not found', { viewport, items: items?.length, track });
+      return;
+    }
+
+    const count = items.length;
+    const scrollMultiplier = 1.5; // 150vh per project - lighter feel
+    let scrollY = 0;
+    let lastUpdate = 0;
+    let animationStarted = false;
+    let ticking = false;
+
+    // Set body min-height and track height dynamically based on project count
+    function setHeights() {
+      const vh = window.innerHeight;
+      const totalHeight = count * vh * scrollMultiplier;
+      document.body.style.minHeight = `${totalHeight}px`;
+      track.style.height = `${totalHeight}px`;
+    }
+
+    // Initial height setup
+    setHeights();
+
+    // Robust scroll position getter
+    const getScrollY = () => {
+      if (document.scrollingElement) return document.scrollingElement.scrollTop;
+      if (document.documentElement.scrollTop) return document.documentElement.scrollTop;
+      if (document.body.scrollTop) return document.body.scrollTop;
+      if (window.scrollY !== undefined) return window.scrollY;
+      if (window.pageYOffset !== undefined) return window.pageYOffset;
+      return 0;
+    };
+
+    function update() {
+      ticking = false;
+      try {
+        const newScrollY = getScrollY();
+        // Only update if scroll position changed significantly
+        if (Math.abs(newScrollY - scrollY) < 1 && animationStarted) return;
+        scrollY = newScrollY;
+        animationStarted = true;
+
+        const vh = window.innerHeight;
+        const projectHeight = vh * scrollMultiplier;
+        const index = Math.min(Math.floor(scrollY / projectHeight), count - 1);
+        const progress = (scrollY % projectHeight) / projectHeight; // 0 to 1
+
+        items.forEach((item, i) => {
+          let opacity, transform, zIndex;
+          if (i === index) {
+            opacity = 1 - progress;
+            transform = `translate3d(0, ${-progress * 100}vh, 0)`;
+            zIndex = '10';
+          } else if (i === index + 1) {
+            opacity = progress;
+            transform = `translate3d(0, ${(1 - progress) * 100}vh, 0)`;
+            zIndex = '5';
+          } else if (i < index) {
+            opacity = 0;
+            transform = 'translate3d(0, -100vh, 0)';
+            zIndex = '1';
+          } else {
+            opacity = 0;
+            transform = 'translate3d(0, 100vh, 0)';
+            zIndex = '1';
+          }
+          // Batch DOM writes
+          item.style.opacity = String(opacity);
+          item.style.transform = transform;
+          item.style.zIndex = zIndex;
+        });
+
+        // Debug: expose scroll position on documentElement for inspection
+        document.documentElement.style.setProperty('--debug-scroll-y', `${scrollY}px`);
+        document.documentElement.style.setProperty('--debug-index', String(index));
+        document.documentElement.style.setProperty('--debug-progress', progress.toFixed(2));
+        document.documentElement.style.setProperty('--debug-vh', `${vh}px`);
+        document.documentElement.style.setProperty('--debug-project-height', `${projectHeight}px`);
+      } catch (e) {
+        console.error('Scroll animation error:', e);
+      }
+    }
+
+    // Throttled scroll handler using requestAnimationFrame
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    // Single scroll listener on window (most reliable)
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Update track height and body min-height on resize (debounced)
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(setHeights, 150);
+    });
+
+    // Initial update
+    update();
+  }
+
+  // Ensure DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollAnimation);
+  } else {
+    initScrollAnimation();
+  }
+</script>
+
 <style>
+  /* Force page scrollability - html is the root scroller */
+  :global(html) {
+    overflow-y: auto;
+  }
+  :global(body) {
+    /* min-height set dynamically in JS based on project count */
+  }
+
   /* ==========================================================================
      WORK HERO - MINIMAL, BOLD
      ========================================================================== */
   .work-hero {
     position: relative;
+    z-index: 100; /* Above viewport */
     min-height: 60vh;
     min-height: 60dvh;
     display: flex;
@@ -149,7 +258,8 @@ const statusColors: Record<string, string> = {
     justify-content: center;
     padding: var(--space-4xl) var(--space-xl);
     text-align: center;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
   }
 
   .work-hero-content { max-width: var(--container-lg); }
@@ -160,7 +270,7 @@ const statusColors: Record<string, string> = {
     font-weight: 700;
     letter-spacing: 0.5em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--accent);
     margin-bottom: var(--space-xl);
     opacity: 0.7;
   }
@@ -171,36 +281,52 @@ const statusColors: Record<string, string> = {
     letter-spacing: var(--letter-spacing-display);
     margin-bottom: var(--space-2xl);
     text-shadow: var(--glow-intense);
+    white-space: nowrap;
   }
 
   /* ==========================================================================
-     WORK GRID - FULL WIDTH, CINEMATIC SINGLE COLUMN ON DESKTOP
+     SCROLL TRACK - Provides scroll length
      ========================================================================== */
-  .work-grid {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
+  .work-scroll-track {
+    width: 100%;
+    pointer-events: none;
   }
 
-  /* Tablet: 2 columns */
-  @media (min-width: 768px) and (max-width: 1199px) {
-    .work-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  /* ==========================================================================
+     FIXED VIEWPORT - Shows one project at a time
+     ========================================================================== */
+  .work-viewport {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 50;
+    pointer-events: none;
+    overflow: hidden;
   }
 
-  /* Desktop: Full-width single column - cinematic scrolling */
-  @media (min-width: 1200px) {
-    .work-grid {
-      grid-template-columns: 1fr;
-    }
+  .work-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    will-change: opacity, transform;
+    pointer-events: auto;
+    /* Initial state: all hidden below (JS will override) */
+    opacity: 0;
+    transform: translateY(100vh);
+    z-index: 1;
   }
 
-  /* Featured projects get more height */
-  @media (min-width: 768px) {
-    .work-item.featured { aspect-ratio: 21 / 9; }
+  /* First project visible initially (JS will override after init) */
+  .work-item:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    z-index: 10;
   }
 
   .work-item-link {
@@ -221,7 +347,7 @@ const statusColors: Record<string, string> = {
   .work-item-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease;
     filter: contrast(1.1) saturate(0.8);
     will-change: transform, filter;
@@ -258,64 +384,15 @@ const statusColors: Record<string, string> = {
     pointer-events: none;
   }
 
-  /* Content overlay */
+  /* Content overlay - bottom left, always visible on desktop */
   .work-item-content {
     position: absolute;
-    inset: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
     padding: var(--space-2xl) var(--space-xl);
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .work-item:hover .work-item-content,
-  .work-item:focus-within .work-item-content {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .work-item-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-lg);
-    margin-bottom: var(--space-lg);
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-  }
-
-  .work-item-type,
-  .work-item-status {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
-    border: 1px solid currentColor;
-    border-radius: var(--radius-full);
-    background: rgba(5,5,5,0.6);
-    backdrop-filter: blur(8px);
-  }
-
-  .work-item-type {
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-
-  .work-item-status {
-    color: var(--status-color);
-    border-color: var(--status-color);
-  }
-
-  .work-item-year,
-  .work-item-duration {
-    color: var(--color-fg-subtle);
-    background: transparent;
+    pointer-events: none;
   }
 
   .work-item-title {
@@ -327,7 +404,6 @@ const statusColors: Record<string, string> = {
     max-width: 90%;
   }
 
-  /* Desktop: larger titles for full-width items */
   @media (min-width: 1200px) {
     .work-item-title {
       font-size: var(--display-lg);
@@ -335,60 +411,53 @@ const statusColors: Record<string, string> = {
     }
   }
 
-  .work-item-role {
-    font-size: var(--text-base);
-    font-weight: 400;
-    color: var(--color-accent);
-    margin-bottom: var(--space-md);
-    text-transform: none;
-    letter-spacing: 0;
-    font-family: var(--font-sans);
-    opacity: 0.9;
-  }
-
-  .work-item-desc {
-    font-size: var(--text-sm);
-    line-height: 1.6;
-    color: var(--color-fg-muted);
-    max-width: 50ch;
-    margin-bottom: var(--space-lg);
-    opacity: 0.8;
-  }
-
-  .work-item-festivals {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-    margin-bottom: var(--space-xl);
-  }
-
-  .festival-chip {
+  /* CTA Button - small, inline with arrow */
+  .work-item-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
     font-family: var(--font-display);
     font-size: var(--text-xs);
     font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: var(--space-xs) var(--space-sm);
-    background: rgba(232, 197, 138, 0.15);
-    border: 1px solid rgba(232, 197, 138, 0.3);
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--accent);
     border-radius: var(--radius-full);
-    color: var(--color-accent);
-    backdrop-filter: blur(4px);
+    padding: var(--space-xs) var(--space-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    pointer-events: auto;
+    width: fit-content;
   }
 
-  .festival-chip.more {
-    background: rgba(118, 118, 118, 0.15);
-    border-color: rgba(118, 118, 118, 0.3);
-    color: var(--color-fg-subtle);
+  .work-item-cta:hover,
+  .work-item-cta:focus {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: var(--glow-medium);
+  }
+
+  .work-item-cta svg {
+    transition: transform var(--transition-fast);
+    flex-shrink: 0;
+  }
+
+  .work-item-cta:hover svg {
+    transform: translateX(4px);
   }
 
   /* ==========================================================================
-     WORK FOOTER
+     WORK FOOTER - Positioned after scroll track
      ========================================================================== */
   .work-footer {
+    position: relative;
+    z-index: 100; /* Above viewport */
     text-align: center;
-    border-top: 1px solid var(--color-border);
-    background: transparent;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    padding: var(--space-4xl) var(--space-xl);
   }
 
   .work-footer-title {
@@ -400,7 +469,7 @@ const statusColors: Record<string, string> = {
 
   .work-footer-desc {
     font-size: var(--text-lg);
-    color: var(--color-fg-muted);
+    color: var(--fg-muted);
     max-width: 50ch;
     margin: 0 auto var(--space-2xl);
   }
@@ -409,70 +478,96 @@ const statusColors: Record<string, string> = {
      REDUCED MOTION
      ========================================================================== */
   @media (prefers-reduced-motion: reduce) {
+    .work-item {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+      transition: none !important;
+    }
     .work-item-image img { transition: none; }
     .work-item-content { opacity: 1; transform: none; transition: none; }
     .work-item-gradient { transition: none; }
   }
 
   /* ==========================================================================
-     MOBILE - Title and tags BELOW the image
+     MOBILE - Stack projects vertically, title overlay on image
      ========================================================================== */
   @media (max-width: 768px) {
-    .work-hero { min-height: 50vh; padding: var(--space-3xl) var(--space-lg); }
+    .work-hero { min-height: 40vh; padding: var(--space-2xl) var(--space-lg); }
     .work-hero-title { font-size: var(--display-md); }
+    .work-hero-label { display: none; }
 
-    /* Reset absolute positioning for mobile - stack image and content */
-    .work-item {
-      position: relative;
-      aspect-ratio: auto;
+    .work-scroll-track { display: none; }
+    .work-viewport {
+      position: static;
       height: auto;
+      pointer-events: auto;
       display: flex;
       flex-direction: column;
+      gap: 0;
     }
-    .work-item.featured { aspect-ratio: auto; }
+
+    .work-item {
+      position: relative;
+      height: auto;
+      min-height: auto;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+
+    .work-item-link {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
     .work-item-image {
       position: relative;
-      aspect-ratio: 16 / 10;
+      width: 100%;
       height: auto;
-    }
-    .work-item.featured .work-item-image {
-      aspect-ratio: 16 / 8;
+      margin: 0;
+      padding: 0;
     }
 
-    .work-item-gradient { display: none; }
+    .work-item-image img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+
+    .work-item-gradient {
+      display: block;
+      opacity: 0.4;
+    }
 
     .work-item-content {
-      position: relative;
-      opacity: 1;
-      transform: none;
-      padding: var(--space-lg) var(--space-md);
-      background: transparent;
-      flex: 0 0 auto;
-    }
-
-    .work-item-meta {
-      margin-bottom: var(--space-md);
-      gap: var(--space-md);
-      font-size: var(--text-xs);
-    }
-
-    .work-item-type,
-    .work-item-status {
-      padding: var(--space-xs) var(--space-sm);
-      background: transparent;
-      backdrop-filter: none;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      padding: var(--space-md) var(--space-md);
+      pointer-events: auto;
+      background: linear-gradient(180deg, transparent 0%, rgba(5,5,5,0.7) 100%);
     }
 
     .work-item-title {
       font-size: var(--display-sm);
-      text-shadow: var(--glow-medium);
+      text-shadow: var(--glow-strong);
       max-width: none;
+      margin-bottom: var(--space-xs);
     }
 
-    .work-item-role { font-size: var(--text-sm); margin-bottom: var(--space-sm); }
+    .work-item-cta {
+      font-size: var(--text-xs);
+      padding: var(--space-xs) var(--space-sm);
+    }
 
-    .work-item-desc { display: none; }
-    .work-item-festivals { display: none; }
+    .work-footer { padding: var(--space-2xl) var(--space-lg); }
   }
 </style>

@@ -1,0 +1,555 @@
+---
+/**
+ * Projects Test Page - Sensor.tv Style Circular Full-Screen Carousel
+ * Optimized JS-driven: continuous scroll, smooth 60fps, circular loop
+ * One project at a time, centered title, circular scroll, bottom-right dots
+ */
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import HeroGradient from '../../../components/HeroGradient.astro';
+import { t, getTranslation } from '../../../i18n';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'is' } },
+  ];
+}
+
+const locale = Astro.params.lang;
+const translations = getTranslation(locale);
+const basePath = import.meta.env.BASE_URL || '/';
+const assetUrl = (path: string) => `${basePath.replace(/\/$/, '')}${path.startsWith('/') ? path : '/' + path}`;
+const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${path.startsWith('/') ? path : '/' + path}`;
+const pathname = '/projects-test/';
+
+const projects = await getCollection('projects');
+
+const sortedProjects = [...projects].sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return b.data.featured ? 1 : -1;
+  if (a.data.order !== b.data.order) return a.data.order - b.data.order;
+  return b.data.year - a.data.year;
+});
+
+const projectCount = sortedProjects.length;
+// Scroll distance per project: 2.5x viewport = slower, smoother transitions
+const SCROLL_MULTIPLIER = 2.5;
+---
+
+<Layout
+  title={t(locale, 'projects.title') + ' — Test Carousel'}
+  description={translations.projects.description || 'Explore our complete portfolio of films, documentaries, commercials, and music videos.'}
+  image="/assets/images/og-work.svg"
+  locale={locale}
+  translations={translations}
+  pathname={pathname}
+>
+  <HeroGradient />
+
+  {/* NO HERO SECTION */}
+
+  {/* Scroll Track - provides scroll length for circular scrolling */}
+  <div class="carousel-scroll-track" aria-hidden="true"></div>
+
+  {/* Fixed Viewport - shows one project at a time, TRUE full screen under header */}
+  <div class="carousel-viewport" role="list" aria-label={t(locale, 'projects.title')}>
+    {sortedProjects.map((project, index) => (
+      <article
+        class={`carousel-item ${project.data.featured ? 'featured' : ''}`}
+        style={`--index: ${index};`}
+        role="listitem"
+        data-index={index}
+      >
+        <a href={localUrl(`/projects/${project.id}/`)} class="carousel-item-link" aria-label={`${t(locale, 'projects.viewProject')}: ${project.data.title} — ${t(locale, `projectTypes.${project.data.type}`) || project.data.type}`}>
+          {/* Full-bleed image/video - TRUE full screen */}
+          <div class="carousel-item-media" aria-hidden="true">
+            <img
+              src={assetUrl(project.data.heroImage || project.data.thumbnail)}
+              alt=""
+              loading={index < 2 ? 'eager' : 'lazy'}
+              fetchpriority={index < 2 ? 'high' : 'auto'}
+              sizes="100vw"
+            />
+            <div class="carousel-item-gradient"></div>
+          </div>
+
+          {/* Centered Title Overlay - in the MIDDLE of viewport - ALWAYS VISIBLE */}
+          <div class="carousel-item-content">
+            <h2 class="carousel-item-title glitch-text" data-text={project.data.title}>
+              {project.data.title}
+            </h2>
+            <p class="carousel-item-meta">
+              <span class="carousel-item-type">{t(locale, `projectTypes.${project.data.type}`) || project.data.type}</span>
+              <span class="carousel-item-separator" aria-hidden="true">·</span>
+              <span class="carousel-item-year">{project.data.year}</span>
+              {project.data.duration && <> <span class="carousel-item-separator" aria-hidden="true">·</span> <span class="carousel-item-duration">{project.data.duration}</span> </>}
+            </p>
+          </div>
+
+          {/* View Project CTA - bottom center, ALWAYS VISIBLE */}
+          <div class="carousel-item-cta">
+            <span>{t(locale, 'projects.viewProject')}</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </a>
+      </article>
+    ))}
+    {/* Duplicate first project at end for seamless circular scroll */}
+    {sortedProjects.length > 1 && sortedProjects[0] && (
+      <article
+        class="carousel-item carousel-item--duplicate"
+        style={`--index: ${projectCount};`}
+        role="listitem"
+        data-index={projectCount}
+        data-duplicate="true"
+      >
+        <a href={localUrl(`/projects/${sortedProjects[0].id}/`)} class="carousel-item-link" aria-label={`${t(locale, 'projects.viewProject')}: ${sortedProjects[0].data.title} — ${t(locale, `projectTypes.${sortedProjects[0].data.type}`) || sortedProjects[0].data.type}`}>
+          <div class="carousel-item-media" aria-hidden="true">
+            <img
+              src={assetUrl(sortedProjects[0].data.heroImage || sortedProjects[0].data.thumbnail)}
+              alt=""
+              loading="lazy"
+              sizes="100vw"
+            />
+            <div class="carousel-item-gradient"></div>
+          </div>
+          <div class="carousel-item-content">
+            <h2 class="carousel-item-title glitch-text" data-text={sortedProjects[0].data.title}>
+              {sortedProjects[0].data.title}
+            </h2>
+            <p class="carousel-item-meta">
+              <span class="carousel-item-type">{t(locale, `projectTypes.${sortedProjects[0].data.type}`) || sortedProjects[0].data.type}</span>
+              <span class="carousel-item-separator" aria-hidden="true">·</span>
+              <span class="carousel-item-year">{sortedProjects[0].data.year}</span>
+              {sortedProjects[0].data.duration && <> <span class="carousel-item-separator" aria-hidden="true">·</span> <span class="carousel-item-duration">{sortedProjects[0].data.duration}</span> </>}
+            </p>
+          </div>
+          <div class="carousel-item-cta">
+            <span>{t(locale, 'projects.viewProject')}</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </a>
+      </article>
+    )}
+  </div>
+
+  {/* Bottom-Right Navigation Dots - Normal size (4px), DENSER (negative margin) */}
+  <nav class="carousel-dots" aria-label={t(locale, 'projects.dotsLabel') || 'Project navigation'}>
+    <ul class="dots-list" role="tablist">
+      {sortedProjects.map((_, index) => (
+        <li role="presentation">
+          <button
+            role="tab"
+            class={`dot ${index === 0 ? 'active' : ''}`}
+            data-index={index}
+            aria-selected={index === 0}
+            aria-label={`${t(locale, 'projects.project')} ${index + 1} ${t(locale, 'projects.of')} ${projectCount}`}
+            id={`dot-${index}`}
+          >
+            <span class="dot-inner" aria-hidden="true"></span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  {/* CTA Section - after scroll track */}
+  <footer class="carousel-footer section section-compact">
+    <div class="container">
+      <div class="carousel-footer-content animate-on-scroll">
+        <h2 class="carousel-footer-title glitch-text" data-text={t(locale, 'projects.wantToWork')}>
+          {t(locale, 'projects.wantToWork')}
+        </h2>
+        <p class="carousel-footer-desc">{t(locale, 'projects.openToCollab')}</p>
+        <a href={localUrl('/contact/')} class="btn btn-primary btn-xl glow-element-intense">
+          {t(locale, 'projects.startProject')}
+        </a>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<script is:inline>
+  // Sensor.tv Style Circular Full-Screen Carousel - Optimized for 60fps
+  // Continuous scroll, smooth transitions, circular loop
+  (function() {
+    const viewport = document.querySelector('.carousel-viewport');
+    const track = document.querySelector('.carousel-scroll-track');
+    const dots = document.querySelectorAll('.dot');
+
+    if (!viewport || !track || dots.length < 2) {
+      console.warn('Carousel: required elements not found');
+      return;
+    }
+
+    const allItems = viewport.querySelectorAll('.carousel-item');
+    const realItems = viewport.querySelectorAll('.carousel-item:not(.carousel-item--duplicate)');
+    const count = realItems.length;
+
+    const scrollMultiplier = 2.5;
+    let scrollY = 0;
+    let animationStarted = false;
+    let ticking = false;
+    let isAnimating = false;
+    let currentIndex = 0;
+    let lastRawIndex = -1;
+
+    // Set body min-height and track height - include duplicate for circular scroll
+    function setHeights() {
+      const vh = window.innerHeight;
+      const totalHeight = (count + 1) * vh * scrollMultiplier;
+      document.body.style.minHeight = `${totalHeight}px`;
+      track.style.height = `${totalHeight}px`;
+    }
+
+    setHeights();
+
+    const getScrollY = () => {
+      const se = document.scrollingElement;
+      if (se) return se.scrollTop;
+      if (document.documentElement.scrollTop) return document.documentElement.scrollTop;
+      if (document.body.scrollTop) return document.body.scrollTop;
+      return window.scrollY || window.pageYOffset || 0;
+    };
+
+    function updateDots(activeIndex) {
+      dots.forEach((dot, i) => {
+        const isActive = i === activeIndex;
+        dot.classList.toggle('active', isActive);
+        dot.setAttribute('aria-selected', isActive);
+      });
+    }
+
+    function goToProject(targetIndex, smooth = true) {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const vh = window.innerHeight;
+      const projectHeight = vh * scrollMultiplier;
+      const targetScrollY = targetIndex * projectHeight;
+
+      window.scrollTo({
+        top: targetScrollY,
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+
+      currentIndex = targetIndex;
+      updateDots(currentIndex % count);
+
+      setTimeout(() => { isAnimating = false; }, 800);
+    }
+
+    // Easing function - linear for consistent speed, no "pause" feeling
+    const easeLinear = (t) => t;
+    // Alternative: easeInOutCubic for gentle acceleration/deceleration
+    const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    function update() {
+      ticking = false;
+      try {
+        const newScrollY = getScrollY();
+        if (Math.abs(newScrollY - scrollY) < 0.5 && animationStarted) return;
+        scrollY = newScrollY;
+        animationStarted = true;
+
+        const vh = window.innerHeight;
+        const projectHeight = vh * scrollMultiplier;
+        const totalSlots = count + 1;
+
+        const rawIndex = Math.min(Math.floor(scrollY / projectHeight), totalSlots - 1);
+        const linearProgress = (scrollY % projectHeight) / projectHeight; // 0 to 1
+
+        // Use linear easing for consistent, smooth speed - no "pause" at end
+        const progress = easeLinear(linearProgress);
+
+        const circularIndex = rawIndex % count;
+
+        // SEAMLESS CIRCULAR SCROLL - instant reset when past duplicate
+        if (scrollY >= totalSlots * projectHeight) {
+          const excess = scrollY - totalSlots * projectHeight;
+          window.scrollTo({ top: excess, behavior: 'auto' });
+          scrollY = excess;
+          return;
+        }
+
+        // Only update the two visible items (outgoing + incoming)
+        const outgoing = allItems[rawIndex];
+        const incoming = allItems[rawIndex + 1];
+
+        // Content transitions SYNCHRONIZED with image (same progress) - no early finish "pause"
+        const contentProgressIn = progress;
+        const contentProgressOut = 1 - progress;
+
+        if (outgoing) {
+          const opacity = 1 - progress;
+          const transform = `translate3d(0, ${-progress * 100}vh, 0)`;
+          const zIndex = progress < 0.5 ? 10 : 5;
+          outgoing.style.opacity = String(opacity);
+          outgoing.style.transform = transform;
+          outgoing.style.zIndex = String(zIndex);
+
+          // Content transitions in sync with image - no separate speed
+          const content = outgoing.querySelector('.carousel-item-content');
+          const cta = outgoing.querySelector('.carousel-item-cta');
+          if (content) content.style.opacity = String(contentProgressOut);
+          if (cta) cta.style.opacity = String(contentProgressOut * 0.6);
+        }
+
+        if (incoming) {
+          const opacity = progress;
+          const transform = `translate3d(0, ${(1 - progress) * 100}vh, 0)`;
+          const zIndex = progress >= 0.5 ? 10 : 5;
+          incoming.style.opacity = String(opacity);
+          incoming.style.transform = transform;
+          incoming.style.zIndex = String(zIndex);
+
+          // Content transitions in sync with image - no separate speed
+          const content = incoming.querySelector('.carousel-item-content');
+          const cta = incoming.querySelector('.carousel-item-cta');
+          if (content) content.style.opacity = String(contentProgressIn);
+          if (cta) cta.style.opacity = String(contentProgressIn * 0.6);
+        }
+
+        // Hide items that are far away (only when index changes)
+        if (rawIndex !== lastRawIndex) {
+          allItems.forEach((item, i) => {
+            if (i !== rawIndex && i !== rawIndex + 1) {
+              item.style.opacity = '0';
+              item.style.transform = i < rawIndex ? 'translate3d(0, -100vh, 0)' : 'translate3d(0, 100vh, 0)';
+              item.style.zIndex = '1';
+              const content = item.querySelector('.carousel-item-content');
+              const cta = item.querySelector('.carousel-item-cta');
+              if (content) content.style.opacity = '0';
+              if (cta) cta.style.opacity = '0';
+            }
+          });
+          lastRawIndex = rawIndex;
+        }
+
+        // Update dots at transition midpoint
+        const dotIndex = progress > 0.5 ? ((rawIndex + 1) % count) : circularIndex;
+        if (dotIndex !== currentIndex) {
+          currentIndex = dotIndex;
+          updateDots(currentIndex);
+        }
+      } catch (e) {
+        console.error('Carousel error:', e);
+      }
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Dot click navigation
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const targetIndex = parseInt(dot.dataset.index, 10);
+        goToProject(targetIndex);
+      });
+      dot.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          goToProject(parseInt(dot.dataset.index, 10));
+        }
+      });
+    });
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (isAnimating) return;
+
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault(); goToProject((currentIndex + 1) % count);
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault(); goToProject((currentIndex - 1 + count) % count);
+      } else if (e.key === 'Home') { e.preventDefault(); goToProject(0); }
+      else if (e.key === 'End') { e.preventDefault(); goToProject(count - 1); }
+    });
+
+    // Touch/swipe support
+    let touchStartY = 0, touchStartTime = 0;
+    viewport.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; touchStartTime = Date.now(); }, { passive: true });
+    viewport.addEventListener('touchend', (e) => {
+      if (isAnimating) return;
+      const deltaY = touchStartY - e.changedTouches[0].clientY;
+      const deltaTime = Date.now() - touchStartTime;
+      if (Math.abs(deltaY) > 30 && deltaTime < 300) {
+        goToProject(deltaY > 0 ? (currentIndex + 1) % count : (currentIndex - 1 + count) % count);
+      }
+    }, { passive: true });
+
+    // Wheel navigation REMOVED - let natural continuous scroll control pace
+    // No more jump-to-slide on wheel; user scrolls naturally through projects
+
+    // Initial setup
+    setHeights();
+    updateDots(0);
+    currentIndex = 0;
+
+    // Resize handler
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        setHeights();
+        const vh = window.innerHeight;
+        window.scrollTo({ top: currentIndex * vh * scrollMultiplier, behavior: 'auto' });
+      }, 150);
+    });
+
+    // Initial update
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', update);
+    } else { update(); }
+  })();
+</script>
+
+<style>
+  :global(html) { overflow-y: auto; }
+  :global(body) { /* min-height set dynamically */ }
+
+  /* HIDE LAYOUT'S SITE FOOTER - it conflicts with carousel scroll */
+  :global(.site-footer) { display: none !important; }
+
+  /* FIX STACKING CONTEXT - main needs higher z-index than site-footer was */
+  :global(body > main) { z-index: 50; }
+
+  /* SCROLL TRACK */
+  .carousel-scroll-track { width: 100%; pointer-events: none; }
+
+  /* FIXED VIEWPORT - TRUE FULL SCREEN */
+  .carousel-viewport {
+    position: fixed; top: 0; left: 0; width: 100%;
+    height: 100vh; height: 100dvh;
+    z-index: 100; pointer-events: none; overflow: hidden;
+  }
+
+  .carousel-item {
+    position: absolute; inset: 0;
+    will-change: opacity, transform;
+    pointer-events: auto; opacity: 0;
+    transform: translate3d(0, 100vh, 0); z-index: 1;
+  }
+  .carousel-item:nth-child(1) { opacity: 1; transform: none; z-index: 10; }
+
+  .carousel-item-link { display: block; width: 100%; height: 100%; text-decoration: none; color: inherit; }
+
+  .carousel-item-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+  .carousel-item-media img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.8s ease;
+    filter: contrast(1.05) saturate(0.85); will-change: transform, filter;
+  }
+  /* Hover zoom removed per request */
+
+  .carousel-item-gradient {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(5,5,5,0.3) 65%, rgba(5,5,5,0.6) 85%, rgba(5,5,5,0.9) 100%);
+    opacity: 0.5;
+  }
+  /* Hover gradient change removed per request */
+
+  /* TITLE - CENTERED, ALWAYS VISIBLE - JS controls opacity for fast transition */
+  .carousel-item-content {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 10; text-align: center; pointer-events: none;
+    padding: var(--space-md); max-width: 65%;
+    will-change: opacity;
+  }
+  .carousel-item-title {
+    font-size: var(--text-lg); line-height: 1.15;
+    letter-spacing: var(--letter-spacing-card); margin-bottom: var(--space-xs);
+    text-shadow: var(--glow-strong); white-space: nowrap;
+  }
+  @media (min-width: 768px) { .carousel-item-title { font-size: var(--text-xl); letter-spacing: var(--letter-spacing-section); } }
+  @media (min-width: 1200px) { .carousel-item-title { font-size: var(--display-sm); letter-spacing: var(--letter-spacing-display); } }
+
+  .carousel-item-meta {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-family: var(--font-display); font-size: var(--text-2xs); font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); opacity: 0.65;
+  }
+  .carousel-item-type { color: var(--accent); text-shadow: var(--glow-soft); }
+  .carousel-item-separator { opacity: 0.35; }
+
+  /* CTA - ALWAYS VISIBLE - JS controls opacity for fast transition */
+  .carousel-item-cta {
+    position: absolute; bottom: var(--space-lg); left: 50%; transform: translateX(-50%);
+    z-index: 10; display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-display); font-size: var(--text-2xs); font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg); opacity: 0.6;
+    transition: all 0.5s ease; pointer-events: auto; white-space: nowrap;
+    will-change: opacity;
+  }
+  .carousel-item:hover .carousel-item-cta { opacity: 1; color: var(--accent); gap: 6px; }
+  .carousel-item-cta svg { width: 14px; height: 14px; stroke: currentColor; transition: transform 0.5s ease; }
+  .carousel-item:hover .carousel-item-cta svg { transform: translateX(2px); }
+
+  /* DOTS - Normal size (4px), EVEN DENSER with more negative margin */
+  .carousel-dots {
+    position: fixed; bottom: var(--space-md); right: var(--space-md);
+    z-index: 200; pointer-events: auto;
+  }
+  .dots-list { display: flex; flex-direction: column; gap: 0; list-style: none; padding: 0; margin: 0; }
+  .dot {
+    position: relative; width: 4px; height: 4px; margin-top: -3px; /* EVEN DENSER overlap */
+    background: transparent; border: 1px solid var(--fg-muted); border-radius: 50%;
+    cursor: pointer; padding: 0; transition: all 0.2s ease; opacity: 0.35;
+  }
+  .dot:first-child { margin-top: 0; }
+  .dot:hover { opacity: 1; border-color: var(--accent); transform: scale(1.4); }
+  .dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .dot-inner {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 1px; height: 1px; background: var(--fg-muted); border-radius: 50%; opacity: 0;
+    transition: all 0.2s ease;
+  }
+  .dot.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 8px rgba(226,82,28,0.5); }
+  .dot.active .dot-inner { opacity: 1; background: var(--accent); width: 2px; height: 2px; box-shadow: 0 0 6px rgba(226,82,28,0.7); }
+
+  @media (max-width: 768px) {
+    .carousel-dots { bottom: var(--space-sm); right: var(--space-sm); }
+    .dot { width: 3.5px; height: 3.5px; margin-top: -2px; }
+    .dot:first-child { margin-top: 0; }
+    .dot.active .dot-inner { width: 1.5px; height: 1.5px; }
+  }
+
+  /* FOOTER CTA - at bottom of scroll track, NOT overlaying carousel */
+  .carousel-footer {
+    position: relative; z-index: 1; text-align: center;
+    border-top: 1px solid var(--border); background: var(--bg);
+    padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+  }
+  .carousel-footer-content { max-width: 600px; margin: 0 auto; }
+  .carousel-footer-title { font-size: var(--display-md); line-height: 1; margin-bottom: var(--space-md); text-shadow: var(--glow-intense); }
+  .carousel-footer-desc { font-size: var(--text-base); color: var(--fg-muted); max-width: 50ch; margin: 0 auto var(--space-xl); }
+
+  /* REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-item, .carousel-item-media img, .carousel-item-content, .carousel-item-cta, .dot {
+      transition: none !important; animation: none !important;
+    }
+    .carousel-item { opacity: 1 !important; transform: none !important; }
+    .carousel-item:hover .carousel-item-media img { transform: none; }
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .carousel-item-title { font-size: var(--text-base); white-space: normal; }
+    .carousel-item-meta { font-size: 0.45rem; gap: 2px; }
+    .carousel-item-cta { bottom: var(--space-sm); font-size: 0.45rem; }
+    .carousel-footer { padding: var(--space-xl) var(--space-md) var(--space-2xl); }
+    .carousel-footer-title { font-size: var(--display-sm); }
+  }
+</style>
