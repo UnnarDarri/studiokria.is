@@ -68,7 +68,7 @@ const siteOrigin = (Astro.site?.toString() || 'https://studiokria.is').replace(/
 const basePathClean = basePath.replace(/\/$/, '');
 const siteUrl = `${siteOrigin}${basePathClean}`;
 // Use siteUrl (includes base) for all absolute URLs; pathname from Astro already includes base for project sites
-const pageUrl = canonical || `${siteUrl}${pathname}`;
+const pageUrl = canonical || `${siteUrl}/${currentLocale}${pathname}`;
 const pageTitle = `${title} | STUDIO KRÍA`;
 
 // Generate canonical URLs for alternate languages (for SEO - absolute URLs)
@@ -102,9 +102,9 @@ const alternateLinks = alternateLanguages.map(alt => ({
 
     <!-- Alternate language URLs for SEO -->
     {alternateLinks.map(alt => (
-      <link rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
+      <link rel="alternate" hrefLang={alt.hrefLang} href={`${alt.href}/`} />
     ))}
-    <link rel="alternate" hrefLang="x-default" href={`${siteUrl}/en/`} />
+    <link rel="alternate" hrefLang="x-default" href={`${siteUrl}/`} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />

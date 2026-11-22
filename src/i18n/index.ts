@@ -10,12 +10,12 @@ export type Locale = 'en' | 'is';
 export type TranslationKey = keyof typeof en;
 
 const translations: Record<Locale, typeof en> = {
-  en,
   is,
+  en,
 };
 
-export const defaultLocale: Locale = 'en';
-export const supportedLocales: Locale[] = ['en', 'is'];
+export const defaultLocale: Locale = 'is';
+export const supportedLocales: Locale[] = ['is', 'en'];
 
 export function getTranslation(locale: Locale): typeof en {
   return translations[locale] || translations[defaultLocale];

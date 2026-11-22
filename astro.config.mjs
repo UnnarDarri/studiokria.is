@@ -16,4 +16,8 @@ export default defineConfig({
       entrypoint: 'astro/assets/services/sharp',
     },
   },
+  i18n: {
+    locales: ['is', 'en'],    
+    defaultLocale: 'is',
+  }
 });

@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "shx rm dist/index.html && shx cp dist/is/index.html dist/index.html",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint . --ext .astro,.js,.ts,.mjs --max-warnings 0",
@@ -21,7 +22,8 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
     "astro": "^7.4.4",
-    "sharp": "^0.35.5"
+    "sharp": "^0.35.5",
+    "shx": "^0.4.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
