@@ -4,8 +4,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://studiokria.github.io',
-  base: '/studio-kria-website',
+  site: 'https://studiokria.is',
+  base: '/',
   output: 'static',
   build: {
     assets: 'assets',

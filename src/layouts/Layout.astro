@@ -64,7 +64,7 @@ const localUrl = (path: string) => `${basePath.replace(/\/$/, '')}/${locale}${pa
 const localeUrl = (loc: string, path: string) => `${basePath.replace(/\/$/, '')}/${loc}${path.startsWith('/') ? path : '/' + path}`;
 
 // SEO variables
-const siteUrl = 'https://studiokria.github.io';
+const siteUrl = (Astro.site?.toString() || 'https://studiokria.is').replace(/\/$/, '');
 const pageUrl = canonical || `${siteUrl}${pathname}`;
 const pageTitle = `${title} | STUDIO KRÍA`;
 
