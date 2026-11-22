@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://studiokria.is/sitemap-index.xml
+Sitemap: https://unnardarri.github.io/studiokria.is/sitemap-index.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 10
